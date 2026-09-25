@@ -650,5 +650,27 @@
       requestAnimationFrame(loop);
     })();
   </script>
+
+<script id="hstu-snake-desktop-focus-fix">
+(function(){
+  function focusGame(){
+    try{
+      window.focus();
+      var c=document.getElementById('gameCanvas');
+      if(c){
+        if(!c.hasAttribute('tabindex')) c.setAttribute('tabindex','0');
+        c.focus({preventScroll:true});
+      }
+    }catch(e){}
+  }
+  window.addEventListener('load', function(){ setTimeout(focusGame,80); });
+  document.addEventListener('pointerdown', function(){ setTimeout(focusGame,0); }, {passive:true});
+  document.addEventListener('keydown', function(e){
+    var keys=['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D'];
+    if(keys.indexOf(e.key)!==-1) e.preventDefault();
+  }, {passive:false});
+})();
+</script>
+
 </body>
 </html>

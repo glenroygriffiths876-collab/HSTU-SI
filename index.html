@@ -1879,6 +1879,22 @@ document.addEventListener('DOMContentLoaded', function(){
   }
   play.addEventListener('click',openArcade);
   back.addEventListener('click',closeArcade);
+  if(frame){
+    frame.addEventListener('load',function(){
+      if(frame.src && frame.src!=='about:blank'){
+        setTimeout(function(){
+          try{
+            frame.contentWindow.focus();
+            const canvas=frame.contentDocument && frame.contentDocument.getElementById('gameCanvas');
+            if(canvas){
+              canvas.setAttribute('tabindex','0');
+              canvas.focus({preventScroll:true});
+            }
+          }catch(e){}
+        },100);
+      }
+    });
+  }
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('open'))closeArcade()});
 })();
 </script>

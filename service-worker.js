@@ -1,4 +1,4 @@
-const CACHE_NAME="hstu-resource-centre-v20260925-instant-start";
+const CACHE_NAME="hstu-resource-centre-v20260925-desktop-mobile-snake";
 const APP_SHELL=[
   "./index.html",
   "./health-snake.html",
