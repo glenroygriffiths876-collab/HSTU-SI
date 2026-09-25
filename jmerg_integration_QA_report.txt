@@ -1,0 +1,15 @@
+baseline_nav_order: PASS
+all_views: PASS
+gia_resource_finder: PASS
+jmerg_archive: PASS
+control_hiv_cascade: PASS
+control_kabp: PASS
+control_tcs_3: PASS
+snake_preserved: PASS
+gallery_preserved: PASS
+services_preserved: PASS
+jason_preserved: PASS
+Integrated legacy entries: 74
+Learning surfaced: 11
+Manuals surfaced: 6
+Posters surfaced: 4

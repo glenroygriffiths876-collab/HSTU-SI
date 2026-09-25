@@ -1,0 +1,16 @@
+J-MERG FORENSIC EXTRACTION — USER-SAVED LEGACY WIX PAGES
+Date: 2026-09-25
+
+Main saved pages processed: 5
+Unique HTTP links extracted: 98
+Unique filesusr-hosted legacy document URLs: 67
+PDF/resource links in inventory: 76
+Repository topic pages explicitly reconstructed from saved listing: 17
+Mandatory control items with exact/near-exact underlying legacy URL recovered: 13 / 13
+Mandatory control files downloaded: 0 / 13
+Reason: current execution environment cannot resolve/fetch filesusr.com; the saved HTML nevertheless contains the original direct URLs.
+
+IMPORTANT
+This extraction materially resolves the earlier uncertainty about the 13 control items: all 13 now have legacy source evidence and direct filesusr URLs in the saved Resources/Reports HTML. It does NOT claim the file bytes have been recovered or opened. HSTU has not been modified yet because the master workflow requires verification before migration.
+
+The saved About page states the repository was conceptualized in 2023 by the Strategic Information Component, was intended to collect published/unpublished studies and reports, later expanded to capacity-building tools, national reports and DHIS2/TSIS2 SOPs/user guides, and described approximately 200 studies across thematic areas. Therefore the 67 extracted filesusr links from the five main saved pages are substantial but cannot by themselves prove all ~200 underlying repository studies have been recovered; the individual dynamic topic pages are not embedded in the main listing HTML.
