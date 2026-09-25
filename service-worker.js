@@ -1,4 +1,4 @@
-const CACHE_NAME="hstu-resource-centre-v20260925-desktop-mobile-snake";
+const CACHE_NAME="hstu-resource-centre-v20260925-snake-routing-fix";
 const APP_SHELL=[
   "./index.html",
   "./health-snake.html",
@@ -28,6 +28,28 @@ self.addEventListener("fetch",event=>{
   if(event.request.method!=="GET") return;
   const url=new URL(event.request.url);
 
+  /* IMPORTANT: health-snake.html is its own document.
+     Never substitute index.html for this iframe navigation. */
+  if(url.origin===self.location.origin && url.pathname.endsWith("/health-snake.html")){
+    event.respondWith((async()=>{
+      const cache=await caches.open(CACHE_NAME);
+      const cached=await cache.match("./health-snake.html");
+      if(cached){
+        event.waitUntil(
+          fetch("./health-snake.html",{cache:"no-store"})
+            .then(r=>{if(r&&r.ok)return cache.put("./health-snake.html",r.clone())})
+            .catch(()=>{})
+        );
+        return cached;
+      }
+      const response=await fetch(event.request,{cache:"no-store"});
+      if(response&&response.ok) await cache.put("./health-snake.html",response.clone());
+      return response;
+    })());
+    return;
+  }
+
+  /* Main Resource Centre document only. */
   if(event.request.mode==="navigate"){
     event.respondWith((async()=>{
       const cache=await caches.open(CACHE_NAME);

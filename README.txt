@@ -1,10 +1,11 @@
-HSTU RESOURCE CENTRE — DESKTOP + MOBILE SNAKE FIX
+HSTU RESOURCE CENTRE — SNAKE ROUTING FIX
 25 September 2026
 
-Preserves the Instant Start build and fixes desktop browser play:
-- Mobile touch/swipe/D-pad remain intact.
-- Desktop Arrow keys and WASD are captured reliably.
-- Game canvas receives keyboard focus automatically when Arcade opens.
-- Clicking/tapping the game restores focus.
-- Browser page scrolling is prevented while game direction keys are used.
-- New service-worker cache version prevents an older health-snake.html from persisting.
+Root cause corrected:
+The service worker was treating health-snake.html as though it were a navigation
+to the main Resource Centre and was returning cached index.html inside the Arcade iframe.
+That is why desktop showed the Resource Centre inside the game area.
+
+This build explicitly routes health-snake.html to the actual game document while
+preserving the fast cached startup for the main Resource Centre.
+A new cache version forces browsers/PWA installs to discard the faulty routing cache.

@@ -1881,16 +1881,9 @@ document.addEventListener('DOMContentLoaded', function(){
   back.addEventListener('click',closeArcade);
   if(frame){
     frame.addEventListener('load',function(){
-      if(frame.src && frame.src!=='about:blank'){
+      if(frame.src && !frame.src.endsWith('about:blank')){
         setTimeout(function(){
-          try{
-            frame.contentWindow.focus();
-            const canvas=frame.contentDocument && frame.contentDocument.getElementById('gameCanvas');
-            if(canvas){
-              canvas.setAttribute('tabindex','0');
-              canvas.focus({preventScroll:true});
-            }
-          }catch(e){}
+          try{frame.contentWindow.focus();}catch(e){}
         },100);
       }
     });
