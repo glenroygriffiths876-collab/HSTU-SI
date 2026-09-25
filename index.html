@@ -622,11 +622,79 @@ html.hstu-lightbox-open,html.hstu-lightbox-open body{overflow:hidden}
 
 
 <style id="mohw-official-link-logo-fix">
-.official-social.hstu-web,.official-social.mohw-web{height:50px;min-width:150px;padding:0 15px 0 12px;gap:10px;border-radius:17px;background:linear-gradient(180deg,#fff 0%,#f4faf6 100%)!important;color:#0b6d39!important;border:1px solid rgba(255,255,255,.88);box-shadow:0 10px 26px rgba(0,0,0,.20);overflow:hidden}
-.official-social.hstu-web .official-link-logo,.official-social.mohw-web .official-link-logo{width:104px;height:38px;object-fit:contain;object-position:center;display:block;background:transparent;padding:0;border-radius:0;box-sizing:border-box;flex:none}
-.official-social.hstu-web span,.official-social.mohw-web span{font-size:11px;font-weight:900;letter-spacing:.01em;color:#08713b}
-.official-social.hstu-web:hover,.official-social.mohw-web:hover{transform:translateY(-3px);box-shadow:0 15px 34px rgba(0,0,0,.27);filter:none}
-@media(max-width:620px){.official-social.hstu-web,.official-social.mohw-web{width:auto;min-width:126px;height:46px;padding:0 10px;border-radius:15px}.official-social.hstu-web .official-link-logo,.official-social.mohw-web .official-link-logo{width:102px;height:34px}.official-social.hstu-web span,.official-social.mohw-web span{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}}
+/* Polished MOHW website buttons — scoped ONLY to the two footer website links. */
+.official-social.hstu-web,.official-social.mohw-web{
+  height:54px;
+  width:auto;
+  min-width:0;
+  padding:5px 13px 5px 7px;
+  gap:10px;
+  border-radius:17px;
+  background:linear-gradient(180deg,#fff 0%,#f5faf7 100%)!important;
+  color:#08713b!important;
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 10px 25px rgba(0,0,0,.20);
+  overflow:hidden;
+}
+.official-social.hstu-web .official-link-logo,.official-social.mohw-web .official-link-logo{
+  width:146px;
+  height:44px;
+  object-fit:contain;
+  object-position:center;
+  display:block;
+  background:#fff;
+  padding:0;
+  margin:0;
+  border-radius:10px;
+  box-sizing:border-box;
+  flex:none;
+}
+.official-social.hstu-web span,.official-social.mohw-web span{
+  font-size:12px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:.015em;
+  color:#08713b;
+  white-space:nowrap;
+}
+.official-social.hstu-web:hover,.official-social.mohw-web:hover{
+  transform:translateY(-3px);
+  box-shadow:0 15px 34px rgba(0,0,0,.27);
+  filter:none;
+}
+@media(max-width:620px){
+  .official-social.hstu-web,.official-social.mohw-web{
+    width:auto;
+    min-width:0;
+    height:50px;
+    padding:4px 8px 4px 5px;
+    gap:7px;
+    border-radius:15px;
+  }
+  .official-social.hstu-web .official-link-logo,.official-social.mohw-web .official-link-logo{
+    width:120px;
+    height:40px;
+  }
+  .official-social.hstu-web span,.official-social.mohw-web span{
+    position:static;
+    width:auto;
+    height:auto;
+    padding:0;
+    margin:0;
+    overflow:visible;
+    clip:auto;
+    white-space:nowrap;
+    border:0;
+    font-size:11px;
+  }
+}
+@media(max-width:390px){
+  .official-social.hstu-web .official-link-logo,.official-social.mohw-web .official-link-logo{
+    width:108px;
+    height:38px;
+  }
+  .official-social.hstu-web span,.official-social.mohw-web span{font-size:10px}
+}
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
