@@ -1,20 +1,10 @@
-HSTU RESOURCE CENTRE — DESKTOP RUNNING FIX
+HSTU RESOURCE CENTRE — GIA RESOURCE FINDER
 25 September 2026
 
-Root cause from the latest desktop screenshot:
-The previous patch hid the portrait warning and showed the canvas, but the ORIGINAL
-Snake animation loop still contained:
+Gia is now a site-wide Resource Finder rather than a clinical-answer chatbot.
+She indexes actual rendered Resource Centre destinations and returns clickable routes.
+Includes typo tolerance, aliases, section-aware ranking, Gallery category jumps,
+destination search hand-off where available, and Health Snake launching.
 
-    if (isLandscape()) { draw(); return; }
-
-So on a laptop the board appeared, but the game loop deliberately returned before
-advancing the snake.
-
-This build fixes isLandscape() at the source:
-- desktop/laptop browsers are not treated as mobile landscape;
-- the Snake update loop now advances normally on desktop;
-- mobile landscape protection remains;
-- Arrow/WASD and mobile controls remain;
-- service-worker Snake routing remains;
-- fast Resource Centre startup remains;
-- new cache version forces the corrected game onto browsers/PWA.
+No external AI/search service was added. Existing Resource Centre views, navigation,
+Health Arcade, PWA assets and service-worker architecture are preserved.

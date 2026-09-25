@@ -1,4 +1,4 @@
-const CACHE_NAME="hstu-resource-centre-v20260925-desktop-running-fix";
+const CACHE_NAME="hstu-resource-centre-v20260925-gia-finder";
 const APP_SHELL=[
   "./index.html",
   "./health-snake.html",
