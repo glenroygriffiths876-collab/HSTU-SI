@@ -638,6 +638,12 @@ html.hstu-lightbox-open,html.hstu-lightbox-open body{overflow:hidden}
 <meta name="apple-mobile-web-app-title" content="HSTU Resources">
 <meta name="application-name" content="HSTU Resource Centre">
 
+<link rel="canonical" href="https://glenroygriffiths876-collab.github.io/HSTU-SI/">
+<meta property="og:url" content="https://glenroygriffiths876-collab.github.io/HSTU-SI/">
+<meta property="og:title" content="HSTU Resource Centre">
+<meta property="og:description" content="HIV, STI & TB resources from HSTU.">
+<meta name="twitter:card" content="summary">
+
 </head>
 <body>
 <div class="topline"></div>
@@ -1682,7 +1688,7 @@ document.addEventListener('DOMContentLoaded', function(){
  $("#hstuInstallBtn")?.addEventListener("click",doInstall);
  $("#hstuInstallScreenBtn")?.addEventListener("click",doInstall);
  $("#hstuShareBtn")?.addEventListener("click",async()=>{
-   const share={title:"HSTU Resource Centre",text:"HIV, STI & TB resources from HSTU.",url:location.href.split("?")[0]};
+   const share={title:"HSTU Resource Centre",text:"HIV, STI & TB resources from HSTU.",url:"https://glenroygriffiths876-collab.github.io/HSTU-SI/"};
    if(navigator.share){try{await navigator.share(share);return}catch(e){if(e?.name==="AbortError")return}}
    try{await navigator.clipboard.writeText(share.url);toast("Resource Centre link copied.");}
    catch(e){toast("Copy the page address from your browser to share it.");}
