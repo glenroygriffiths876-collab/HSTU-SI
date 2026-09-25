@@ -1,11 +1,14 @@
-HSTU RESOURCE CENTRE — SNAKE ROUTING FIX
+HSTU RESOURCE CENTRE — DESKTOP PLAY FIX
 25 September 2026
 
-Root cause corrected:
-The service worker was treating health-snake.html as though it were a navigation
-to the main Resource Centre and was returning cached index.html inside the Arcade iframe.
-That is why desktop showed the Resource Centre inside the game area.
+The screenshot identified the remaining issue:
+the original mobile Snake game intentionally showed “Please rotate to portrait mode to play!”
+for any landscape viewport. A laptop is naturally landscape, so the game was being blocked.
 
-This build explicitly routes health-snake.html to the actual game document while
-preserving the fast cached startup for the main Resource Centre.
-A new cache version forces browsers/PWA installs to discard the faulty routing cache.
+This build:
+- allows desktop/laptop browsers (fine pointer + hover, >=900px) to play in landscape;
+- keeps the portrait-orientation safeguard for phones/tablets;
+- preserves Arrow/WASD desktop controls;
+- preserves mobile swipe and D-pad controls;
+- preserves the dedicated health-snake.html service-worker route;
+- uses a new cache version so the old blocked game is replaced.

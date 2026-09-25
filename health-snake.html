@@ -187,6 +187,53 @@
       #brandLogo{max-width:155px;}
     }
   </style>
+
+<style id="hstu-desktop-landscape-play-fix">
+/* Desktop/laptop browsers are allowed to play in landscape.
+   The portrait warning remains available for touch/mobile devices only. */
+@media (min-width: 900px) and (hover: hover) and (pointer: fine) {
+  #rotateWarning, .rotate-warning, #landscapeWarning, .landscape-warning {
+    display:none !important;
+    visibility:hidden !important;
+    opacity:0 !important;
+    pointer-events:none !important;
+  }
+  #gameCanvas, canvas {
+    visibility:visible !important;
+    opacity:1 !important;
+  }
+}
+</style>
+<script id="hstu-desktop-landscape-runtime-fix">
+(function(){
+  function isDesktop(){
+    return window.matchMedia('(min-width: 900px) and (hover: hover) and (pointer: fine)').matches;
+  }
+  function unlockDesktop(){
+    if(!isDesktop()) return;
+    ['rotateWarning','landscapeWarning'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el){ el.style.setProperty('display','none','important'); el.hidden=true; }
+    });
+    document.querySelectorAll('.rotate-warning,.landscape-warning').forEach(function(el){
+      el.style.setProperty('display','none','important'); el.hidden=true;
+    });
+    var c=document.getElementById('gameCanvas');
+    if(c){
+      c.style.setProperty('display','block','important');
+      c.style.setProperty('visibility','visible','important');
+      c.style.setProperty('opacity','1','important');
+      c.tabIndex=0;
+      try{ c.focus({preventScroll:true}); }catch(e){}
+    }
+  }
+  window.addEventListener('load',function(){setTimeout(unlockDesktop,100)});
+  window.addEventListener('resize',unlockDesktop);
+  window.addEventListener('orientationchange',unlockDesktop);
+  document.addEventListener('pointerdown',unlockDesktop,{passive:true});
+})();
+</script>
+
 </head>
 <body>
   <div id="container">
