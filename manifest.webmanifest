@@ -1,0 +1,32 @@
+{
+  "id": "./",
+  "name": "HSTU Resource Centre",
+  "short_name": "HSTU Resources",
+  "description": "HIV, STI and TB resources curated by Jamaica's HIV/STI/TB Unit.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#090b0a",
+  "theme_color": "#090b0a",
+  "icons": [
+    {
+      "src": "./hstu-app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./hstu-app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./hstu-app-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
