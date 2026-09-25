@@ -1,14 +1,20 @@
-HSTU RESOURCE CENTRE — DESKTOP PLAY FIX
+HSTU RESOURCE CENTRE — DESKTOP RUNNING FIX
 25 September 2026
 
-The screenshot identified the remaining issue:
-the original mobile Snake game intentionally showed “Please rotate to portrait mode to play!”
-for any landscape viewport. A laptop is naturally landscape, so the game was being blocked.
+Root cause from the latest desktop screenshot:
+The previous patch hid the portrait warning and showed the canvas, but the ORIGINAL
+Snake animation loop still contained:
 
-This build:
-- allows desktop/laptop browsers (fine pointer + hover, >=900px) to play in landscape;
-- keeps the portrait-orientation safeguard for phones/tablets;
-- preserves Arrow/WASD desktop controls;
-- preserves mobile swipe and D-pad controls;
-- preserves the dedicated health-snake.html service-worker route;
-- uses a new cache version so the old blocked game is replaced.
+    if (isLandscape()) { draw(); return; }
+
+So on a laptop the board appeared, but the game loop deliberately returned before
+advancing the snake.
+
+This build fixes isLandscape() at the source:
+- desktop/laptop browsers are not treated as mobile landscape;
+- the Snake update loop now advances normally on desktop;
+- mobile landscape protection remains;
+- Arrow/WASD and mobile controls remain;
+- service-worker Snake routing remains;
+- fast Resource Centre startup remains;
+- new cache version forces the corrected game onto browsers/PWA.

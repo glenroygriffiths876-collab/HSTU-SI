@@ -336,8 +336,14 @@
       let lastT = 0;
       let acc = 0;
 
+      function isDesktopBrowser(){
+        return window.matchMedia("(min-width: 900px) and (hover: hover) and (pointer: fine)").matches;
+      }
+
       function isLandscape(){
-        return window.innerWidth > window.innerHeight;
+        /* Landscape blocks gameplay only on mobile/touch layouts.
+           Desktop/laptop browsers are intentionally playable in landscape. */
+        return !isDesktopBrowser() && window.innerWidth > window.innerHeight;
       }
 
       function showOverlay(on, title, sub){
