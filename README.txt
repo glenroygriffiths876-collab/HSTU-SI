@@ -1,21 +1,13 @@
-# HSTU Resource Centre — PWA package
+HSTU RESOURCE CENTRE — INSTANT START BUILD
+25 September 2026
 
-Upload every file in this folder to the same GitHub Pages repository directory.
+Performance changes only:
+1. HSTU Health Snake is now a separate health-snake.html file.
+2. The game is NOT loaded or running while the Resource Centre opens.
+3. It loads only when Play HSTU Health Snake is tapped.
+4. It is unloaded when Back is tapped, stopping its animation/game loop.
+5. The PWA app shell is cached for immediate repeat launches.
+6. Navigation serves the cached Resource Centre immediately, then refreshes it quietly in the background.
+7. A new cache version clears the previous service-worker cache.
 
-Included:
-- index.html
-- manifest.webmanifest
-- service-worker.js
-- HSTU 192px, 512px, maskable, Apple-touch and favicon icons
-- branded install-screen logo
-- .nojekyll
-
-The special installation link is the normal site URL with `?install=1`.
-
-Important after replacing an older PWA build:
-1. Upload all files together.
-2. Reload the live site once while online.
-3. If an older installed icon remains on a phone, uninstall the old home-screen app once and install the updated build again; Android/iOS can retain an old launcher icon independently of the webpage cache.
-
-Live Resource Centre: https://glenroygriffiths876-collab.github.io/HSTU-SI/
-Dedicated install link: https://glenroygriffiths876-collab.github.io/HSTU-SI/?install=1
+No Resource Centre sections were intentionally redesigned or removed.
