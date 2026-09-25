@@ -8,3 +8,8 @@ destination search hand-off where available, and Health Snake launching.
 
 No external AI/search service was added. Existing Resource Centre views, navigation,
 Health Arcade, PWA assets and service-worker architecture are preserved.
+
+
+25 Sep 2026 — J-MERG/SI integration: verified institutional history and dated M&E reference resources were integrated into Research alongside current MOHW strategic/surveillance references. The legacy Wix page itself could not be fetched by the available browser, so no unsupported Wix-only content was invented. See jmerg_migration_audit_2026-09-25.csv.
+
+25 Sep 2026 — J-MERG forensic rebuild v2: reconstructed the recoverable J-MERG strategic-information ecosystem from official HSTU/MOHW and documented national sources. Added research studies, strategic plans, annual/progress reports, epidemiological updates, SI bulletins, current dashboard discovery, a legacy collection interface, manifest JSON/CSV, reconstructed site map, and unrecovered-items report. Direct legacy Wix page enumeration remains blocked by the available browser; this limitation is explicitly recorded rather than guessed.
