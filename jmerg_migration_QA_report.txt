@@ -13,3 +13,13 @@ This package is deliberately NOT labelled complete/final/zero-omission. The save
 
 Adolescent HIV/AIDS count reconciliation: PASS — 18 displayed / 18 inventoried / 18 migrated.
 Existing HSTU nav and Health Snake files preserved from baseline.
+
+
+RESEARCH CORE REFINEMENT — 25 SEP 2026
+- Home hero reduced to two primary CTAs: Research and Manuals.
+- Research repositioned as integrated HSTU Research & Strategic Information system.
+- 19 source-listed current-state areas represented in category browser.
+- Legacy source statement retained as approximately 200 studies; not converted to an exact reconstructed count.
+- 92 currently reconstructed records retained.
+- Adolescent HIV/AIDS individual 18-record collection retained.
+- Wix promotional chrome excluded.
