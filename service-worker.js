@@ -1,4 +1,4 @@
-const CACHE_NAME="hstu-resource-centre-v20260929-subsection-nav-v1";
+const CACHE_NAME="hstu-resource-centre-v20260929-subsection-nav-v2";
 const APP_SHELL=[
   "./index.html",
   "./health-snake.html",

@@ -794,6 +794,21 @@ body.hstu-arcade-open{overflow:hidden}
 #resources-presentations,#services-directory,#repository-purpose{scroll-margin-top:110px}
 .hstu-nav-dropdown button[data-target]::after{content:"↘";float:right;margin-left:12px;opacity:.48;font-size:.85em}
 .hstu-nav-dropdown button[data-target]:hover::after,.hstu-nav-dropdown button[data-target]:focus::after{opacity:.9}
+@media(max-width:950px){
+  .hstu-nav-item.touch-open>.hstu-nav-dropdown{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+    transform:none!important;
+    position:static!important;
+    width:100%!important;
+    max-width:none!important;
+    max-height:none!important;
+    flex-direction:column!important;
+  }
+  .hstu-nav-item.touch-open>.nav-btn::after{transform:rotate(180deg)}
+}
 
 .hstu-subsection-arrival{animation:hstuArrival .9s ease}
 @keyframes hstuArrival{0%{outline:0 solid rgba(15,140,71,0)}30%{outline:4px solid rgba(15,140,71,.22);outline-offset:8px}100%{outline:0 solid rgba(15,140,71,0)}}
@@ -808,7 +823,7 @@ body.hstu-arcade-open{overflow:hidden}
 <div class="brand-copy"><b>HSTU · HST Health Living</b><span>Resource Centre · MOHW Jamaica</span></div>
 </a>
 <button aria-label="Open navigation" class="menu-toggle" id="menuToggle">☰</button>
-<nav aria-label="Main navigation" id="mainNav"><div class="hstu-nav-item"><button class="nav-btn active" data-view="home">Home</button><div aria-label="Home sections" class="hstu-nav-dropdown" role="group"><button data-target="repository-purpose" data-view="home" type="button">Overview</button></div></div><div class="hstu-nav-item"><button class="nav-btn" data-view="research">Research</button><div aria-label="Research sections" class="hstu-nav-dropdown" role="group"><button data-target="research-results" data-view="research" type="button">Latest studies</button><button data-target="research-filters" data-view="research" type="button">Strategic Objectives 1–15</button></div></div><div class="hstu-nav-item"><button class="nav-btn" data-view="capacity">Capacity Building</button><div aria-label="Capacity Building sections" class="hstu-nav-dropdown" role="group"><button data-target="capacity-manuals" data-view="capacity" type="button">Manuals</button><button data-target="capacity-training" data-view="capacity" type="button">Training materials</button></div></div><div class="hstu-nav-item"><button class="nav-btn" data-view="reports">Reports</button><div aria-label="Reports sections" class="hstu-nav-dropdown" role="group"><button data-target="reports-national" data-view="reports" type="button">National Reports</button><button data-target="reports-special" data-view="reports" type="button">Special Reports</button></div></div><div class="hstu-nav-item"><button class="nav-btn" data-view="data-audit">Data Audit and Utilization</button><div aria-label="Data Audit and Utilization sections" class="hstu-nav-dropdown" role="group"><button data-target="data-audit-reports" data-view="data-audit" type="button">Data Audit</button><button data-target="data-systems-guides" data-view="data-audit" type="button">DHIS2 and TSIS2</button></div></div><div class="hstu-nav-item"><button class="nav-btn" data-view="gallery">Gallery</button><div aria-label="Gallery sections" class="hstu-nav-dropdown" role="group"><button data-target="gallery-campaigns" data-view="gallery" type="button">Campaign images</button></div></div><div class="hstu-nav-item"><button class="nav-btn" data-view="resources">Resources</button><div aria-label="Resources sections" class="hstu-nav-dropdown" role="group"><button data-target="resources-learning" data-view="resources" type="button">Learning links</button><button data-target="resources-presentations" data-view="resources" type="button">Presentations and Posters</button></div></div><div class="hstu-nav-item"><button class="nav-btn" data-view="services">Find Services</button><div aria-label="Find Services sections" class="hstu-nav-dropdown" role="group"><button data-service-mode-target="treatment" data-target="services-directory" data-view="services" type="button">Treatment and PrEP</button><button data-service-mode-target="healthcentres" data-target="services-directory" data-view="services" type="button">Health centres</button></div></div></nav>
+<nav aria-label="Main navigation" id="mainNav"><div class="hstu-nav-item"><button aria-expanded="false" aria-haspopup="true" class="nav-btn active" data-view="home">Home</button><div aria-label="Home sections" class="hstu-nav-dropdown" role="group"><button data-target="repository-purpose" data-view="home" type="button">Overview</button></div></div><div class="hstu-nav-item"><button aria-expanded="false" aria-haspopup="true" class="nav-btn" data-view="research">Research</button><div aria-label="Research sections" class="hstu-nav-dropdown" role="group"><button data-target="research-results" data-view="research" type="button">Latest studies</button><button data-target="research-filters" data-view="research" type="button">Strategic Objectives 1–15</button></div></div><div class="hstu-nav-item"><button aria-expanded="false" aria-haspopup="true" class="nav-btn" data-view="capacity">Capacity Building</button><div aria-label="Capacity Building sections" class="hstu-nav-dropdown" role="group"><button data-target="capacity-manuals" data-view="capacity" type="button">Manuals</button><button data-target="capacity-training" data-view="capacity" type="button">Training materials</button></div></div><div class="hstu-nav-item"><button aria-expanded="false" aria-haspopup="true" class="nav-btn" data-view="reports">Reports</button><div aria-label="Reports sections" class="hstu-nav-dropdown" role="group"><button data-target="reports-national" data-view="reports" type="button">National Reports</button><button data-target="reports-special" data-view="reports" type="button">Special Reports</button></div></div><div class="hstu-nav-item"><button aria-expanded="false" aria-haspopup="true" class="nav-btn" data-view="data-audit">Data Audit and Utilization</button><div aria-label="Data Audit and Utilization sections" class="hstu-nav-dropdown" role="group"><button data-target="data-audit-reports" data-view="data-audit" type="button">Data Audit</button><button data-target="data-systems-guides" data-view="data-audit" type="button">DHIS2 and TSIS2</button></div></div><div class="hstu-nav-item"><button aria-expanded="false" aria-haspopup="true" class="nav-btn" data-view="gallery">Gallery</button><div aria-label="Gallery sections" class="hstu-nav-dropdown" role="group"><button data-target="gallery-campaigns" data-view="gallery" type="button">Campaign images</button></div></div><div class="hstu-nav-item"><button aria-expanded="false" aria-haspopup="true" class="nav-btn" data-view="resources">Resources</button><div aria-label="Resources sections" class="hstu-nav-dropdown" role="group"><button data-target="resources-learning" data-view="resources" type="button">Learning links</button><button data-target="resources-presentations" data-view="resources" type="button">Presentations and Posters</button></div></div><div class="hstu-nav-item"><button aria-expanded="false" aria-haspopup="true" class="nav-btn" data-view="services">Find Services</button><div aria-label="Find Services sections" class="hstu-nav-dropdown" role="group"><button data-service-mode-target="treatment" data-target="services-directory" data-view="services" type="button">Treatment and PrEP</button><button data-service-mode-target="healthcentres" data-target="services-directory" data-view="services" type="button">Health centres</button></div></div></nav>
 </div>
 </header>
 <main>
@@ -2154,17 +2169,37 @@ document.addEventListener('DOMContentLoaded',()=>mo.observe(document.querySelect
 </script><script id="hstu-subsection-nav-v1">
 (()=>{
 'use strict';
+const compact=()=>window.matchMedia('(max-width:950px)').matches;
+
 function stickyOffset(){
  const header=document.querySelector('header,.navbar,.site-header');
  const r=header?.getBoundingClientRect();
  return Math.max(76,(r&&r.height)||0)+18;
+}
+function collapseTouchMenus(except){
+ document.querySelectorAll('.hstu-nav-item.touch-open').forEach(item=>{
+   if(item===except)return;
+   item.classList.remove('touch-open');
+   const main=item.querySelector(':scope > .nav-btn[aria-expanded]');
+   if(main)main.setAttribute('aria-expanded','false');
+ });
+}
+function closeMobileNav(){
+ collapseTouchMenus(null);
+ const nav=document.querySelector('#mainNav');
+ if(nav)nav.classList.remove('open');
+ const toggle=document.querySelector('#menuToggle');
+ if(toggle?.hasAttribute('aria-expanded'))toggle.setAttribute('aria-expanded','false');
+ document.querySelectorAll('.nav-menu.open,.mobile-menu.open,.navbar.open,[aria-expanded="true"].nav-toggle').forEach(el=>{
+   el.classList.remove('open');
+   if(el.matches('[aria-expanded]'))el.setAttribute('aria-expanded','false');
+ });
 }
 function go(btn){
  const view=btn.dataset.view;
  const targetId=btn.dataset.target;
  if(!view||!targetId)return;
  if(typeof window.setView==='function'){
-   // Suppress setView's own smooth scroll-to-top; this navigation has a precise subsection target.
    const nativeScrollTo=window.scrollTo;
    window.scrollTo=()=>{};
    try{window.setView(view)}finally{window.scrollTo=nativeScrollTo}
@@ -2173,11 +2208,7 @@ function go(btn){
  }
  const scroller=document.scrollingElement||document.documentElement;
  scroller.scrollTop=0;
- // Close compact/mobile nav if it is open.
- document.querySelectorAll('.nav-menu.open,.mobile-menu.open,.navbar.open,[aria-expanded="true"].nav-toggle').forEach(el=>{
-   el.classList.remove('open');
-   if(el.matches('[aria-expanded]'))el.setAttribute('aria-expanded','false');
- });
+ closeMobileNav();
  setTimeout(()=>{
    const mode=btn.dataset.serviceModeTarget;
    if(mode){
@@ -2194,12 +2225,25 @@ function go(btn){
      setTimeout(()=>target.classList.remove('hstu-subsection-arrival'),900);
      try{history.replaceState(null,'','#'+targetId)}catch(_){}
    };
-   // Dynamic cards and mobile menu collapse can change page height after the first jump.
-   // Re-anchor briefly while the layout settles so the requested subsection stays in view.
    const base=mode?160:0;
    [base,base+260,base+760].forEach(delay=>setTimeout(finishScroll,delay));
  },120);
 }
+
+document.addEventListener('click',e=>{
+ const main=e.target.closest('.hstu-nav-item > .nav-btn[data-view]');
+ if(!main||!compact())return;
+ const item=main.closest('.hstu-nav-item');
+ const dropdown=item?.querySelector(':scope > .hstu-nav-dropdown');
+ if(!dropdown)return;
+ e.preventDefault();
+ e.stopImmediatePropagation();
+ const willOpen=!item.classList.contains('touch-open');
+ collapseTouchMenus(item);
+ item.classList.toggle('touch-open',willOpen);
+ main.setAttribute('aria-expanded',willOpen?'true':'false');
+},true);
+
 document.addEventListener('click',e=>{
  const btn=e.target.closest('.hstu-nav-dropdown button[data-target]');
  if(!btn)return;
@@ -2207,6 +2251,13 @@ document.addEventListener('click',e=>{
  e.stopImmediatePropagation();
  go(btn);
 },true);
+
+document.addEventListener('keydown',e=>{
+ if(e.key!=='Escape')return;
+ collapseTouchMenus(null);
+},true);
+
+window.addEventListener('resize',()=>{if(!compact())collapseTouchMenus(null)});
 })();
 </script></body>
 </html>
