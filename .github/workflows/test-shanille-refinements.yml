@@ -1,0 +1,47 @@
+name: Smoke test September HSTU refinements
+on:
+  push:
+    branches: [shanille-refinements-2026-09]
+    paths:
+      - "refinements-2026.js"
+      - "index.html"
+      - ".github/workflows/test-shanille-refinements.yml"
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --no-save playwright
+      - run: npx playwright install chromium --with-deps
+      - name: Verify desktop and mobile navigation and content
+        run: |
+          python3 -m http.server 8080 >/tmp/hstu-http.log 2>&1 &
+          node <<'JS'
+          const { chromium }=require('playwright');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
+              const page=await browser.newPage({viewport});
+              const errors=[];page.on('pageerror',e=>errors.push(e.message));
+              await page.goto('http://127.0.0.1:8080/',{waitUntil:'domcontentloaded'});
+              await page.locator('#sept-objective').waitFor({state:'attached',timeout:20000});
+              if(await page.locator('#sept-objective option').count()!==16)throw Error('15 objective options missing');
+              for(const id of ['view-home','view-research','view-manuals','view-reports','view-data','view-gallery','view-training','view-services']){
+                if(await page.locator('#'+id).count()!==1)throw Error('Missing '+id);
+              }
+              if(await page.locator('#mainNav .sept-nav').count()!==8)throw Error('Expected 8 navigation tabs');
+              if(await page.locator('[data-sept-image]').count()<20)throw Error('Missing new gallery images');
+              if(viewport.width<850)await page.locator('#menuToggle').click();
+              await page.locator('#mainNav [data-sept-go="reports"]').first().click({force:true});
+              await page.waitForTimeout(250);
+              if(!(await page.locator('#view-reports').evaluate(x=>x.classList.contains('active'))))throw Error('Reports navigation broken');
+              if(errors.length)throw Error('Page errors: '+errors.join('; '));
+              console.log('PASS '+viewport.width+'px: 8 tabs, 15 objectives, gallery, Reports navigation, no page errors');
+              await page.close();
+            }
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
