@@ -3,6 +3,7 @@ const APP_SHELL=[
   "./index.html",
   "./refinements-2026.js",
   "./jmerg_complete_migration_manifest.json",
+  "./jmerg_adolescent_research.json",
   "./health-snake.html",
   "./manifest.webmanifest",
   "./hstu-app-icon-192.png","./hstu-app-icon-512.png",
