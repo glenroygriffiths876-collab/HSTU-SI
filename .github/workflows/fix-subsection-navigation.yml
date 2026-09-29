@@ -1,0 +1,86 @@
+name: Fix dropdown subsection navigation
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-subsection-navigation.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install beautifulsoup4
+      - name: Wire every dropdown option to its real subsection
+        run: python scripts/fix_subsection_navigation.py
+      - name: Refresh PWA cache
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("service-worker.js")
+          s=p.read_text(encoding="utf-8")
+          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20260929-subsection-nav-v1";', s, count=1)
+          p.write_text(s,encoding="utf-8")
+          PY
+      - name: Browser QA all dropdown destinations
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+          python -m http.server 8000 >/tmp/hstu.log 2>&1 &
+          sleep 2
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          cases=[
+            ("home","Overview","repository-purpose"),
+            ("research","Latest studies","research-results"),
+            ("research","Strategic Objectives 1–15","research-filters"),
+            ("capacity","Manuals","capacity-manuals"),
+            ("capacity","Training materials","capacity-training"),
+            ("reports","National Reports","reports-national"),
+            ("reports","Special Reports","reports-special"),
+            ("data-audit","Data Audit","data-audit-reports"),
+            ("data-audit","DHIS2 and TSIS2","data-systems-guides"),
+            ("gallery","Campaign images","gallery-campaigns"),
+            ("resources","Learning links","resources-learning"),
+            ("resources","Presentations and Posters","resources-presentations"),
+            ("services","Treatment and PrEP","services-directory"),
+            ("services","Health centres","services-directory"),
+          ]
+          with sync_playwright() as p:
+            for viewport in ({"width":1440,"height":1000},{"width":390,"height":844}):
+              b=p.chromium.launch(headless=True)
+              page=b.new_page(viewport=viewport)
+              page.goto("http://127.0.0.1:8000/",wait_until="domcontentloaded")
+              page.wait_for_timeout(1200)
+              for view,label,target in cases:
+                sel=f'.hstu-nav-item > .nav-btn[data-view="{view}"] + .hstu-nav-dropdown button'
+                btn=page.locator(sel).filter(has_text=label).first
+                assert btn.count()==1,(view,label)
+                btn.click(force=True)
+                page.wait_for_timeout(650)
+                targetEl=page.locator("#"+target)
+                assert targetEl.count()==1,(label,target)
+                assert targetEl.is_visible(),(label,target,"not visible")
+                top=targetEl.evaluate("el=>el.getBoundingClientRect().top")
+                assert -10 <= top <= max(380,viewport["height"]*.65),(label,target,top,viewport)
+                active=page.locator("#view-"+view)
+                assert active.is_visible(),(view,label,"wrong view")
+                if label=="Health centres":
+                  assert page.locator('#view-services [data-service-mode="healthcentres"]').evaluate("el=>el.classList.contains('active')")
+              b.close()
+          print("All dropdown subsection destinations PASS")
+          PY
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html service-worker.js
+          git commit -m "Make dropdown options jump to their subsections"
+          git pull --rebase origin main
+          git push origin main
