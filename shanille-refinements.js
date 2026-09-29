@@ -14,3 +14,53 @@ for(const [id,filter] of [['reports',r=>r.route==='reports'],['data-audit',r=>r.
 // Wire new navigation controls, preserving original setView and PWA routing.
 document.querySelectorAll('.hstu-nav-item [data-view],.hstu-intro-links [data-view]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(typeof setView==='function')setView(b.dataset.view)}));
 })();
+
+/* Public-facing Gallery polish: display poster PDFs inline and remove migration jargon. */
+(function(){
+  function polishGallery(){
+    const sectionHeading=Array.from(document.querySelectorAll('h1,h2,h3')).find(el=>/TCS Annual Forum posters/i.test(el.textContent||''));
+    if(!sectionHeading)return;
+    const gallery=sectionHeading.closest('section')||sectionHeading.parentElement?.parentElement;
+    if(!gallery)return;
+    const replacements=[
+      [/J-MERG VISUAL ARCHIVE/gi,'RESEARCH POSTERS'],
+      [/LEGACY POSTER\s*[·•-]\s*J-MERG/gi,'RESEARCH POSTER'],
+      [/TCS Annual Forum posters/gi,'Research posters'],
+      [/Open poster PDF/gi,'View full poster'],
+      [/Campaign images from the programme archive are stored locally in this website package; some pre-existing gallery entries retain their original source links\./gi,'Explore campaign images and research posters from the HSTU media collection.']
+    ];
+    const root=document.getElementById('gallery')||gallery.parentElement||gallery;
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    let node;
+    while((node=walker.nextNode())){
+      if(!node.parentElement||/^(SCRIPT|STYLE|IFRAME|OBJECT)$/i.test(node.parentElement.tagName))continue;
+      let next=node.nodeValue;
+      for(const [pattern,replace] of replacements)next=next.replace(pattern,replace);
+      if(next!==node.nodeValue)node.nodeValue=next;
+    }
+    for(const anchor of gallery.querySelectorAll('a[href]')){
+      if(!/poster PDF|full poster/i.test(anchor.textContent||''))continue;
+      const card=anchor.closest('article')||anchor.closest('.card')||anchor.parentElement;
+      if(!card||card.querySelector('.hstu-poster-preview'))continue;
+      const url=anchor.href;
+      if(!/^https:\/\//.test(url)||!/\.pdf(?:$|[?#])/i.test(url))continue;
+      const wrap=document.createElement('div');wrap.className='hstu-poster-preview';
+      const frame=document.createElement('iframe');
+      frame.src=url+'#toolbar=0&navpanes=0&view=FitH';
+      frame.loading='lazy';
+      frame.title='Research poster preview: '+(card.querySelector('h3,h4')?.textContent||'Poster');
+      frame.setAttribute('referrerpolicy','no-referrer');
+      wrap.append(frame);
+      const hint=document.createElement('p');hint.className='hstu-poster-hint';hint.textContent='Poster preview · Select View full poster for the original PDF.';
+      wrap.append(hint);
+      card.insertBefore(wrap,anchor);
+    }
+    const oldNotice=Array.from(document.querySelectorAll('p,div')).find(el=>el.children.length===0&&/Campaign images from the programme archive are stored locally/i.test(el.textContent||''));
+    if(oldNotice)oldNotice.textContent='Explore campaign images and research posters from the HSTU media collection.';
+  }
+  const css=document.createElement('style');
+  css.textContent='.hstu-poster-preview{background:#fff;border-radius:14px;overflow:hidden;margin:16px 0 14px;box-shadow:0 8px 26px rgba(0,0,0,.16)}.hstu-poster-preview iframe{display:block;width:100%;height:355px;border:0;background:#fff}.hstu-poster-hint{padding:9px 12px!important;margin:0!important;color:#35423c!important;font-size:12px!important;line-height:1.4!important;background:#f3f7f5!important}@media(max-width:640px){.hstu-poster-preview iframe{height:300px}}';
+  document.head.append(css);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',polishGallery,{once:true});else polishGallery();
+  document.addEventListener('click',event=>{if(event.target.closest('[data-view="gallery"],a[href="#gallery"]'))requestAnimationFrame(polishGallery)});
+})();
