@@ -3,16 +3,15 @@
 - Source category link assignments parsed: **309**.
 - Unique research records after URL deduplication and routing non-research items elsewhere: **276**.
 - Objective assignments retained across the 15 research areas: **302**.
-- Removed old competing inline Research renderer/dropdown blocks: **2**.
+- Removed old competing inline Research renderer/dropdown blocks: **0**.
 - Jamaica filter: **213** records.
 - Caribbean filter (including Jamaica): **243** records.
 - All Research-only because location is not explicit in the citation: **33** records.
 
 ## Link-check results
-- accessible: **52**
+- accessible: **53**
 - check: **1**
 - restricted: **222**
-- unavailable: **1**
 
 ## Strategic Objective counts
 - 1. Coinfection and Communicable Diseases: **12**
