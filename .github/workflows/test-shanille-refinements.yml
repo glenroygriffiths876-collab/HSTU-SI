@@ -34,6 +34,7 @@ jobs:
               }
               if(await page.locator('#mainNav .sept-nav').count()!==8)throw Error('Expected 8 navigation tabs');
               if(await page.locator('[data-sept-image]').count()<20)throw Error('Missing new gallery images');
+              if(viewport.width<850)await page.locator('#menuToggle').click();
               await page.locator('#mainNav [data-sept-go="reports"]').first().click({force:true});
               await page.waitForTimeout(250);
               if(!(await page.locator('#view-reports').evaluate(x=>x.classList.contains('active'))))throw Error('Reports navigation broken');
