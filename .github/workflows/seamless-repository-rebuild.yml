@@ -1,0 +1,66 @@
+name: Seamless repository rebuild
+on:
+  push:
+    paths:
+      - '.github/workflows/seamless-repository-rebuild.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install HTML parser
+        run: pip install beautifulsoup4
+      - name: Apply complete source-content parity rebuild
+        run: python scripts/seamless_repository_rebuild.py
+      - name: Refresh PWA cache
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("service-worker.js")
+          s=p.read_text(encoding="utf-8")
+          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20260929-seamless-parity-v1";', s, count=1)
+          if '"./repository-content.json"' not in s:
+              s=s.replace('"./research-catalogue.json",','"./research-catalogue.json","./repository-content.json",')
+          p.write_text(s,encoding="utf-8")
+          PY
+      - name: Validate JavaScript and generated content
+        run: |
+          node --check shanille-refinements.js
+          python - <<'PY'
+          import json
+          from bs4 import BeautifulSoup
+          from pathlib import Path
+          json.loads(Path("repository-content.json").read_text(encoding="utf-8"))
+          soup=BeautifulSoup(Path("index.html").read_text(encoding="utf-8"),"html.parser")
+          for x in soup(["script","style","code","pre","textarea"]): x.decompose()
+          visible=" ".join(soup.stripped_strings).lower()
+          banned=["j-merg","legacy resource","recovered j-merg","reconstructed in this build"]
+          bad=[x for x in banned if x in visible]
+          if bad: raise SystemExit("Public wording QA failed: "+", ".join(bad))
+          required=["view-home","view-research","view-capacity","view-reports","view-data-audit","view-gallery","view-resources","view-services"]
+          missing=[x for x in required if not soup.find(id=x)]
+          if missing: raise SystemExit("Missing sections: "+", ".join(missing))
+          print("QA PASS")
+          PY
+      - name: Commit rebuilt HSTU Resource Centre
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html repository-content.json service-worker.js internal-audits/CONTENT_PARITY_AUDIT_2026-09-29.md
+          if git diff --cached --quiet; then
+            echo "No generated changes"
+            exit 0
+          fi
+          git commit -m "Complete seamless HSTU repository content parity rebuild"
+          git pull --rebase origin main
+          git push origin main
