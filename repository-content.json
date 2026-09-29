@@ -2,9 +2,10 @@
   "generated": "2026-09-29",
   "about": {
     "paragraphs": [
-      "The Research Data Repository was conceptualized in 2023 by the Strategic Information Component to systematically collect and collate published and unpublished studies and reports.",
-      "The repository supports access to HIV, STI and TB research from Jamaica and the wider Caribbean and also brings together capacity-building tools, national-level reports, and data-utilization Standard Operating Procedures and user guides for DHIS2 and TSIS2.",
-      "Research is organized across 15 thematic areas. Tuberculosis and Risk Communication are among the newer areas of focus. Recent published studies also support the continued development of Unveiling Hope, the research booklet highlighting HIV, STI and TB evidence, emerging trends and priority areas."
+      "The Research Data Repository was conceptualized in 2023 by the Strategic Information Component with the aim of systematically collecting and collating published and unpublished studies and reports.",
+      "The repository serves as a vital resource for navigating the expansive landscape of HIV/STI/TB research conducted in Jamaica and the wider Caribbean. As the repository continues to evolve, its scope has expanded beyond research studies and reports to incorporate additional resources, including capacity-building tools, national-level reports, and data utilization Standard Operating Procedures (SOPs)/User Guides for the DHIS2 and TSIS2 databases.",
+      "The repository currently contains approximately 200 studies, systematically organized across 15 thematic areas, including 7 high-priority and 15 priority areas. The most recently added areas are Tuberculosis (TB) and Risk Communication, both designated as high-priority areas.",
+      "The published studies recently added to the data repository will also be included in volume 2 of Unveiling Hope, the research booklet that compiles and highlights studies surrounding HIV, STIs, and TB. This expansion will further strengthen the booklet’s value as a consolidated resource, showcasing recent research findings, emerging trends, and key areas of focus within HIV/STI/TB research."
     ],
     "researchAreas": [
       "Coinfection and Communicable Diseases",
@@ -22,6 +23,16 @@
       "The National HIV Response",
       "Tuberculosis Prevention and Control",
       "Risk Communication"
+    ],
+    "purpose": "The HSTU Resource Centre is the digital home of the Research Data Repository and its supporting HIV/STI/TB strategic-information resources.",
+    "primaryFunction": "Systematically collect, collate and provide access to published and unpublished HIV/STI/TB studies and reports from Jamaica and the wider Caribbean.",
+    "supportingScope": [
+      "Capacity Building",
+      "National and Special Reports",
+      "Data Audit and Utilization",
+      "DHIS2 and TSIS2 SOPs/User Guides",
+      "Presentations and Posters",
+      "Service information"
     ]
   },
   "researchAgenda": {
