@@ -1,4 +1,4 @@
-name: Nav subsection diagnostic
+name: Nav subsection diagnostic v2
 on:
   push:
     paths:
