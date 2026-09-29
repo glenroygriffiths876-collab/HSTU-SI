@@ -79,6 +79,9 @@ jobs:
                       page.wait_for_timeout(220)
                   assert btn.is_visible(),(view,label,"submenu not visible")
 
+                  if viewport["width"]>950:
+                      btn.hover()
+                      page.wait_for_timeout(100)
                   btn.click()
                   page.wait_for_timeout(1500)
 
