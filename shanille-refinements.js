@@ -6,16 +6,16 @@ const year=r=>{let m=String(r.year||r.title).match(/20\d{2}/);return m?Number(m[
 const route=r=>{const x=norm([r.destination,r.category,r.title,r.legacyPage].join(' '));if(/report|kabp final|national strategic plan/.test(x)&&(/report|special|national/.test(x)))return'reports';if(/data audit|data utili|dhis|tsis|dqa|data quality/.test(x))return'data-audit';if(/capacity building|manual|guideline|clinical guide|pharmacology|opportunistic infection/.test(x))return'capacity';if(/presentation|poster|resource/.test(norm(r.destination+' '+r.legacyPage)))return'resources';return'research'};
 const cards=(rows)=>rows.map(r=>{const nums=Array.isArray(r.objectives)&&r.objectives.length?r.objectives:(r.objective?[r.objective]:[]);const labels=nums.map(n=>`${n}. ${OBJECTIVES[n-1]}`).filter(Boolean).join(' · ');return `<article class="hstu-refine-card"><span class="badge">${esc(r.year||'Undated')} · ${esc(r.type||'Resource')}</span><h3>${esc(r.title)}</h3><p>${esc(r.authors||r.category||r.destination||'HSTU Research Repository')}</p>${labels?`<p>Strategic Objective${nums.length>1?'s':''}: ${esc(labels)}</p>`:''}<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">View resource ↗</a></article>`}).join('');
 DATA.forEach(r=>{r.route=route(r);r.objective=getObjective(r)});let research=DATA.filter(r=>r.route==='research').sort(sort);
-const objective=document.getElementById('refineResearchObjective');if(objective){const selected=objective.value;objective.replaceChildren(new Option('All 15 Strategic Objectives','All'));OBJECTIVES.forEach((name,i)=>objective.add(new Option(`${i+1}. ${name}`,String(i+1))));objective.value=OBJECTIVES.some((_,i)=>String(i+1)===selected)?selected:'All';}
-const q=document.getElementById('refineResearchSearch'),level=document.getElementById('refineResearchLevel'),grid=document.getElementById('refineResearchGrid'),status=document.getElementById('refineResearchStatus'),viewAll=document.getElementById('refineResearchViewAll');let expanded=false;if(level&&level.options[0])level.options[0].textContent='All Research';
+const objective=document.getElementById('refineResearchObjective');if(objective){objective.replaceChildren(new Option('All 15 Strategic Objectives','All'));OBJECTIVES.forEach((name,i)=>objective.add(new Option((i+1)+'. '+name,String(i+1))));objective.value='All';}
+const q=document.getElementById('refineResearchSearch'),level=document.getElementById('refineResearchLevel'),grid=document.getElementById('refineResearchGrid'),status=document.getElementById('refineResearchStatus'),viewAll=document.getElementById('refineResearchViewAll');let expanded=false;if(level){level.replaceChildren(new Option('All Research','All'),new Option('Jamaica','Jamaica'),new Option('Caribbean','Caribbean'));level.value='All';}
 function renderResearch(){
  const search=norm(q.value);
- let rows=research.filter(r=>(objective.value==='All'||(Array.isArray(r.objectives)?r.objectives.includes(Number(objective.value)):String(r.objective)===objective.value))&&(!search||norm([r.title,r.authors,r.category,r.year,...(r.topics||[])].join(' ')).includes(search)));
- if(level.value==='Jamaica')rows=rows.filter(r=>r.geography==='Jamaica');
- if(level.value==='Caribbean')rows=rows.filter(r=>r.geography==='Jamaica'||r.geography==='Caribbean');
+ let rows=research.filter(r=>(objective.value==='All'||(Array.isArray(r.objectives)?r.objectives.includes(Number(objective.value)):String(r.objective)===objective.value))&&(!search||norm([r.title,r.authors,r.citation,r.category,r.year,r.geography,...(r.topics||[])].join(' ')).includes(search)));
+ if(level.value==='Jamaica')rows=rows.filter(r=>Array.isArray(r.levels)&&r.levels.includes('Jamaica'));
+ if(level.value==='Caribbean')rows=rows.filter(r=>Array.isArray(r.levels)&&r.levels.includes('Caribbean'));
  const unclassified=research.filter(r=>!r.objective).length;
  const note=rows.length?'':objective.value!=='All'?'No studies match this Strategic Objective.':level.value!=='All'?'No studies match this location filter.':'No matching studies. Try clearing the search.';
- status.textContent=rows.length+' research records'+(objective.value==='All'&&unclassified?' · '+unclassified+' awaiting objective verification':'')+(note?' · '+note:'');
+ status.textContent=rows.length+' studies match'+(note?' · '+note:'');
  grid.innerHTML=rows.length?cards(expanded?rows:rows.slice(0,8)):'<p class="hstu-research-empty">'+esc(note)+'</p>';
  viewAll.hidden=rows.length<=8;viewAll.textContent=expanded?'Show recent selection':'View all '+rows.length+' records';
 }
