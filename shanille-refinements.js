@@ -20,6 +20,23 @@ function renderResearch(){
  viewAll.hidden=rows.length<=8;viewAll.textContent=expanded?'Show recent selection':'View all '+rows.length+' records';
 }
 [q,level,objective].forEach(el=>el.addEventListener(el===q?'input':'change',()=>{expanded=false;renderResearch()}));viewAll.addEventListener('click',()=>{expanded=!expanded;renderResearch()});renderResearch();
+fetch('research-catalogue.json',{cache:'no-cache'})
+ .then(res=>{if(!res.ok)throw new Error('Research catalogue unavailable');return res.json();})
+ .then(payload=>{
+   const recovered=(payload.records||[]).map(r=>{
+     const objectives=(r.categories||[]).map(name=>OBJECTIVES.findIndex(o=>norm(o)===norm(name))+1).filter(n=>n>0);
+     return {...r,route:'research',objective:objectives[0]||null,objectives,topics:r.categories||[]};
+   }).filter(r=>r.objective);
+   if(recovered.length){
+     research=recovered.sort(sort);
+     expanded=false;
+     renderResearch();
+   }
+ })
+ .catch(err=>{
+   console.warn('Recovered research catalogue could not load',err);
+   status.textContent+=' · Additional research records are temporarily unavailable.';
+ });
 for(const [id,filter] of [['reports',r=>r.route==='reports'],['data-audit',r=>r.route==='data-audit']]){let node=document.getElementById('refine-'+id+'-grid');if(node){let rows=DATA.filter(filter).sort(sort);node.innerHTML=rows.length?cards(rows):'<p>Resources in this section are being reconciled against the original repository.</p>';}}
 // Wire new navigation controls, preserving original setView and PWA routing.
 document.querySelectorAll('.hstu-nav-item [data-view],.hstu-intro-links [data-view]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(typeof setView==='function')setView(b.dataset.view)}));
