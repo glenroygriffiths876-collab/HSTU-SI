@@ -1,0 +1,15 @@
+HSTU Resource Centre — source-grounded corrections
+
+Recovered source records: 92
+capacity: 11
+data: 18
+gallery: 4
+reports: 21
+research: 30
+resources: 7
+review: 1
+
+18 adolescent entries have objective 8 based on their original Wix category. Other objective classifications and all geographic classifications are pending source verification; original URLs have not been independently opened. The newly built research filters, results, Reports, Data Audit, Capacity Building, Resources, and Gallery search have actual JS handlers. The 29 new campaign images remain local assets. GitHub deployment not performed.
+
+Legacy images successfully localized: 21/21. Missing: []. Homepage collage original Drive thumbnails replaced where matched; Gallery uses the local asset mapping.
+Additional existing collage-only TB campaign image localized and added to main gallery; 22 original assets localized in total.
