@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - '.github/workflows/deep-research-filter-rebuild.yml'
+      - 'scripts/deep_research_rebuild.py'
   workflow_dispatch:
 permissions:
   contents: write
