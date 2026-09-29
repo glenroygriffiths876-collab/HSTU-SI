@@ -27,7 +27,7 @@ jobs:
               const page=await browser.newPage({viewport});
               const errors=[];page.on('pageerror',e=>errors.push(e.message));
               await page.goto('http://127.0.0.1:8080/',{waitUntil:'domcontentloaded'});
-              await page.locator('#sept-objective').waitFor({timeout:20000});
+              await page.locator('#sept-objective').waitFor({state:'attached',timeout:20000});
               if(await page.locator('#sept-objective option').count()!==16)throw Error('15 objective options missing');
               for(const id of ['view-home','view-research','view-manuals','view-reports','view-data','view-gallery','view-training','view-services']){
                 if(await page.locator('#'+id).count()!==1)throw Error('Missing '+id);
