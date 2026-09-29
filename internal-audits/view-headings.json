@@ -1,0 +1,1269 @@
+{
+  "home": [
+    {
+      "text": "Evidence. Research. Strategic Information. One trusted repository.",
+      "tag": "h1",
+      "id": null,
+      "classes": null,
+      "parent_tag": "div",
+      "parent_id": null,
+      "parent_classes": null
+    },
+    {
+      "text": "About the Research Data Repository",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "div",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-purpose-copy"
+      ]
+    },
+    {
+      "text": "Everything important, easier to reach.",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "div",
+      "parent_id": null,
+      "parent_classes": null
+    },
+    {
+      "text": "Think you can beat your personal best?",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "div",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-arcade-copy"
+      ]
+    }
+  ],
+  "research": [
+    {
+      "text": "HIV/STI/TB Research",
+      "tag": "h1",
+      "id": null,
+      "classes": null,
+      "parent_tag": "div",
+      "parent_id": null,
+      "parent_classes": [
+        "wrap",
+        "page-hero",
+        "hstu-research-hero"
+      ]
+    },
+    {
+      "text": "Research Agenda",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "section",
+      "parent_id": null,
+      "parent_classes": [
+        "wrap",
+        "hstu-agenda-block"
+      ]
+    },
+    {
+      "text": "Research agenda priorities",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "section",
+      "parent_id": null,
+      "parent_classes": [
+        "wrap",
+        "hstu-agenda-block"
+      ]
+    },
+    {
+      "text": "Unveiling Hope",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "section",
+      "parent_id": "unveiling-hope",
+      "parent_classes": [
+        "wrap",
+        "hstu-unveiling"
+      ]
+    },
+    {
+      "text": "Operational Research",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "section",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-parity-group"
+      ]
+    },
+    {
+      "text": "SRHA Risk Assessment Matrix Research 2025",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Operational Research Abstracts - HSTU Studies 2025",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "HIVDR Study 2025",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Mortality Patterns and Gaps in HIV Care: Insights from Jamaica 2021-2023",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Research Agenda for the National HIV Response",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "PLHIV Retention in Care",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "MOH NSP National Strategic Plan",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Factors Associated with Very Late Presentation Among PLHIV in Southern Jamaica",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Factors Associated with Recurring Treatment Interruptions",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Correcting the 2nd and 3rd 90s through Laboratory Surveillance",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "30 Years of Advancement and Challenges in Early HIV Diagnosis in Jamaica",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    }
+  ],
+  "capacity": [
+    {
+      "text": "Capacity Building",
+      "tag": "h1",
+      "id": null,
+      "classes": null,
+      "parent_tag": "div",
+      "parent_id": null,
+      "parent_classes": [
+        "wrap",
+        "page-hero"
+      ]
+    },
+    {
+      "text": "Live national references",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "div",
+      "parent_id": null,
+      "parent_classes": null
+    },
+    {
+      "text": "Programme Training & Technical Learning",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "section",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-parity-group"
+      ]
+    },
+    {
+      "text": "Training Report 2026",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Pharmacology and Pharmacotherapy of ARVs 2025",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Opportunistic Infections 2025",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Ageing PLHIV 2025",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "SPSS Training",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Preped and Ready to Go",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Monitoring and Evaluation of the HIV Cascade",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Human Rights in the Health Care Setting",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "HIV Services",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Engaging Key Populations - Support Services",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Data-O-Rama - Microsoft EXCEL Training (Pivot Tables, Charts, Slicers & Dashboards)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    }
+  ],
+  "reports": [
+    {
+      "text": "Reports",
+      "tag": "h1",
+      "id": null,
+      "classes": null,
+      "parent_tag": "div",
+      "parent_id": null,
+      "parent_classes": [
+        "wrap",
+        "page-hero"
+      ]
+    },
+    {
+      "text": "National Reports",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "section",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-parity-group"
+      ]
+    },
+    {
+      "text": "SI Report (July 2026)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "SI Quarterly Report (March 2026)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "TB Annual Report (January to December 2025)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "STI Bi-Annual Database Monitoring Report (July to December 2025)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "STI Bi-Annual Database Monitoring Report (January to June 2025)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "STI Annual Database Monitoring Report (January to December 2025)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "SI Annual Report 2025 (Submitted in May 2025)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "SI Annual Report 2025",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "PMTCT Annual Report (January to December 2025)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "NCPI Report 2025",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "HIV Treatment Cascade Report 2025",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "DHIS2 Prevention Database Annual Monitoring Report 2025",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "NCPI Report 2024",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Jamaica Multiple Indicator Cluster Survey (MICS) 2022",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Jamaica Survey of Living Conditions (2021)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Network of Seropositives J, Policy Plus H. The People Living with HIV Stigma Index: Jamaica. 2020",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Inter-American Development Bank. Women\u2019s Health Survey 2016: Jamaica: Final Report. 2018",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "National HIV Programme Report (2017)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "National AIDS Spending Assessment (NASA) Report (2015-2017)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Jamaica Health & Lifestyle Survey 2017",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "HSTU Annual Report (2017)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "National Surveys & Studies",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "section",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-parity-group"
+      ]
+    },
+    {
+      "text": "Knowledge, Attitude, Behaviour and Practice (KABP) (2024)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Integrated Bi-Behavioral Surveillance (IBBS) Surveys for Men who have sex with Men, Female Sex Workers and Transgender Women (2024)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "IBBS Study - MSM & TG 2024",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "IBBS Study - FSW 2024",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "HIV/AIDS Knowledge, Attitudes and Behaviour Survey, Jamaica (2024)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Knowledge, Attitude, Behaviour and Practice (KABP) Survey Terms of Reference (2021)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "The 876 Study: Integrated Biological and Behavioral Surveillance Survey with Population Size Estimation Among Men who have Sex with Men and Transgender Persons in Jamaica (2019)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "4th Generation Surveillance of Commercial Sex Workers, Female Patrons and Workers of Sites where Persons Meet Sex Partners or Participate in Sexual Activity in Jamaica (2017)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "2017 HIV/AIDS Knowledge, Attitudes and Behaviour Survey, Jamaica",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Special Reports",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "section",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-parity-group"
+      ]
+    },
+    {
+      "text": "Mystery Shopping Assessment Report 2026 Q3 (Final)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Mystery Shopping Assessment Report 2026 Q2 (Final)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Global AIDS Monitoring (GAM) 2024",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "JASL Living Support Focus Group Report 2023",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "JASL COVID-19 Response Grant Assessment 2023",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "HIV Epidemiological Reports",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "section",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-parity-group"
+      ]
+    },
+    {
+      "text": "HIV Epidemiological Reports",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    }
+  ],
+  "data-audit": [
+    {
+      "text": "Data Audit and Utilization",
+      "tag": "h1",
+      "id": null,
+      "classes": null,
+      "parent_tag": "div",
+      "parent_id": null,
+      "parent_classes": [
+        "wrap",
+        "page-hero"
+      ]
+    },
+    {
+      "text": "Data Quality Audit Reports",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "section",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-parity-group"
+      ]
+    },
+    {
+      "text": "Prevention - Western Regional Health Authority Data Quality Audit Report 2026",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Prevention - Southern Regional Health Authority Data Quality Audit Report 2026",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Prevention - South East Regional Health Authority Data Quality Audit Report 2026",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Prevention - North East Regional Health Authority Data Quality Audit Report 2026",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "National Executive Summary - Data Quality Audit Report (2025)",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Data Systems Manuals & User Guides",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "section",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-parity-group"
+      ]
+    },
+    {
+      "text": "TSIS2 Manual",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "TB Manual",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "STI - CI - EMTCT Manual",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "DHIS2 Prevention Manual",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    }
+  ],
+  "gallery": [
+    {
+      "text": "Campaign Gallery",
+      "tag": "h1",
+      "id": null,
+      "classes": null,
+      "parent_tag": "div",
+      "parent_id": null,
+      "parent_classes": [
+        "wrap",
+        "page-hero"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "text": "Resources",
+      "tag": "h1",
+      "id": null,
+      "classes": null,
+      "parent_tag": "div",
+      "parent_id": null,
+      "parent_classes": [
+        "wrap",
+        "page-hero"
+      ]
+    },
+    {
+      "text": "Campaign Presentations & Print Assets",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "div",
+      "parent_id": null,
+      "parent_classes": [
+        "wrap",
+        "hstu-pdf-posters"
+      ]
+    },
+    {
+      "text": "Official HSTU Collections",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "section",
+      "parent_id": null,
+      "parent_classes": [
+        "wrap",
+        "hstu-parity-group"
+      ]
+    },
+    {
+      "text": "HSTU Reports",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "HSTU Policy Papers",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "HSTU Manuals",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "HSTU Research",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "HSTU Strategic Plans",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Presentations & Posters",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "section",
+      "parent_id": null,
+      "parent_classes": [
+        "wrap",
+        "hstu-parity-group"
+      ]
+    },
+    {
+      "text": "HIV Testing Presentation",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "TCS Annual Forum Poster 1",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "TCS Annual Forum Poster 2",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "TCS Annual Forum Poster 3",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    },
+    {
+      "text": "Programme Information",
+      "tag": "h2",
+      "id": null,
+      "classes": null,
+      "parent_tag": "section",
+      "parent_id": null,
+      "parent_classes": [
+        "wrap",
+        "hstu-parity-group"
+      ]
+    },
+    {
+      "text": "Structure overview of the National HIV Program",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "article",
+      "parent_id": null,
+      "parent_classes": [
+        "hstu-refine-card",
+        "hstu-parity-card"
+      ]
+    }
+  ],
+  "services": [
+    {
+      "text": "Select a parish. Go straight there.",
+      "tag": "h1",
+      "id": null,
+      "classes": null,
+      "parent_tag": "div",
+      "parent_id": null,
+      "parent_classes": [
+        "wrap",
+        "page-hero"
+      ]
+    },
+    {
+      "text": "JASON PrEP Bot",
+      "tag": "h3",
+      "id": null,
+      "classes": null,
+      "parent_tag": "aside",
+      "parent_id": null,
+      "parent_classes": [
+        "side-card",
+        "jason"
+      ]
+    },
+    {
+      "text": "HIV treatment sites",
+      "tag": "h3",
+      "id": "directoryTitle",
+      "classes": null,
+      "parent_tag": "div",
+      "parent_id": null,
+      "parent_classes": null
+    }
+  ]
+}
