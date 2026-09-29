@@ -1,0 +1,70 @@
+name: Restore HSTU gallery images
+on:
+  push:
+    paths:
+      - '.github/workflows/restore-hstu-gallery.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  restore-gallery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image dependencies
+        run: pip install pillow requests gdown
+      - name: Download and optimize 51 original HST media assets
+        env:
+          CAMPAIGN_IDS: '1DQa4bJQzSFajfNDeFnOZ2_aGdRbImIdk,1FIVEYdc0SVg1S5xyJ4OqkOJSob-BS-EW,1YlTfR7zRkfZEXjqrcIreqpNY_YsBjf3s,1Zg1FlXTwncMsRo8NlVq5u0NpIOh8ZWLT,1BLVjRJj_fbtlePMCl-sULF5pNrzIJ0VJ,12jli4SP5OFIF2MwTAaSQy4HaYY_ojmoL,1vURYKXMDSm-OkderPMf4EjJ3ksGboQ3U,1XxfqwOBJRAGKKBAC_SD_lPcP32Af1pYu,1YmgilI4GjsklnWspX8Iy0xAViZ5t85lU,1mSMecVI5XEEAtOkW45SZGwYTA2_bK2Bp,1-Nd3Ecf8K8gP_IeaF--SdU6qN4FwYHkQ,1OkCr5GLg8ZghgSNPhjVDL4Iq-fhgB6Rm,1bMH_bAO6CN-9lx0BvTDeD9jCORVY9gwT,1iBWZklMg2QVE8_Mf99YGBU3prlorTqYL,1zdiL-rW1phaDl9wDoKvqWlvRbzlRqLvT,1IfibPIo62svL5qNxNZs-8oImTBNiZQew,1SDHDlCQgay32jWr8uMiHlDC0sacNltLl,155IfdwZk3zr1EpbtNuLpc9-BYRaQBR7p,1QMCkH39s73jBMA8T-KicOBUzTUQmZkC2,1odwnG9PvoIttVHbbqCNJbt_JAMR2kiGp,1xWfAGJMInsLdHeij4qu8F79Oah5qEQrm,1MZiNW_dpa8GqV8VS0-OE5x4u9wK3Rls6,1kCXA_t2IzXGhlvWv_m7gC1z6WHJE4cyv,1j_TJffXujYF8Cz0rawN76e2d0jNandWC,1iE5wQFOaYukYiiz5A-j9jAntE52n-t0w,1zVMbDa-0W_fJVf75LXwYFzeVnn0YEaUh,1u6HMFGvaWEb0Jkogl__EnliSRMHmqNUv,1IjA1miUeyV1FBt7Ua8WGSoZBxdu-y2iJ,1jUI5b1801s6AFaC6nFtduI_CnPF8lQzu'
+          ARCHIVE_IDS: '1-SJRbrPHK2tGCAjQElvphtcs4ypQ4IXv,1ydp6sbA1vZ2H00bsCAUYgDJd85CtzF0c,1wVNwJaF7GPhTMBxbxN_GxGYKz3jbhPZ6,1gW0Ip-ahBDNDHM-oriAPz2XYC1Y2qim_,1xWFTeoCHGGoVGUIISWfIrksbKbuUUdO1,1PR99g_bGnBJzfpMmDAoWcwBMZWsJiLqE,15_5c5g6bJwd2G-8yl1SOhmDLdLZdYa5B,1QTktCOIWx_4hSUjOfSOotwNnj3kp94ko,1EmKXwV9nh2nWuDG7zwxhj6TWUi5_dTZt,1qGlCwKXaR63zypvn8KGn2GbJClCifX6L,1finToZhzrqU2vYQUoEHOn1nUJ_3rq2ef,1KUI0D8nA8jv4N_NmdCcJpkoSdS_xB7Ic,1oIlfTQ-DLDSDbnixvik94Ayarv6ubL8n,1cCrYvLOdEhog6FSChstXR2rVsAaXIq3X,1FKGJz4CRwfOm4-ePzLyVZYgruqyf0c9w,1wylryqTb-o0EoZ5uDU-pwu-vsDcZ8dRz,1Jhrw3nlwj3KGCwyT6oeKysvdQldjFZ5n,1VV6rsvQtCk0eK4vhSF_9sTXsCqdtuwYQ,1HDaXjuV6tTlW3qZm48UbcL2YJrZZHImZ,1Svn-0h-AFDXgC3ty3i6sg-ZslWvk5DN9,1JY9715Fzpey6ptSbAVKmW-1W3mnK-Leh,1f_jYmdk6-5hPcXTL9_006U0omPEXQGGe'
+        run: |
+          python - <<'PY'
+          import io,os,time,requests,gdown
+          from pathlib import Path
+          from PIL import Image,ImageOps,UnidentifiedImageError
+          out=Path('media/repository');out.mkdir(parents=True,exist_ok=True)
+          failed=[]
+          for kind,ids in [('campaign',os.environ['CAMPAIGN_IDS'].split(',')),('archive',os.environ['ARCHIVE_IDS'].split(','))]:
+              for n,fid in enumerate(ids,1):
+                  target=out/f'{kind}-{n:02d}.webp'
+                  if target.exists():
+                      try:
+                          with Image.open(target) as img:img.verify()
+                          continue
+                      except Exception:target.unlink()
+                  try:
+                      data=None
+                      for attempt in range(3):
+                          try:
+                              data=gdown.download(id=fid,quiet=True,output=None)
+                              if data:
+                                  with Image.open(data) as im:
+                                      im.verify()
+                                  break
+                          except Exception:pass
+                          time.sleep(2)
+                      if not data:raise RuntimeError('Drive download unavailable or permission denied')
+                      with Image.open(data) as im:
+                          im=ImageOps.exif_transpose(im).convert('RGB')
+                          im.thumbnail((1600,2200),Image.Resampling.LANCZOS)
+                          im.save(target,'WEBP',quality=83,method=6)
+                      Path(data).unlink(missing_ok=True)
+                      print(f'OK {target} {target.stat().st_size}')
+                  except Exception as exc:
+                      print(f'FAILED {kind}-{n:02d}: {exc}')
+                      failed.append(f'{kind}-{n:02d}: {exc}')
+          if failed:
+              raise SystemExit('Some original assets could not be retrieved: '+', '.join(failed))
+          assert len(list(out.glob('campaign-*.webp')))>=29
+          assert len(list(out.glob('archive-*.webp')))>=22
+          PY
+      - name: Commit locally hosted gallery images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add media/repository/
+          if ! git diff --cached --quiet; then
+            git commit -m "Restore all 51 locally hosted HSTU gallery images"
+            git push
+          fi
