@@ -6,13 +6,20 @@ const year=r=>{let m=String(r.year||r.title).match(/20\d{2}/);return m?Number(m[
 const route=r=>{const x=norm([r.destination,r.category,r.title,r.legacyPage].join(' '));if(/report|kabp final|national strategic plan/.test(x)&&(/report|special|national/.test(x)))return'reports';if(/data audit|data utili|dhis|tsis|dqa|data quality/.test(x))return'data-audit';if(/capacity building|manual|guideline|clinical guide|pharmacology|opportunistic infection/.test(x))return'capacity';if(/presentation|poster|resource/.test(norm(r.destination+' '+r.legacyPage)))return'resources';return'research'};
 const cards=(rows)=>rows.map(r=>{const nums=Array.isArray(r.objectives)&&r.objectives.length?r.objectives:(r.objective?[r.objective]:[]);const labels=nums.map(n=>`${n}. ${OBJECTIVES[n-1]}`).filter(Boolean).join(' · ');return `<article class="hstu-refine-card"><span class="badge">${esc(r.year||'Undated')} · ${esc(r.type||'Resource')}</span><h3>${esc(r.title)}</h3><p>${esc(r.authors||r.category||r.destination||'HSTU Research Repository')}</p>${labels?`<p>Strategic Objective${nums.length>1?'s':''}: ${esc(labels)}</p>`:''}<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">View resource ↗</a></article>`}).join('');
 DATA.forEach(r=>{r.route=route(r);r.objective=getObjective(r)});let research=DATA.filter(r=>r.route==='research').sort(sort);
-const objective=document.getElementById('refineResearchObjective');if(objective){objective.replaceChildren(new Option('All 15 Strategic Objectives','All'));OBJECTIVES.forEach((name,i)=>objective.add(new Option((i+1)+'. '+name,String(i+1))));objective.value='All';}
+const objective=document.getElementById('refineResearchObjective');
+function syncObjectiveOptions(selected='All'){
+ if(!objective)return;
+ objective.replaceChildren(new Option('All 15 Strategic Objectives','All'));
+ OBJECTIVES.forEach((name,i)=>objective.add(new Option((i+1)+'. '+name,String(i+1))));
+ objective.value=OBJECTIVES.some((_,i)=>String(i+1)===String(selected))?String(selected):'All';
+}
+syncObjectiveOptions('All');
 const q=document.getElementById('refineResearchSearch'),level=document.getElementById('refineResearchLevel'),grid=document.getElementById('refineResearchGrid'),status=document.getElementById('refineResearchStatus'),viewAll=document.getElementById('refineResearchViewAll');let expanded=false;if(level){level.replaceChildren(new Option('All Research','All'),new Option('Jamaica','Jamaica'),new Option('Caribbean','Caribbean'));level.value='All';}
 function renderResearch(){
  const search=norm(q.value);
  let rows=research.filter(r=>(objective.value==='All'||(Array.isArray(r.objectives)?r.objectives.includes(Number(objective.value)):String(r.objective)===objective.value))&&(!search||norm([r.title,r.authors,r.citation,r.category,r.year,r.geography,...(r.topics||[])].join(' ')).includes(search)));
- if(level.value==='Jamaica')rows=rows.filter(r=>Array.isArray(r.levels)&&r.levels.includes('Jamaica'));
- if(level.value==='Caribbean')rows=rows.filter(r=>Array.isArray(r.levels)&&r.levels.includes('Caribbean'));
+ if(level.value==='Jamaica')rows=rows.filter(r=>(Array.isArray(r.levels)&&r.levels.includes('Jamaica'))||r.geography==='Jamaica');
+ if(level.value==='Caribbean')rows=rows.filter(r=>(Array.isArray(r.levels)&&r.levels.includes('Caribbean'))||r.geography==='Caribbean');
  const unclassified=research.filter(r=>!r.objective).length;
  const note=rows.length?'':objective.value!=='All'?'No studies match this Strategic Objective.':level.value!=='All'?'No studies match this location filter.':'No matching studies. Try clearing the search.';
  status.textContent=rows.length+' studies match'+(note?' · '+note:'');
@@ -23,12 +30,27 @@ function renderResearch(){
 fetch('research-catalogue.json',{cache:'no-cache'})
  .then(res=>{if(!res.ok)throw new Error('Research catalogue unavailable');return res.json();})
  .then(payload=>{
-   const recovered=(payload.records||[]).map(r=>{
-     const objectives=(r.categories||[]).map(name=>OBJECTIVES.findIndex(o=>norm(o)===norm(name))+1).filter(n=>n>0);
-     return {...r,route:'research',objective:objectives[0]||null,objectives,topics:r.categories||[]};
-   }).filter(r=>r.objective);
+   const byUrl=new Map();
+   for(const r of (payload.records||[])){
+     const rawNums=Array.isArray(r.objectiveNumbers)&&r.objectiveNumbers.length?r.objectiveNumbers:(r.categories||[]).map(name=>OBJECTIVES.findIndex(o=>norm(o)===norm(name))+1);
+     const objectives=[...new Set(rawNums.map(Number).filter(n=>n>=1&&n<=15))];
+     if(!r.url||!objectives.length)continue;
+     const key=String(r.url).replace(/\/$/,'');
+     const prior=byUrl.get(key);
+     if(prior){
+       prior.objectives=[...new Set([...prior.objectives,...objectives])];
+       prior.categories=[...new Set([...(prior.categories||[]),...(r.categories||[])])];
+       prior.topics=prior.categories;
+       prior.levels=[...new Set([...(prior.levels||[]),...(r.levels||[])])];
+     }else{
+       byUrl.set(key,{...r,route:'research',objective:objectives[0],objectives,topics:r.categories||[],levels:r.levels||[]});
+     }
+   }
+   const recovered=[...byUrl.values()];
    if(recovered.length){
      research=recovered.sort(sort);
+     syncObjectiveOptions('All');
+     if(level)level.value='All';
      expanded=false;
      renderResearch();
    }
