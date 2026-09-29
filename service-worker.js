@@ -1,4 +1,4 @@
-const CACHE_NAME="hstu-resource-centre-v20260929-deep-research-v1";
+const CACHE_NAME="hstu-resource-centre-v20260929-research-filter-v2";
 const APP_SHELL=[
   "./index.html",
   "./health-snake.html",
@@ -50,25 +50,17 @@ self.addEventListener("fetch",event=>{
     return;
   }
 
-  /* Main Resource Centre document only. */
+  /* Main Resource Centre document: NETWORK FIRST so users never remain on an old build. */
   if(event.request.mode==="navigate"){
     event.respondWith((async()=>{
       const cache=await caches.open(CACHE_NAME);
-      const cached=await cache.match("./index.html");
-      if(cached){
-        event.waitUntil(
-          fetch("./index.html",{cache:"no-store"})
-            .then(r=>{if(r&&r.ok)return cache.put("./index.html",r.clone())})
-            .catch(()=>{})
-        );
-        return cached;
-      }
       try{
         const response=await fetch(event.request,{cache:"no-store"});
         if(response&&response.ok) await cache.put("./index.html",response.clone());
         return response;
       }catch(e){
-        return Response.error();
+        const cached=await cache.match("./index.html");
+        return cached||Response.error();
       }
     })());
     return;
@@ -77,13 +69,20 @@ self.addEventListener("fetch",event=>{
   if(url.origin===self.location.origin){
     event.respondWith((async()=>{
       const cache=await caches.open(CACHE_NAME);
+      const critical=/\/(?:shanille-refinements\.js|research-catalogue\.json|repository-content\.json)$/.test(url.pathname);
+      if(critical){
+        try{
+          const response=await fetch(event.request,{cache:"no-store"});
+          if(response&&response.ok) await cache.put(event.request,response.clone());
+          return response;
+        }catch(e){
+          const cached=await cache.match(event.request);
+          return cached||Response.error();
+        }
+      }
       const cached=await cache.match(event.request);
       if(cached){
-        event.waitUntil(
-          fetch(event.request,{cache:"no-store"})
-            .then(r=>{if(r&&r.ok)return cache.put(event.request,r.clone())})
-            .catch(()=>{})
-        );
+        event.waitUntil(fetch(event.request,{cache:"no-store"}).then(r=>{if(r&&r.ok)return cache.put(event.request,r.clone())}).catch(()=>{}));
         return cached;
       }
       const response=await fetch(event.request);
