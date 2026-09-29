@@ -1,4 +1,4 @@
-name: Fix dropdown subsection navigation
+name: Fix dropdown subsection navigation # rerun
 on:
   push:
     paths:
