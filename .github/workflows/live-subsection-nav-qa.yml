@@ -1,0 +1,108 @@
+name: Live subsection navigation QA
+on:
+  push:
+    paths:
+      - '.github/workflows/live-subsection-nav-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Verify deployed dropdown subsection navigation
+        run: |
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          SITE="https://glenroygriffiths876-collab.github.io/HSTU-SI/"
+          cases=[
+            ("home","Overview","repository-purpose"),
+            ("research","Latest studies","research-results"),
+            ("research","Strategic Objectives 1–15","research-filters"),
+            ("capacity","Manuals","capacity-manuals"),
+            ("capacity","Training materials","capacity-training"),
+            ("reports","National Reports","reports-national"),
+            ("reports","Special Reports","reports-special"),
+            ("data-audit","Data Audit","data-audit-reports"),
+            ("data-audit","DHIS2 and TSIS2","data-systems-guides"),
+            ("gallery","Campaign images","gallery-campaigns"),
+            ("resources","Learning links","resources-learning"),
+            ("resources","Presentations and Posters","resources-presentations"),
+            ("services","Treatment and PrEP","services-directory"),
+            ("services","Health centres","services-directory"),
+          ]
+
+          def run_viewport(p, viewport):
+              browser=p.chromium.launch(headless=True)
+              page=browser.new_page(viewport=viewport)
+              page.goto(SITE,wait_until="networkidle",timeout=90000)
+              page.wait_for_timeout(1800)
+              print("Testing viewport", viewport)
+              for view,label,target in cases:
+                  page.goto(SITE,wait_until="domcontentloaded",timeout=90000)
+                  page.wait_for_timeout(1200)
+
+                  main=page.locator(f'.hstu-nav-item > .nav-btn[data-view="{view}"]').first
+                  assert main.count()==1,(view,label,"main nav missing")
+
+                  if viewport["width"]>950:
+                      main.hover()
+                  else:
+                      menu=page.locator("#menuToggle")
+                      nav=page.locator("#mainNav")
+                      if menu.count() and not nav.evaluate("el=>el.classList.contains('open')"):
+                          menu.click()
+                          page.wait_for_timeout(180)
+                      main.click()
+                      page.wait_for_timeout(220)
+
+                  sel=f'.hstu-nav-item > .nav-btn[data-view="{view}"] + .hstu-nav-dropdown button'
+                  btn=page.locator(sel).filter(has_text=label).first
+                  assert btn.count()==1,(view,label,"submenu missing")
+                  if not btn.is_visible():
+                      if viewport["width"]>950:
+                          main.hover()
+                      else:
+                          main.click()
+                      page.wait_for_timeout(220)
+                  assert btn.is_visible(),(view,label,"submenu not visible")
+
+                  btn.click()
+                  page.wait_for_timeout(1500)
+
+                  assert page.url.endswith("#"+target),(label,target,page.url)
+                  active=page.locator("#view-"+view)
+                  assert active.count()==1 and active.is_visible(),(view,label,"wrong top-level view")
+
+                  target_el=page.locator("#"+target)
+                  assert target_el.count()==1,(label,target,"target missing")
+                  assert target_el.is_visible(),(label,target,"target hidden")
+
+                  box=target_el.bounding_box()
+                  assert box,(label,target,"no box")
+                  top=box["y"]
+                  bottom=box["y"]+box["height"]
+                  assert top < viewport["height"]-40 and bottom > 70,(label,target,"not landed in viewport",box,viewport,page.url)
+
+                  if label=="Health centres":
+                      health=page.locator('#view-services [data-service-mode="healthcentres"]')
+                      assert health.count()==1 and health.evaluate("el=>el.classList.contains('active')"),("health-centres-mode",page.url)
+
+                  print("PASS", viewport["width"], label, "=>", target, "y=", round(top,1))
+              browser.close()
+
+          with sync_playwright() as p:
+              run_viewport(p,{"width":1440,"height":1000})
+              run_viewport(p,{"width":390,"height":844})
+          print("LIVE DROPDOWN SUBSECTION QA PASS")
+          PY
