@@ -1,4 +1,4 @@
-name: Fix dropdown subsection navigation # rerun 3
+name: Fix dropdown subsection navigation # rerun 4
 on:
   push:
     paths:
@@ -72,6 +72,7 @@ jobs:
                 assert btn.is_visible(),(view,label,"dropdown not visible")
                 btn.dispatch_event('click')
                 page.wait_for_timeout(650)
+                assert page.url.endswith("#"+target),(label,target,page.url)
                 targetEl=page.locator("#"+target)
                 assert targetEl.count()==1,(label,target)
                 assert targetEl.is_visible(),(label,target,"not visible")
