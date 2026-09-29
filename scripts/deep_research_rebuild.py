@@ -274,8 +274,10 @@ def fix_js():
         s,count=1,flags=re.S)
     old2="const q=document.getElementById('refineResearchSearch'),level=document.getElementById('refineResearchLevel'),grid=document.getElementById('refineResearchGrid'),status=document.getElementById('refineResearchStatus'),viewAll=document.getElementById('refineResearchViewAll');let expanded=false;if(level&&level.options[0])level.options[0].textContent='All Research';"
     new2="const q=document.getElementById('refineResearchSearch'),level=document.getElementById('refineResearchLevel'),grid=document.getElementById('refineResearchGrid'),status=document.getElementById('refineResearchStatus'),viewAll=document.getElementById('refineResearchViewAll');let expanded=false;if(level){level.replaceChildren(new Option('All Research','All'),new Option('Jamaica','Jamaica'),new Option('Caribbean','Caribbean'));level.value='All';}"
-    if old2 not in s: raise SystemExit("Research level setup target not found")
-    s=s.replace(old2,new2)
+    if old2 in s:
+        s=s.replace(old2,new2)
+    elif new2 not in s:
+        raise SystemExit("Research level setup target not found")
     old3="let rows=research.filter(r=>(objective.value==='All'||(Array.isArray(r.objectives)?r.objectives.includes(Number(objective.value)):String(r.objective)===objective.value))&&(!search||norm([r.title,r.authors,r.category,r.year,...(r.topics||[])].join(' ')).includes(search)));"
     new3="let rows=research.filter(r=>(objective.value==='All'||(Array.isArray(r.objectives)?r.objectives.includes(Number(objective.value)):String(r.objective)===objective.value))&&(!search||norm([r.title,r.authors,r.citation,r.category,r.year,r.geography,...(r.topics||[])].join(' ')).includes(search)));"
     if old3 in s: s=s.replace(old3,new3)
