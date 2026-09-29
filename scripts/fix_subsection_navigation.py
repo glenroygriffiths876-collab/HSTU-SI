@@ -113,6 +113,8 @@ function go(btn){
  else{
    document.querySelectorAll('[id^="view-"]').forEach(v=>v.hidden=v.id!=='view-'+view);
  }
+ // setView() uses a smooth scroll-to-top. Cancel that animation before the subsection jump.
+ window.scrollTo({top:0,left:0,behavior:'auto'});
  // Close compact/mobile nav if it is open.
  document.querySelectorAll('.nav-menu.open,.mobile-menu.open,.navbar.open,[aria-expanded="true"].nav-toggle').forEach(el=>{
    el.classList.remove('open');
