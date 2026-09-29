@@ -62,6 +62,9 @@ body{background:#f8faf7!important;color:var(--hstu-neutral-ink)}
 }
 
 /* Top band: red + green ONLY. No yellow/gold treatment. */
+.topline{
+  background:linear-gradient(90deg,var(--hstu-logo-green) 0 50%,var(--hstu-logo-red) 50% 100%)!important;
+}
 .proposal-banner{
   background:linear-gradient(100deg,#d71920 0%,#e51622 34%,#4d9a3c 66%,#65bd3a 100%)!important;
   color:#fff!important;
@@ -78,6 +81,14 @@ body{background:#f8faf7!important;color:var(--hstu-neutral-ink)}
 .proposal-banner a{color:#fff!important;text-decoration-color:rgba(255,255,255,.72)!important}
 
 /* Primary action language: premium green -> red gradient with white text. */
+.btn.primary,
+.btn.green,
+.hero-actions-core .btn,
+.hstu-pwa-btn.install,
+.hstu-install-primary,
+.hst-gallery-cta,
+.hst-gallery-cta-icon,
+.support-btn,
 .hstu-profile-actions a,
 .hstu-instagram-link,
 .clinical-search button,
@@ -96,6 +107,13 @@ button[data-service-mode].active,
   text-shadow:0 1px 2px rgba(0,0,0,.28);
   box-shadow:0 8px 22px rgba(87,48,43,.16)!important;
 }
+.btn.primary:hover,
+.btn.green:hover,
+.hero-actions-core .btn:hover,
+.hstu-pwa-btn.install:hover,
+.hstu-install-primary:hover,
+.hst-gallery-cta:hover,
+.support-btn:hover,
 .hstu-profile-actions a:hover,
 .hstu-instagram-link:hover,
 .clinical-search button:hover,
@@ -112,6 +130,14 @@ button[data-service-mode].active:hover,
   color:#fff!important;
   transform:translateY(-1px);
 }
+
+/* Remove the remaining yellow cue from the prominent Gallery CTA near the hero. */
+.hst-gallery-cta:focus-visible,
+.hstu-pwa-btn:focus-visible{
+  outline:3px solid rgba(229,22,34,.72)!important;
+  outline-offset:3px!important;
+}
+.hst-gallery-cta-icon svg{color:#fff!important}
 
 /* Keep secondary controls quiet so the gradient remains intentional rather than noisy. */
 .gia-hub-actions .subtle,
