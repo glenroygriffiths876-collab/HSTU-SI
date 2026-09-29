@@ -1,4 +1,4 @@
-const CACHE_NAME="hstu-resource-centre-v20260925-jmerg-rebuild-v2";
+const CACHE_NAME="hstu-sept-2026-refinements-v1";
 const APP_SHELL=[
   "./index.html",
   "./health-snake.html",
