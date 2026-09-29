@@ -1,0 +1,70 @@
+name: HSTU visual theme diagnostic
+on:
+  push:
+    paths:
+      - '.github/workflows/visual-theme-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install beautifulsoup4 pillow
+      - name: Inspect logo palette and current visual selectors
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from collections import Counter
+          from PIL import Image
+          from bs4 import BeautifulSoup
+          import re
+
+          print("=== LOGO PALETTE ===")
+          img=Image.open("hstu-app-icon-512.png").convert("RGBA")
+          px=[]
+          for r,g,b,a in img.getdata():
+              if a<180: continue
+              if max(r,g,b)>248 and min(r,g,b)>248: continue
+              # Quantize to useful design palette
+              px.append((round(r/16)*16,round(g/16)*16,round(b/16)*16))
+          for c,n in Counter(px).most_common(18):
+              print(c, "#%02x%02x%02x"%c, n)
+
+          html=Path("index.html").read_text(encoding="utf-8",errors="ignore")
+          soup=BeautifulSoup(html,"html.parser")
+
+          print("\n=== RELEVANT ELEMENTS ===")
+          pat=re.compile(r"(gia|header|band|brand|stripe|nav|top|assistant|chat|hero)",re.I)
+          seen=0
+          for el in soup.find_all(True):
+              marker=" ".join(filter(None,[el.get("id","")," ".join(el.get("class",[]))]))
+              if marker and pat.search(marker):
+                  print(el.name, "id="+str(el.get("id")), "class="+" ".join(el.get("class",[])))
+                  seen+=1
+                  if seen>=140: break
+
+          print("\n=== STYLE FRAGMENTS: GIA / HEADER / BAND / BRAND ===")
+          for i,st in enumerate(soup.find_all("style")):
+              txt=st.get_text("\n")
+              blocks=re.findall(r'[^{}]*\{[^{}]*\}',txt,re.S)
+              hits=[]
+              for b in blocks:
+                  if pat.search(b) or re.search(r'(#f[fd][c0-9a-f]{3,6}|yellow|gold)',b,re.I):
+                      hits.append(" ".join(b.split()))
+              if hits:
+                  print("-- style",i,"id=",st.get("id"),"--")
+                  for h in hits[:100]: print(h[:900])
+
+          print("\n=== CSS COLOR TOKENS (TOP 40) ===")
+          colors=re.findall(r'#[0-9a-fA-F]{3,8}\b',html)
+          for c,n in Counter(x.lower() for x in colors).most_common(40):
+              print(c,n)
+          PY
