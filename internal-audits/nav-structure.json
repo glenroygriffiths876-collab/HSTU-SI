@@ -1,0 +1,148 @@
+[
+  {
+    "main_text": "Home",
+    "main_data_view": "home",
+    "dropdown": [
+      {
+        "text": "Overview",
+        "attrs": {
+          "data-view": "home",
+          "type": "button"
+        }
+      }
+    ]
+  },
+  {
+    "main_text": "Research",
+    "main_data_view": "research",
+    "dropdown": [
+      {
+        "text": "Latest studies",
+        "attrs": {
+          "data-view": "research",
+          "type": "button"
+        }
+      },
+      {
+        "text": "Strategic Objectives 1\u201315",
+        "attrs": {
+          "data-view": "research",
+          "type": "button"
+        }
+      }
+    ]
+  },
+  {
+    "main_text": "Capacity Building",
+    "main_data_view": "capacity",
+    "dropdown": [
+      {
+        "text": "Manuals",
+        "attrs": {
+          "data-view": "capacity",
+          "type": "button"
+        }
+      },
+      {
+        "text": "Training materials",
+        "attrs": {
+          "data-view": "capacity",
+          "type": "button"
+        }
+      }
+    ]
+  },
+  {
+    "main_text": "Reports",
+    "main_data_view": "reports",
+    "dropdown": [
+      {
+        "text": "National Reports",
+        "attrs": {
+          "data-view": "reports",
+          "type": "button"
+        }
+      },
+      {
+        "text": "Special Reports",
+        "attrs": {
+          "data-view": "reports",
+          "type": "button"
+        }
+      }
+    ]
+  },
+  {
+    "main_text": "Data Audit and Utilization",
+    "main_data_view": "data-audit",
+    "dropdown": [
+      {
+        "text": "Data Audit",
+        "attrs": {
+          "data-view": "data-audit",
+          "type": "button"
+        }
+      },
+      {
+        "text": "DHIS2 and TSIS2",
+        "attrs": {
+          "data-view": "data-audit",
+          "type": "button"
+        }
+      }
+    ]
+  },
+  {
+    "main_text": "Gallery",
+    "main_data_view": "gallery",
+    "dropdown": [
+      {
+        "text": "Campaign images",
+        "attrs": {
+          "data-view": "gallery",
+          "type": "button"
+        }
+      }
+    ]
+  },
+  {
+    "main_text": "Resources",
+    "main_data_view": "resources",
+    "dropdown": [
+      {
+        "text": "Learning links",
+        "attrs": {
+          "data-view": "resources",
+          "type": "button"
+        }
+      },
+      {
+        "text": "Presentations and Posters",
+        "attrs": {
+          "data-view": "resources",
+          "type": "button"
+        }
+      }
+    ]
+  },
+  {
+    "main_text": "Find Services",
+    "main_data_view": "services",
+    "dropdown": [
+      {
+        "text": "Treatment and PrEP",
+        "attrs": {
+          "data-view": "services",
+          "type": "button"
+        }
+      },
+      {
+        "text": "Health centres",
+        "attrs": {
+          "data-view": "services",
+          "type": "button"
+        }
+      }
+    ]
+  }
+]
