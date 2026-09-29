@@ -63,8 +63,10 @@ jobs:
                       if menu.count() and not nav.evaluate("el=>el.classList.contains('open')"):
                           menu.click()
                           page.wait_for_timeout(180)
+                      assert nav.is_visible(),(view,label,"mobile nav did not open")
                       main.click()
                       page.wait_for_timeout(220)
+                      assert main.get_attribute("aria-expanded")=="true",(view,label,"touch submenu did not expand")
 
                   sel=f'.hstu-nav-item > .nav-btn[data-view="{view}"] + .hstu-nav-dropdown button'
                   btn=page.locator(sel).filter(has_text=label).first
@@ -81,6 +83,8 @@ jobs:
                   page.wait_for_timeout(1500)
 
                   assert page.url.endswith("#"+target),(label,target,page.url)
+                  if viewport["width"]<=950:
+                      assert not page.locator("#mainNav").evaluate("el=>el.classList.contains('open')"),(label,"mobile nav stayed open")
                   active=page.locator("#view-"+view)
                   assert active.count()==1 and active.is_visible(),(view,label,"wrong top-level view")
 
