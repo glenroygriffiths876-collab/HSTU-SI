@@ -1,8 +1,9 @@
-const CACHE_NAME="hstu-resource-centre-v20260925-jmerg-rebuild-v2";
+const CACHE_NAME="hstu-resource-centre-v20260929-research-recovery-v3";
 const APP_SHELL=[
   "./index.html",
   "./health-snake.html",
   "./manifest.webmanifest",
+  "./shanille-refinements.js","./research-catalogue.json",
   "./hstu-app-icon-192.png","./hstu-app-icon-512.png",
   "./hstu-app-maskable-512.png","./hstu-apple-touch-icon.png",
   "./hstu-favicon-64.png","./hstu-install-logo.png"
