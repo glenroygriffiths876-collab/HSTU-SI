@@ -1,0 +1,40 @@
+name: Current HSTU visual snapshot
+on:
+  push:
+    paths:
+      - '.github/workflows/current-hstu-snapshot.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Capture current page
+        run: |
+          python -m http.server 8000 >/tmp/snapshot.log 2>&1 &
+          sleep 2
+          mkdir -p snapshots
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as p:
+              for name,vp in [("desktop",{"width":1440,"height":1000}),("mobile",{"width":390,"height":844})]:
+                  b=p.chromium.launch(headless=True)
+                  page=b.new_page(viewport=vp)
+                  page.goto("http://127.0.0.1:8000/",wait_until="networkidle")
+                  page.wait_for_timeout(1200)
+                  page.screenshot(path=f"snapshots/{name}.png",full_page=False)
+                  b.close()
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: current-hstu-snapshot
+          path: snapshots/
+          if-no-files-found: error
