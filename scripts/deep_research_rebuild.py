@@ -57,6 +57,12 @@ NON_RESEARCH={
 "https://hstu.moh.gov.jm/media/reports/hiv-epidemiological-reports":"reports",
 "https://hstu.moh.gov.jm/about/structure-overview-of-the-nhp":"resources",
 }
+LINK_REPLACEMENTS={
+"https://www.gjmedph.com/Uploads/R1_HIV%20Policy%20Jamaica_AB%20revisedV2_21.3.21.pdf":"https://nicpd.ac.in/ojs-/index.php/gjmedph/article/view/3867",
+}
+TITLE_OVERRIDES={
+"https://pubmed.ncbi.nlm.nih.gov/42042949":"Drug-Resistant Tuberculosis in Prisons of Latin America and the Caribbean: A Critical Reflection on Structural Challenges and Gaps",
+}
 CARIBBEAN_TERMS=[
 r"\bcaribbean\b",r"\bdominican republic\b",r"\bbarbados\b",r"\btrinidad\b",r"\btobago\b",
 r"\bhaiti\b",r"\bguyana\b",r"\bbahamas\b",r"\bbelize\b",r"\bsuriname\b",r"\bgrenada\b",
@@ -138,6 +144,7 @@ def parse_source():
                 if before: buf.append(before)
                 citation=clean_citation(" ".join(buf),category)
                 url=m.group(0).rstrip(").,;")
+                url=LINK_REPLACEMENTS.get(norm_url(url),url)
                 buf=[]
                 if not citation: continue
                 assignments+=1
@@ -178,6 +185,8 @@ def parse_source():
         r["id"]="HSTU-RSCH-"+str(i).zfill(3)
         r["objectiveNumbers"]=[OBJECTIVES.index(c)+1 for c in r["categories"] if c in OBJECTIVES]
         r["classification"]="Research area assigned from the repository topic page"
+        override=TITLE_OVERRIDES.get(norm_url(r["url"]))
+        if override: r["title"]=override
     return rows,assignments
 
 SESSION=requests.Session()
