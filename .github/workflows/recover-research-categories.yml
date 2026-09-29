@@ -1,0 +1,49 @@
+name: Recover original research category pages
+on:
+  push:
+    paths:
+      - '.github/workflows/recover-research-categories.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install browser
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Extract publicly accessible research category pages
+        id: extract
+        continue-on-error: true
+        run: python scripts/recover_research_categories.py
+      - name: Upload extraction evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hstu-original-category-pages
+          path: internal-audits/category-crawl/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Commit status and extracted links
+        if: always()
+        run: |
+          if [ ! -f internal-audits/category-crawl/crawl_status.json ]; then
+            echo "Crawler failed before producing a report"; exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add internal-audits/category-crawl/crawl_status.json internal-audits/category-crawl/extracted_links.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Audit original category pages and recovered research links"
+            git push
+          fi
+      - name: Fail if extraction unsuccessful
+        if: steps.extract.outcome == 'failure'
+        run: exit 1
