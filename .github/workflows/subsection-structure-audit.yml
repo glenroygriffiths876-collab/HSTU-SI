@@ -1,0 +1,21 @@
+name: Subsection structure audit
+on:
+  push:
+    paths:
+      - '.github/workflows/subsection-structure-audit.yml'
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install beautifulsoup4
+      - run: python scripts/subsection_structure_audit.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add internal-audits/subsection-structure.json
+          git commit -m "Audit subsection target structure" || exit 0
+          git pull --rebase origin main
+          git push
