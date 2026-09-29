@@ -1,0 +1,75 @@
+name: HSTU parity browser smoke test
+on:
+  push:
+    paths:
+      - '.github/workflows/hstu-parity-smoke-test.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install browser tools
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Start local site
+        run: |
+          python -m http.server 8000 >/tmp/hstu-server.log 2>&1 &
+          sleep 2
+      - name: Browser smoke test desktop and mobile
+        run: |
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          errors=[]
+          def run(viewport):
+              with sync_playwright() as p:
+                  browser=p.chromium.launch(headless=True)
+                  page=browser.new_page(viewport=viewport)
+                  page.on("pageerror",lambda e: errors.append("pageerror: "+str(e)))
+                  page.goto("http://127.0.0.1:8000/",wait_until="domcontentloaded")
+                  page.wait_for_timeout(1800)
+                  body=page.locator("body").inner_text()
+                  assert "About the Research Data Repository" in body
+                  assert "J-MERG" not in body
+                  assert "legacy resource" not in body.lower()
+                  checks=[
+                    ("research","HIV/STI/TB Research"),
+                    ("capacity","Capacity Building"),
+                    ("reports","National Reports"),
+                    ("data-audit","Data Quality Audit Reports"),
+                    ("resources","Presentations & Posters"),
+                    ("gallery","Campaign Gallery"),
+                    ("services","Select a parish")
+                  ]
+                  for view,needle in checks:
+                      page.evaluate("(v)=>window.setView(v)",view)
+                      page.wait_for_timeout(220)
+                      active=page.locator("#view-"+view)
+                      assert active.count()==1
+                      assert needle.lower() in active.inner_text().lower(), (view, needle, active.inner_text()[:500])
+                  page.evaluate("()=>window.setView('research')")
+                  page.wait_for_timeout(900)
+                  assert page.locator("#refineResearchGrid .hstu-refine-card").count()>0
+                  page.evaluate("()=>window.setView('reports')")
+                  assert page.locator("#view-reports .hstu-parity-card").count()>=35
+                  page.evaluate("()=>window.setView('data-audit')")
+                  assert page.locator("#view-data-audit .hstu-parity-card").count()>=9
+                  page.evaluate("()=>window.setView('resources')")
+                  assert page.locator("#view-resources .hstu-parity-card").count()>=9
+                  if viewport["width"]<=430:
+                      overflow=page.evaluate("document.documentElement.scrollWidth-window.innerWidth")
+                      assert overflow<=3, f"mobile horizontal overflow {overflow}px"
+                  browser.close()
+          run({"width":1440,"height":1000})
+          run({"width":390,"height":844})
+          if errors:
+              print("\n".join(errors))
+          print("HSTU parity browser smoke test PASS")
+          PY
