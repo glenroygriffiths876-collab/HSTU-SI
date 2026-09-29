@@ -1,0 +1,41 @@
+name: Build September 2026 repository refinements
+on:
+  push:
+    branches: [shanille-refinements-2026-09]
+    paths:
+      - "refinements-2026.js"
+      - ".github/workflows/build-shanille-refinements.yml"
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Inject reviewed refinement layer and update PWA cache
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          tag='<script src="./refinements-2026.js" defer></script>'
+          if tag not in s:
+              assert '</body>' in s
+              s=s.replace('</body>',tag+'\n</body>',1)
+          p.write_text(s,encoding='utf-8')
+          sw=Path('service-worker.js')
+          if sw.exists():
+              import re
+              t=sw.read_text(encoding='utf-8')
+              t=re.sub(r'(const\s+CACHE_NAME\s*=\s*["\x27])([^"\x27]+)',r'\g<1>hstu-sept-2026-refinements-v1',t,count=1)
+              sw.write_text(t,encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html service-worker.js
+          if ! git diff --cached --quiet; then
+            git commit -m "Apply September 2026 HSTU refinement layer"
+            git push
+          fi
