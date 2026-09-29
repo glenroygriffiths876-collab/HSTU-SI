@@ -1,0 +1,60 @@
+name: Top band selector diagnostic
+on:
+  push:
+    paths:
+      - '.github/workflows/top-band-selector-diagnostic.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install beautifulsoup4 playwright
+      - run: python -m playwright install --with-deps chromium
+      - name: Inspect top visible bands and banner selectors
+        run: |
+          python -m http.server 8000 >/tmp/topband.log 2>&1 &
+          sleep 2
+          python - <<'PY'
+          from pathlib import Path
+          from bs4 import BeautifulSoup
+          from playwright.sync_api import sync_playwright
+          import re
+
+          html=Path("index.html").read_text(encoding="utf-8",errors="ignore")
+          soup=BeautifulSoup(html,"html.parser")
+          print("=== STATIC BANNER/BAND ELEMENTS ===")
+          for el in soup.find_all(True):
+              marker=" ".join(filter(None,[el.get("id","")," ".join(el.get("class",[]))]))
+              if re.search(r"(banner|band|strip|notice|alert|proposal|dev)",marker,re.I):
+                  print(el.name,"id=",el.get("id"),"class="," ".join(el.get("class",[])),"text=",el.get_text(" ",strip=True)[:180])
+
+          print("\n=== LIVE TOP ELEMENTS ===")
+          with sync_playwright() as p:
+              b=p.chromium.launch(headless=True)
+              page=b.new_page(viewport={"width":1440,"height":1000})
+              page.goto("http://127.0.0.1:8000/",wait_until="networkidle")
+              page.wait_for_timeout(1200)
+              data=page.evaluate("""() => {
+                const all=[...document.body.querySelectorAll('*')];
+                return all.map(el=>{
+                  const r=el.getBoundingClientRect();
+                  const cs=getComputedStyle(el);
+                  return {
+                    tag:el.tagName.toLowerCase(),id:el.id||'',cls:el.className||'',
+                    text:(el.innerText||'').trim().replace(/\\s+/g,' ').slice(0,160),
+                    top:r.top,bottom:r.bottom,height:r.height,width:r.width,
+                    display:cs.display,visibility:cs.visibility,
+                    bg:cs.backgroundColor,bgi:cs.backgroundImage,color:cs.color
+                  };
+                }).filter(x=>x.display!=='none'&&x.visibility!=='hidden'&&x.height>4&&x.bottom>0&&x.top<180&&x.width>300)
+                  .sort((a,b)=>a.top-b.top||a.height-b.height);
+              }""")
+              for x in data[:60]: print(x)
+              b.close()
+          PY
