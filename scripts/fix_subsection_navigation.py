@@ -109,11 +109,14 @@ function go(btn){
  const view=btn.dataset.view;
  const targetId=btn.dataset.target;
  if(!view||!targetId)return;
- if(typeof window.setView==='function')window.setView(view);
- else{
+ if(typeof window.setView==='function'){
+   // Suppress setView's own smooth scroll-to-top; this navigation has a precise subsection target.
+   const nativeScrollTo=window.scrollTo;
+   window.scrollTo=()=>{};
+   try{window.setView(view)}finally{window.scrollTo=nativeScrollTo}
+ }else{
    document.querySelectorAll('[id^="view-"]').forEach(v=>v.hidden=v.id!=='view-'+view);
  }
- // setView() uses a smooth scroll-to-top. Cancel that animation before the subsection jump.
  const scroller=document.scrollingElement||document.documentElement;
  scroller.scrollTop=0;
  // Close compact/mobile nav if it is open.
