@@ -1,0 +1,24 @@
+name: Research UI diagnostic
+on:
+  push:
+    paths:
+      - '.github/workflows/research-ui-diagnostic.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python scripts/research_ui_diagnostic.py
+      - name: Commit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add internal-audits/research-ui-diagnostic.json
+          git commit -m "Audit competing Research UI logic" || exit 0
+          git pull --rebase origin main
+          git push origin main
