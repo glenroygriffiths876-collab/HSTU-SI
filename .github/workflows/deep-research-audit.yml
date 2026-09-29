@@ -1,0 +1,69 @@
+name: Deep Research link and filter audit
+on:
+  push:
+    paths:
+      - '.github/workflows/deep-research-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Audit every research URL and metadata
+        continue-on-error: true
+        run: python scripts/deep_research_audit.py
+      - name: Browser-test all Research filters
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+          python -m http.server 8000 >/tmp/hstu.log 2>&1 &
+          sleep 2
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as p:
+              b=p.chromium.launch(headless=True)
+              page=b.new_page(viewport={"width":1440,"height":1000})
+              page.goto("http://127.0.0.1:8000/",wait_until="domcontentloaded")
+              page.wait_for_timeout(1800)
+              page.evaluate("()=>window.setView('research')")
+              page.wait_for_timeout(1200)
+              opts=page.locator("#refineResearchObjective option")
+              labels=opts.all_text_contents()
+              assert len(labels)==16, labels
+              assert len(set(labels))==16, labels
+              assert labels[0]=="All 15 Strategic Objectives"
+              levels=page.locator("#refineResearchLevel option").all_text_contents()
+              assert levels==["All Research","Jamaica","Caribbean"], levels
+              def count():
+                  txt=page.locator("#refineResearchStatus").inner_text()
+                  return int(txt.split()[0])
+              all_count=count()
+              assert all_count>200, all_count
+              page.select_option("#refineResearchLevel","Jamaica"); page.wait_for_timeout(150)
+              jamaica=count(); assert jamaica>0, jamaica
+              page.select_option("#refineResearchLevel","Caribbean"); page.wait_for_timeout(150)
+              caribbean=count(); assert caribbean>0, caribbean
+              page.select_option("#refineResearchLevel","All")
+              per={}
+              for i in range(1,16):
+                  page.select_option("#refineResearchObjective",str(i)); page.wait_for_timeout(80)
+                  c=count(); per[i]=c; assert c>0,(i,c)
+              print({"all":all_count,"jamaica":jamaica,"caribbean":caribbean,"objective_counts":per})
+              b.close()
+          PY
+      - name: Commit audit report
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add internal-audits/research-link-filter-audit.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Audit all research links and filter coverage"
+            git pull --rebase origin main
+            git push origin main
+          fi
