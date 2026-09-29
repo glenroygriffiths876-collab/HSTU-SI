@@ -114,7 +114,8 @@ function go(btn){
    document.querySelectorAll('[id^="view-"]').forEach(v=>v.hidden=v.id!=='view-'+view);
  }
  // setView() uses a smooth scroll-to-top. Cancel that animation before the subsection jump.
- window.scrollTo({top:0,left:0,behavior:'auto'});
+ const scroller=document.scrollingElement||document.documentElement;
+ scroller.scrollTop=0;
  // Close compact/mobile nav if it is open.
  document.querySelectorAll('.nav-menu.open,.mobile-menu.open,.navbar.open,[aria-expanded="true"].nav-toggle').forEach(el=>{
    el.classList.remove('open');
@@ -129,8 +130,9 @@ function go(btn){
    const finishScroll=()=>{
      const target=document.getElementById(targetId);
      if(!target)return;
-     target.scrollIntoView({behavior:'auto',block:'start'});
-     window.scrollBy({top:-stickyOffset(),left:0,behavior:'auto'});
+     const root=document.scrollingElement||document.documentElement;
+     const y=root.scrollTop+target.getBoundingClientRect().top-stickyOffset();
+     root.scrollTop=Math.max(0,y);
      target.classList.add('hstu-subsection-arrival');
      setTimeout(()=>target.classList.remove('hstu-subsection-arrival'),900);
      try{history.replaceState(null,'','#'+targetId)}catch(_){}
