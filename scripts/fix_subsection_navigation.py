@@ -124,13 +124,17 @@ function go(btn){
      const modeBtn=document.querySelector('#view-services [data-service-mode="'+CSS.escape(mode)+'"]');
      if(modeBtn&&!modeBtn.classList.contains('active'))modeBtn.click();
    }
-   const target=document.getElementById(targetId);
-   if(!target)return;
-   const y=window.scrollY+target.getBoundingClientRect().top-stickyOffset();
-   window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
-   target.classList.add('hstu-subsection-arrival');
-   setTimeout(()=>target.classList.remove('hstu-subsection-arrival'),900);
-   try{history.replaceState(null,'','#'+targetId)}catch(_){}
+   const finishScroll=()=>{
+     const target=document.getElementById(targetId);
+     if(!target)return;
+     const y=window.scrollY+target.getBoundingClientRect().top-stickyOffset();
+     window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+     target.classList.add('hstu-subsection-arrival');
+     setTimeout(()=>target.classList.remove('hstu-subsection-arrival'),900);
+     try{history.replaceState(null,'','#'+targetId)}catch(_){}
+   };
+   // Service mode changes re-render the directory; scroll only after that layout settles.
+   if(mode)setTimeout(finishScroll,140); else finishScroll();
  },120);
 }
 document.addEventListener('click',e=>{
