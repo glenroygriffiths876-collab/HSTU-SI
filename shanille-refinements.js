@@ -64,3 +64,32 @@ document.querySelectorAll('.hstu-nav-item [data-view],.hstu-intro-links [data-vi
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',polishGallery,{once:true});else polishGallery();
   document.addEventListener('click',event=>{if(event.target.closest('[data-view="gallery"],a[href="#gallery"]'))requestAnimationFrame(polishGallery)});
 })();
+
+
+/* HSTU public-language sweep: source provenance remains in internal audit only. */
+(function(){
+ const pairs=[
+  [/\bJ-MERG visual archive\b/gi,'Research poster collection'],
+  [/\bJ-MERG research repository\b/gi,'HSTU Research Repository'],
+  [/\bJ-MERG\b/gi,'HSTU'],
+  [/\blegacy poster\b/gi,'Research poster'],
+  [/\blegacy repository\b/gi,'research repository'],
+  [/\brecovered J-MERG\b/gi,'HSTU'],
+  [/\bstudies described by the legacy repository\b/gi,'Studies in the Research Repository'],
+  [/\brecovered records\b/gi,'catalogue entries'],
+  [/\breconstructed in this build\b/gi,'in the catalogue'],
+  [/\bOriginal source links; individual documents remain subject to verification\./gi,'Browse the available resources.']
+ ];
+ function sweep(){
+  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  let node;
+  while(node=walker.nextNode()){
+   const el=node.parentElement;if(!el||el.closest('script,style,textarea,code,pre'))continue;
+   let val=node.nodeValue;
+   for(const [from,to] of pairs)val=val.replace(from,to);
+   if(val!==node.nodeValue)node.nodeValue=val;
+  }
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sweep,{once:true});else sweep();
+ document.addEventListener('click',e=>{if(e.target.closest('[data-view],.hstu-nav-item'))requestAnimationFrame(sweep)});
+})();
