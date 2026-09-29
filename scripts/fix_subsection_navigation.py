@@ -140,8 +140,10 @@ function go(btn){
      setTimeout(()=>target.classList.remove('hstu-subsection-arrival'),900);
      try{history.replaceState(null,'','#'+targetId)}catch(_){}
    };
-   // Service mode changes re-render the directory; scroll only after that layout settles.
-   if(mode)setTimeout(finishScroll,140); else finishScroll();
+   // Dynamic cards and mobile menu collapse can change page height after the first jump.
+   // Re-anchor briefly while the layout settles so the requested subsection stays in view.
+   const base=mode?160:0;
+   [base,base+260,base+760].forEach(delay=>setTimeout(finishScroll,delay));
  },120);
 }
 document.addEventListener('click',e=>{
