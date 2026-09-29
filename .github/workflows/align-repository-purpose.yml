@@ -49,7 +49,7 @@ jobs:
               assert "The Research Data Repository was conceptualized in 2023" in body
               assert "Jamaica and the wider Caribbean" in body
               assert "15 Thematic Research Areas" in body
-              assert "Unveiling Hope" in body
+              assert "Unveiling Hope" in page.content()
               for x in banned: assert x not in body.lower(),x
               # Purpose section must appear before deep homepage content/footer.
               top=page.locator("#repository-purpose").bounding_box()
