@@ -1,0 +1,99 @@
+name: Live HSTU theme refresh QA
+on:
+  push:
+    paths:
+      - '.github/workflows/live-hstu-theme-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-theme-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Verify live HSTU theme
+        run: |
+          mkdir -p live-theme-qa
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          SITE="https://glenroygriffiths876-collab.github.io/HSTU-SI/"
+
+          def css(page, selector, prop):
+              return page.locator(selector).first.evaluate("(el,p)=>getComputedStyle(el)[p]",prop)
+
+          with sync_playwright() as p:
+              for name,vp in [("desktop",{"width":1440,"height":1000}),("mobile",{"width":390,"height":844})]:
+                  b=p.chromium.launch(headless=True)
+                  page=b.new_page(viewport=vp)
+                  page.goto(SITE,wait_until="networkidle",timeout=90000)
+                  page.wait_for_timeout(1600)
+
+                  stripe=page.locator(".topline").first
+                  assert stripe.count()==1 and stripe.is_visible(),(name,"top stripe missing")
+                  stripebg=css(page,".topline","backgroundImage")
+                  assert "linear-gradient" in stripebg,(name,stripebg)
+                  for yellow in ("242, 183, 20","246, 186, 22","244, 197, 66","255, 217, 90"):
+                      assert yellow not in stripebg,(name,"yellow remains",stripebg)
+                  assert "101, 189, 58" in stripebg,(name,"logo green missing",stripebg)
+                  assert "229, 22, 34" in stripebg,(name,"red missing",stripebg)
+
+                  assert css(page,"body","backgroundColor")=="rgb(248, 250, 247)",(name,css(page,"body","backgroundColor"))
+
+                  for selector in [".hero-actions-core .btn.green",".hero-actions-core .btn.primary"]:
+                      assert page.locator(selector).count()==1,(name,selector,"missing")
+                      bg=css(page,selector,"backgroundImage")
+                      fg=css(page,selector,"color")
+                      assert "linear-gradient" in bg,(name,selector,bg)
+                      assert fg=="rgb(255, 255, 255)",(name,selector,fg)
+
+                  install=page.locator("#hstuInstallBtn")
+                  assert install.count()==1,(name,"install button missing")
+                  assert "linear-gradient" in css(page,"#hstuInstallBtn","backgroundImage"),(name,"install not gradient")
+
+                  # Existing top-level navigation still changes views.
+                  if name=="desktop":
+                      for view in ["research","capacity","reports","data-audit","gallery","resources","services","home"]:
+                          btn=page.locator(f'.hstu-nav-item > .nav-btn[data-view="{view}"]').first
+                          assert btn.count()==1,(view,"nav missing")
+                          btn.click()
+                          page.wait_for_timeout(160)
+                          assert page.locator("#view-"+view).is_visible(),(view,"view did not activate")
+                      page.goto(SITE,wait_until="domcontentloaded",timeout=90000)
+                      page.wait_for_timeout(700)
+
+                  fab=page.locator("#clinicalFab")
+                  assert fab.count()==1 and fab.is_visible(),(name,"Gia launcher missing")
+                  fab.click()
+                  page.wait_for_timeout(350)
+                  assert page.locator("#clinicalDrawer").evaluate("el=>el.classList.contains('open')"),(name,"Gia did not open")
+
+                  headbg=css(page,".clinical-head","backgroundImage")
+                  headfg=css(page,".clinical-head","color")
+                  assert "linear-gradient" in headbg,(name,"Gia header not gradient",headbg)
+                  assert headfg!="rgb(255, 255, 255)",(name,"Gia header still white-on-dark",headfg)
+
+                  searchbg=css(page,".clinical-search button","backgroundImage")
+                  searchfg=css(page,".clinical-search button","color")
+                  assert "linear-gradient" in searchbg,(name,"Gia search button not gradient",searchbg)
+                  assert searchfg=="rgb(255, 255, 255)",(name,"Gia search text not white",searchfg)
+
+                  if name=="mobile":
+                      mnav=page.locator(".clinical-mobile-nav")
+                      assert mnav.count()==1 and mnav.is_visible(),"Gia mobile nav missing"
+                      assert "linear-gradient" in css(page,".clinical-mobile-nav","backgroundImage"),"Gia mobile nav not gradient"
+
+                  page.screenshot(path=f"live-theme-qa/{name}.png",full_page=True)
+                  print("PASS",name)
+                  b.close()
+          print("LIVE HSTU THEME QA PASS")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-hstu-theme-refresh-qa
+          path: live-theme-qa/
+          if-no-files-found: error
