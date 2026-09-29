@@ -1,0 +1,115 @@
+name: Deep research filter rebuild
+on:
+  push:
+    paths:
+      - '.github/workflows/deep-research-filter-rebuild.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: \${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install audit and browser dependencies
+        run: |
+          pip install requests beautifulsoup4 playwright
+          python -m playwright install --with-deps chromium
+      - name: Download recovered source category pages
+        run: |
+          rm -rf /tmp/hstu-source
+          mkdir -p /tmp/hstu-source
+          gh run download 36599103530 --repo glenroygriffiths876-collab/HSTU-SI -n hstu-original-category-pages -D /tmp/hstu-source
+          test -f /tmp/hstu-source/adolescent-hiv-aids.txt
+          test -f /tmp/hstu-source/sexually-transmitted-infections.txt
+      - name: Rebuild research catalogue and remove competing renderer
+        run: python scripts/deep_research_rebuild.py /tmp/hstu-source
+      - name: Refresh PWA cache
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("service-worker.js")
+          s=p.read_text(encoding="utf-8")
+          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20260929-deep-research-v1";', s, count=1)
+          p.write_text(s,encoding="utf-8")
+          PY
+      - name: JavaScript syntax check
+        run: node --check shanille-refinements.js
+      - name: Start local site
+        run: |
+          python -m http.server 8000 >/tmp/hstu-http.log 2>&1 &
+          sleep 2
+      - name: Browser-test every Research filter
+        run: |
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          import re
+          with sync_playwright() as p:
+              browser=p.chromium.launch(headless=True)
+              page=browser.new_page(viewport={"width":1440,"height":1000})
+              errors=[]
+              page.on("pageerror",lambda e: errors.append(str(e)))
+              page.goto("http://127.0.0.1:8000/",wait_until="domcontentloaded")
+              page.wait_for_timeout(2200)
+              page.evaluate("()=>window.setView('research')")
+              page.wait_for_function("document.querySelector('#refineResearchStatus') && /studies match/.test(document.querySelector('#refineResearchStatus').textContent)")
+              objective=page.locator("#refineResearchObjective")
+              level=page.locator("#refineResearchLevel")
+              assert objective.locator("option").count()==16
+              obj_text=objective.locator("option").all_text_contents()
+              assert len(obj_text)==len(set(obj_text)), obj_text
+              assert level.locator("option").count()==3
+              assert level.locator("option").all_text_contents()==["All Research","Jamaica","Caribbean"]
+              body=page.locator("#view-research").inner_text()
+              assert "recovered entries" not in body.lower()
+              assert "No verified matches" not in body
+              def count():
+                  txt=page.locator("#refineResearchStatus").inner_text()
+                  m=re.search(r"(\d+)\s+studies match",txt)
+                  assert m, txt
+                  return int(m.group(1))
+              all_count=count()
+              assert all_count>=270, all_count
+              level.select_option("Jamaica"); page.wait_for_timeout(150)
+              jamaica=count(); assert jamaica>150, jamaica
+              level.select_option("Caribbean"); page.wait_for_timeout(150)
+              caribbean=count(); assert caribbean>=jamaica and caribbean>200,(jamaica,caribbean)
+              level.select_option("All"); page.wait_for_timeout(120)
+              for i in range(1,16):
+                  objective.select_option(str(i)); page.wait_for_timeout(90)
+                  c=count(); assert c>0,(i,c)
+                  assert objective.locator("option").count()==16
+              objective.select_option("All")
+              search=page.locator("#refineResearchSearch")
+              search.fill("Jamaica"); page.wait_for_timeout(160)
+              assert count()>100
+              search.fill("")
+              page.wait_for_timeout(120)
+              assert count()==all_count
+              if errors:
+                  raise AssertionError("Page errors: "+" | ".join(errors))
+              browser.close()
+          print("All Research filters PASS")
+          PY
+      - name: Commit repaired Research catalogue and filters
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html shanille-refinements.js research-catalogue.json service-worker.js internal-audits/RESEARCH_LINK_AUDIT_2026-09-29.csv internal-audits/RESEARCH_FILTER_AUDIT_2026-09-29.md
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "Deep-fix Research filters and rebuild complete study catalogue"
+          git pull --rebase origin main
+          git push origin main
