@@ -1,0 +1,29 @@
+name: Top stripe CSS diagnostic
+on:
+  push:
+    paths:
+      - '.github/workflows/top-stripe-css-diagnostic.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find top stripe CSS
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path("index.html").read_text(encoding="utf-8",errors="ignore")
+          blocks=re.findall(r'[^{}]*\{[^{}]*\}',s,re.S)
+          for b in blocks:
+              flat=" ".join(b.split())
+              if (
+                  re.search(r'height\s*:\s*[2345]px',b,re.I)
+                  or re.search(r'#f6ba16|#f4c542|#f2b714|var\(--gold\)',b,re.I)
+              ) and re.search(r'gradient|before|after|stripe|bar|top|body|header|accent',b,re.I):
+                  print(flat[:1800])
+          PY
