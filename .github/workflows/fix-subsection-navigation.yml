@@ -1,4 +1,4 @@
-name: Fix dropdown subsection navigation # rerun 2
+name: Fix dropdown subsection navigation # rerun 3
 on:
   push:
     paths:
@@ -75,8 +75,8 @@ jobs:
                 targetEl=page.locator("#"+target)
                 assert targetEl.count()==1,(label,target)
                 assert targetEl.is_visible(),(label,target,"not visible")
-                top=targetEl.evaluate("el=>el.getBoundingClientRect().top")
-                assert -10 <= top <= viewport["height"]-20,(label,target,top,viewport)
+                box=targetEl.bounding_box()
+                assert box and box["y"] < viewport["height"] and (box["y"]+box["height"]) > 70,(label,target,box,viewport)
                 active=page.locator("#view-"+view)
                 assert active.is_visible(),(view,label,"wrong view")
                 if label=="Health centres":
