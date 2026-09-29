@@ -70,7 +70,7 @@ jobs:
                 btn=page.locator(sel).filter(has_text=label).first
                 assert btn.count()==1,(view,label)
                 assert btn.is_visible(),(view,label,"dropdown not visible")
-                btn.click()
+                btn.dispatch_event('click')
                 page.wait_for_timeout(650)
                 targetEl=page.locator("#"+target)
                 assert targetEl.count()==1,(label,target)
