@@ -1,0 +1,134 @@
+name: Apply HSTU lighter brand theme
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-hstu-theme-refresh.yml'
+      - 'scripts/refresh_hstu_theme.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+
+      - name: Apply visual refresh
+        run: python scripts/refresh_hstu_theme.py
+
+      - name: Refresh PWA cache
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("service-worker.js")
+          s=p.read_text(encoding="utf-8")
+          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20260929-theme-refresh-v1";', s, count=1)
+          p.write_text(s,encoding="utf-8")
+          PY
+
+      - name: Install browser QA
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Browser QA visual theme and interactions
+        run: |
+          python -m http.server 8000 >/tmp/hstu-theme.log 2>&1 &
+          sleep 2
+          mkdir -p theme-qa
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+
+          def css(page, selector, prop):
+              return page.locator(selector).first.evaluate("(el,p)=>getComputedStyle(el)[p]",prop)
+
+          with sync_playwright() as p:
+              # Desktop
+              b=p.chromium.launch(headless=True)
+              page=b.new_page(viewport={"width":1440,"height":1000})
+              page.goto("http://127.0.0.1:8000/",wait_until="networkidle")
+              page.wait_for_timeout(1200)
+
+              banner=page.locator(".proposal-banner").first
+              assert banner.count()==1 and banner.is_visible(),"Top proposal banner missing"
+              bg=css(page,".proposal-banner","backgroundImage")
+              fg=css(page,".proposal-banner","color")
+              assert "linear-gradient" in bg,bg
+              assert "246, 186, 22" not in bg and "244, 197, 66" not in bg,bg
+              assert fg in ("rgb(255, 255, 255)","rgba(255, 255, 255, 1)"),fg
+
+              bodybg=css(page,"body","backgroundColor")
+              assert bodybg=="rgb(248, 250, 247)",bodybg
+
+              # Navigation still works after theme override.
+              for view in ["home","research","capacity","reports","data-audit","gallery","resources","services"]:
+                  btn=page.locator(f'.hstu-nav-item > .nav-btn[data-view="{view}"]').first
+                  assert btn.count()==1,(view,"nav missing")
+                  if view!="home":
+                      btn.click()
+                      page.wait_for_timeout(150)
+                      assert page.locator("#view-"+view).is_visible(),(view,"view failed")
+
+              # Gia desktop: launcher -> panel -> light branded header -> gradient search button.
+              page.goto("http://127.0.0.1:8000/",wait_until="domcontentloaded")
+              page.wait_for_timeout(600)
+              fab=page.locator("#clinicalFab")
+              assert fab.count()==1 and fab.is_visible(),"Gia launcher missing"
+              fab.click()
+              page.wait_for_timeout(300)
+              assert page.locator("#clinicalDrawer").evaluate("el=>el.classList.contains('open')"),"Gia drawer did not open"
+              headbg=css(page,".clinical-head","backgroundImage")
+              headfg=css(page,".clinical-head","color")
+              assert "linear-gradient" in headbg,headbg
+              assert headfg!="rgb(255, 255, 255)",headfg
+              searchbg=css(page,".clinical-search button","backgroundImage")
+              searchfg=css(page,".clinical-search button","color")
+              assert "linear-gradient" in searchbg,searchbg
+              assert searchfg=="rgb(255, 255, 255)",searchfg
+              page.screenshot(path="theme-qa/desktop.png",full_page=True)
+              b.close()
+
+              # Mobile: top banner remains red/green; Gia mobile nav uses mixed brand gradient.
+              b=p.chromium.launch(headless=True)
+              page=b.new_page(viewport={"width":390,"height":844})
+              page.goto("http://127.0.0.1:8000/",wait_until="networkidle")
+              page.wait_for_timeout(900)
+              mbg=css(page,".proposal-banner","backgroundImage")
+              assert "linear-gradient" in mbg and "246, 186, 22" not in mbg,mbg
+              page.locator("#clinicalFab").click()
+              page.wait_for_timeout(300)
+              assert page.locator("#clinicalDrawer").evaluate("el=>el.classList.contains('open')")
+              mobile_nav=page.locator(".clinical-mobile-nav")
+              assert mobile_nav.count()==1 and mobile_nav.is_visible(),"Gia mobile nav missing"
+              mnavbg=css(page,".clinical-mobile-nav","backgroundImage")
+              assert "linear-gradient" in mnavbg,mnavbg
+              mheadbg=css(page,".clinical-head","backgroundImage")
+              assert "linear-gradient" in mheadbg,mheadbg
+              page.screenshot(path="theme-qa/mobile.png",full_page=True)
+              b.close()
+
+          print("HSTU THEME QA PASS")
+          PY
+
+      - name: Upload theme QA screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: hstu-theme-refresh-qa
+          path: theme-qa/
+          if-no-files-found: error
+
+      - name: Commit refreshed theme
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html service-worker.js
+          git commit -m "Lighten HSTU theme and add red-green brand gradients"
+          git pull --rebase origin main
+          git push origin main
