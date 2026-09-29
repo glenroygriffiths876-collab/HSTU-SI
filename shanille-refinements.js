@@ -14,5 +14,3 @@ for(const [id,filter] of [['reports',r=>r.route==='reports'],['data-audit',r=>r.
 // Wire new navigation controls, preserving original setView and PWA routing.
 document.querySelectorAll('.hstu-nav-item [data-view],.hstu-intro-links [data-view]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(typeof setView==='function')setView(b.dataset.view)}));
 })();
-/* HSTU research initial-state repair: do not open with restrictive filters. */
-document.addEventListener('DOMContentLoaded',()=>{const l=document.getElementById('refineResearchLevel'),o=document.getElementById('refineResearchObjective');if(l){l.value='All';l.dispatchEvent(new Event('change',{bubbles:true}));}if(o){o.value='All';o.dispatchEvent(new Event('change',{bubbles:true}));}const note=document.getElementById('refineResearchStatus');if(note&&note.textContent.startsWith('0 '))note.textContent+=' Choose All Research to include entries awaiting classification.';});
