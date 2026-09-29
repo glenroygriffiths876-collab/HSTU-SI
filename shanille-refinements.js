@@ -8,7 +8,7 @@ const cards=(rows)=>rows.map(r=>`<article class="hstu-refine-card"><span class="
 DATA.forEach(r=>{r.route=route(r);r.objective=getObjective(r)});const research=DATA.filter(r=>r.route==='research').sort(sort);
 const objective=document.getElementById('refineResearchObjective');if(objective){const selected=objective.value;objective.replaceChildren(new Option('All 15 Strategic Objectives','All'));OBJECTIVES.forEach((name,i)=>objective.add(new Option(`${i+1}. ${name}`,String(i+1))));objective.value=OBJECTIVES.some((_,i)=>String(i+1)===selected)?selected:'All';}
 const q=document.getElementById('refineResearchSearch'),level=document.getElementById('refineResearchLevel'),grid=document.getElementById('refineResearchGrid'),status=document.getElementById('refineResearchStatus'),viewAll=document.getElementById('refineResearchViewAll');let expanded=false;
-function rfunction renderResearch(){
+function renderResearch(){
  const search=norm(q.value);
  let rows=research.filter(r=>(objective.value==='All'||String(r.objective)===objective.value)&&(!search||norm([r.title,r.authors,r.category,r.year,...(r.topics||[])].join(' ')).includes(search)));
  if(level.value==='Jamaica')rows=rows.filter(r=>/\bjamaica(?:n)?\b/i.test([r.title,r.category,r.legacyPage].join(' '))||/^JMERG-ADOL-/.test(r.id||''));
