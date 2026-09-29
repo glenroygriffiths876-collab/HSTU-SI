@@ -1,0 +1,597 @@
+{
+  "gallery": {
+    "children": [
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap",
+          "page-hero"
+        ],
+        "text": "HST Health Living media Campaign Gallery Programme campaign and activity imagery supporting the wider HSTU knowledge and communication environment."
+      },
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap"
+        ],
+        "text": "Search campaign images HST Health Living \u2197 Explore HIV, STI, TB and PrEP campaign images from the HST Health Living media collection."
+      },
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap"
+        ],
+        "text": ""
+      }
+    ],
+    "buttons": []
+  },
+  "resources": {
+    "children": [
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap",
+          "page-hero"
+        ],
+        "text": "External links \u00b7 learning \u00b7 presentations and posters Resources Supporting resources include presentations, posters, external learning links and knowledge tools that complement the"
+      },
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap",
+          "training-shell"
+        ],
+        "text": "Start local. C-TECH/MOHW Jamaica learning is prioritised. International courses supplement \u2014 not replace \u2014 current MOHW/HSTU manuals, policies and clinical guidance. \u2315 All Free Fre"
+      },
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap",
+          "hstu-pdf-posters"
+        ],
+        "text": "Campaign Presentations & Print Assets Selected HSTU campaign presentation and print files. MOH Get Back on Track \u2014 Gleaner Full Page \u2197 MOH Get Back on Track \u2014 Billboard \u2197"
+      },
+      {
+        "tag": "section",
+        "id": null,
+        "classes": [
+          "wrap",
+          "hstu-parity-group"
+        ],
+        "text": "Official HSTU Collections Undated \u00b7 Official HSTU Link HSTU Reports Open collection \u2197 Undated \u00b7 Official HSTU Link HSTU Policy Papers Open collection \u2197 Undated \u00b7 Official HSTU Link"
+      },
+      {
+        "tag": "section",
+        "id": null,
+        "classes": [
+          "wrap",
+          "hstu-parity-group"
+        ],
+        "text": "Presentations & Posters Undated \u00b7 Presentations & Posters HIV Testing Presentation View document \u2197 Undated \u00b7 Presentations & Posters TCS Annual Forum Poster 1 View document \u2197 Undat"
+      },
+      {
+        "tag": "section",
+        "id": null,
+        "classes": [
+          "wrap",
+          "hstu-parity-group"
+        ],
+        "text": "Programme Information HSTU \u00b7 Programme Structure overview of the National HIV Program View programme structure \u2197"
+      }
+    ],
+    "buttons": [
+      {
+        "text": "All",
+        "attrs": {
+          "class": [
+            "training-filter",
+            "active"
+          ],
+          "data-training-filter": "all"
+        }
+      },
+      {
+        "text": "Free",
+        "attrs": {
+          "class": [
+            "training-filter"
+          ],
+          "data-training-filter": "free"
+        }
+      },
+      {
+        "text": "Free + certificate",
+        "attrs": {
+          "class": [
+            "training-filter"
+          ],
+          "data-training-filter": "freecert"
+        }
+      },
+      {
+        "text": "Jamaica",
+        "attrs": {
+          "class": [
+            "training-filter"
+          ],
+          "data-training-filter": "jamaica"
+        }
+      },
+      {
+        "text": "Caribbean",
+        "attrs": {
+          "class": [
+            "training-filter"
+          ],
+          "data-training-filter": "caribbean"
+        }
+      },
+      {
+        "text": "International",
+        "attrs": {
+          "class": [
+            "training-filter"
+          ],
+          "data-training-filter": "international"
+        }
+      },
+      {
+        "text": "All topics",
+        "attrs": {
+          "class": [
+            "training-topic",
+            "active"
+          ],
+          "data-training-topic": "all"
+        }
+      },
+      {
+        "text": "HIV",
+        "attrs": {
+          "class": [
+            "training-topic"
+          ],
+          "data-training-topic": "hiv"
+        }
+      },
+      {
+        "text": "STI",
+        "attrs": {
+          "class": [
+            "training-topic"
+          ],
+          "data-training-topic": "sti"
+        }
+      },
+      {
+        "text": "TB",
+        "attrs": {
+          "class": [
+            "training-topic"
+          ],
+          "data-training-topic": "tb"
+        }
+      },
+      {
+        "text": "PrEP / PEP",
+        "attrs": {
+          "class": [
+            "training-topic"
+          ],
+          "data-training-topic": "prep"
+        }
+      },
+      {
+        "text": "Contact investigation",
+        "attrs": {
+          "class": [
+            "training-topic"
+          ],
+          "data-training-topic": "contact"
+        }
+      },
+      {
+        "text": "IPC",
+        "attrs": {
+          "class": [
+            "training-topic"
+          ],
+          "data-training-topic": "ipc"
+        }
+      },
+      {
+        "text": "Data / M&E",
+        "attrs": {
+          "class": [
+            "training-topic"
+          ],
+          "data-training-topic": "data"
+        }
+      },
+      {
+        "text": "QI",
+        "attrs": {
+          "class": [
+            "training-topic"
+          ],
+          "data-training-topic": "qi"
+        }
+      },
+      {
+        "text": "Leadership",
+        "attrs": {
+          "class": [
+            "training-topic"
+          ],
+          "data-training-topic": "leadership"
+        }
+      }
+    ]
+  },
+  "services": {
+    "children": [
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap",
+          "page-hero"
+        ],
+        "text": "Jamaica service directory Select a parish. Go straight there. Service-location information supports users who need to connect evidence and programme guidance with HIV/STI/TB servic"
+      },
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap",
+          "services-grid",
+          "reveal"
+        ],
+        "text": "Select a parish Treatment PrEP Health Centres MOHW RHAs HAN 2 WML 1 STJ 4 TRE 2 STE 2 MAN 2 CLA 3 ANN 5 STC 5 KSA 12 STM 3 POR 2 STT 2 locations listed none listed in this director"
+      },
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap"
+        ],
+        "text": "Directory HIV treatment sites St. Thomas Morant Bay Health Centre 54 Lyssons Road, Morant Bay St. Thomas Princess Margaret Hospital 54 Lyssons Road, Morant Bay St. Catherine St. Ja"
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Treatment",
+        "attrs": {
+          "class": [
+            "active"
+          ],
+          "data-service-mode": "treatment",
+          "type": "button"
+        }
+      },
+      {
+        "text": "PrEP",
+        "attrs": {
+          "data-service-mode": "prep",
+          "type": "button"
+        }
+      },
+      {
+        "text": "Health Centres",
+        "attrs": {
+          "data-service-mode": "healthcentres",
+          "type": "button"
+        }
+      },
+      {
+        "text": "MOHW",
+        "attrs": {
+          "data-service-mode": "mohw",
+          "type": "button"
+        }
+      },
+      {
+        "text": "RHAs",
+        "attrs": {
+          "data-service-mode": "rha",
+          "type": "button"
+        }
+      },
+      {
+        "text": "HAN 2",
+        "attrs": {
+          "class": [
+            "parish-pin"
+          ],
+          "data-parish": "Hanover",
+          "style": "left:11.5%;top:34%;animation-delay:0ms",
+          "title": "Hanover \u2014 2 locations",
+          "type": "button"
+        }
+      },
+      {
+        "text": "WML 1",
+        "attrs": {
+          "class": [
+            "parish-pin"
+          ],
+          "data-parish": "Westmoreland",
+          "style": "left:13%;top:55%;animation-delay:35ms",
+          "title": "Westmoreland \u2014 1 locations",
+          "type": "button"
+        }
+      },
+      {
+        "text": "STJ 4",
+        "attrs": {
+          "class": [
+            "parish-pin"
+          ],
+          "data-parish": "St. James",
+          "style": "left:25.5%;top:31%;animation-delay:70ms",
+          "title": "St. James \u2014 4 locations",
+          "type": "button"
+        }
+      },
+      {
+        "text": "TRE 2",
+        "attrs": {
+          "class": [
+            "parish-pin"
+          ],
+          "data-parish": "Trelawny",
+          "style": "left:37%;top:29%;animation-delay:105ms",
+          "title": "Trelawny \u2014 2 locations",
+          "type": "button"
+        }
+      },
+      {
+        "text": "STE 2",
+        "attrs": {
+          "class": [
+            "parish-pin"
+          ],
+          "data-parish": "St. Elizabeth",
+          "style": "left:31%;top:65%;animation-delay:140ms",
+          "title": "St. Elizabeth \u2014 2 locations",
+          "type": "button"
+        }
+      },
+      {
+        "text": "MAN 2",
+        "attrs": {
+          "class": [
+            "parish-pin"
+          ],
+          "data-parish": "Manchester",
+          "style": "left:47%;top:64%;animation-delay:175ms",
+          "title": "Manchester \u2014 2 locations",
+          "type": "button"
+        }
+      },
+      {
+        "text": "CLA 3",
+        "attrs": {
+          "class": [
+            "parish-pin"
+          ],
+          "data-parish": "Clarendon",
+          "style": "left:58.5%;top:63%;animation-delay:210ms",
+          "title": "Clarendon \u2014 3 locations",
+          "type": "button"
+        }
+      },
+      {
+        "text": "ANN 5",
+        "attrs": {
+          "class": [
+            "parish-pin"
+          ],
+          "data-parish": "St. Ann",
+          "style": "left:54%;top:31%;animation-delay:245ms",
+          "title": "St. Ann \u2014 5 locations",
+          "type": "button"
+        }
+      },
+      {
+        "text": "STC 5",
+        "attrs": {
+          "class": [
+            "parish-pin"
+          ],
+          "data-parish": "St. Catherine",
+          "style": "left:68%;top:55%;animation-delay:280ms",
+          "title": "St. Catherine \u2014 5 locations",
+          "type": "button"
+        }
+      },
+      {
+        "text": "KSA 12",
+        "attrs": {
+          "class": [
+            "parish-pin"
+          ],
+          "data-parish": "Kingston & St. Andrew",
+          "style": "left:75%;top:65%;animation-delay:315ms",
+          "title": "Kingston & St. Andrew \u2014 12 locations",
+          "type": "button"
+        }
+      },
+      {
+        "text": "STM 3",
+        "attrs": {
+          "class": [
+            "parish-pin"
+          ],
+          "data-parish": "St. Mary",
+          "style": "left:69%;top:33%;animation-delay:350ms",
+          "title": "St. Mary \u2014 3 locations",
+          "type": "button"
+        }
+      },
+      {
+        "text": "POR 2",
+        "attrs": {
+          "class": [
+            "parish-pin"
+          ],
+          "data-parish": "Portland",
+          "style": "left:84%;top:40%;animation-delay:385ms",
+          "title": "Portland \u2014 2 locations",
+          "type": "button"
+        }
+      },
+      {
+        "text": "STT 2",
+        "attrs": {
+          "class": [
+            "parish-pin"
+          ],
+          "data-parish": "St. Thomas",
+          "style": "left:87%;top:64%;animation-delay:420ms",
+          "title": "St. Thomas \u2014 2 locations",
+          "type": "button"
+        }
+      }
+    ]
+  },
+  "capacity": {
+    "children": [
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap",
+          "page-hero"
+        ],
+        "text": "Manuals \u00b7 technical guidance \u00b7 professional development Capacity Building As the Research Data Repository evolved, its scope expanded to include capacity-building tools that suppor"
+      },
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "manual-toolbar"
+        ],
+        "text": "\u2315"
+      },
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap"
+        ],
+        "text": ""
+      },
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap"
+        ],
+        "text": "Additional official MOHW references Live national references These are useful cross-cutting national documents, but the current file is hosted only on the MOHW website rather than "
+      },
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap"
+        ],
+        "text": ""
+      },
+      {
+        "tag": "section",
+        "id": null,
+        "classes": [
+          "hstu-parity-group"
+        ],
+        "text": "Programme Training & Technical Learning 2026 \u00b7 Programme Training & Technical Learning Training Report 2026 Open material \u2197 2025 \u00b7 Programme Training & Technical Learning Pharmacol"
+      }
+    ],
+    "buttons": []
+  },
+  "research": {
+    "children": [
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap",
+          "page-hero",
+          "hstu-research-hero"
+        ],
+        "text": "HSTU \u00b7 Strategic Information \u00b7 Research Repository HIV/STI/TB Research Explore published and unpublished HIV, STI and TB research from Jamaica and the wider Caribbean, organized ac"
+      },
+      {
+        "tag": "section",
+        "id": null,
+        "classes": [
+          "wrap",
+          "hstu-agenda-block"
+        ],
+        "text": "National HIV Programme Research Agenda Burden of disease The agenda identifies an estimated HIV prevalence of 1.3% in Jamaica, with higher prevalence among key populations, and hig"
+      },
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap",
+          "hstu-research-purpose-note"
+        ],
+        "text": "The core repository collection Search by title, author, year, location or Strategic Objective. Recent studies are shown first, with the full collection available through View All."
+      },
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap",
+          "hstu-refine-controls"
+        ],
+        "text": "Search studies Level Jamaica and Caribbean Jamaica Caribbean Strategic Objectives All 15 Strategic Objectives"
+      },
+      {
+        "tag": "div",
+        "id": null,
+        "classes": [
+          "wrap"
+        ],
+        "text": "View all research"
+      },
+      {
+        "tag": "section",
+        "id": "unveiling-hope",
+        "classes": [
+          "wrap",
+          "hstu-unveiling"
+        ],
+        "text": "Research Publication Unveiling Hope Recently added published research contributes to the continuing development of Unveiling Hope , the HIV/STI/TB research booklet that compiles re"
+      },
+      {
+        "tag": "section",
+        "id": null,
+        "classes": [
+          "hstu-parity-group"
+        ],
+        "text": "Operational Research 2025 \u00b7 Operational Research SRHA Risk Assessment Matrix Research 2025 View document \u2197 2025 \u00b7 Operational Research Operational Research Abstracts - HSTU Studies"
+      }
+    ],
+    "buttons": [
+      {
+        "text": "View all research",
+        "attrs": {
+          "class": [
+            "hstu-view-all"
+          ],
+          "id": "refineResearchViewAll",
+          "type": "button"
+        }
+      }
+    ]
+  }
+}
