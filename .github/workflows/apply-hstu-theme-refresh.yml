@@ -56,16 +56,25 @@ jobs:
               page.goto("http://127.0.0.1:8000/",wait_until="networkidle")
               page.wait_for_timeout(1200)
 
-              banner=page.locator(".proposal-banner").first
-              assert banner.count()==1 and banner.is_visible(),"Top proposal banner missing"
-              bg=css(page,".proposal-banner","backgroundImage")
-              fg=css(page,".proposal-banner","color")
+              stripe=page.locator(".topline").first
+              assert stripe.count()==1 and stripe.is_visible(),"Top colour stripe missing"
+              bg=css(page,".topline","backgroundImage")
               assert "linear-gradient" in bg,bg
-              assert "246, 186, 22" not in bg and "244, 197, 66" not in bg,bg
-              assert fg in ("rgb(255, 255, 255)","rgba(255, 255, 255, 1)"),fg
+              for yellow in ("242, 183, 20","246, 186, 22","244, 197, 66","255, 217, 90"):
+                  assert yellow not in bg,bg
+              assert "101, 189, 58" in bg,bg
+              assert "229, 22, 34" in bg,bg
 
               bodybg=css(page,"body","backgroundColor")
               assert bodybg=="rgb(248, 250, 247)",bodybg
+
+              # Prominent hero CTAs are now unified green-red gradients with readable white text.
+              for selector in [".hero-actions-core .btn.green",".hero-actions-core .btn.primary"]:
+                  assert page.locator(selector).count()==1,selector
+                  assert "linear-gradient" in css(page,selector,"backgroundImage"),(selector,css(page,selector,"backgroundImage"))
+                  assert css(page,selector,"color")=="rgb(255, 255, 255)",(selector,css(page,selector,"color"))
+
+              assert "linear-gradient" in css(page,"#hstuInstallBtn","backgroundImage"),css(page,"#hstuInstallBtn","backgroundImage")
 
               # Navigation still works after theme override.
               for view in ["home","research","capacity","reports","data-audit","gallery","resources","services"]:
@@ -100,8 +109,13 @@ jobs:
               page=b.new_page(viewport={"width":390,"height":844})
               page.goto("http://127.0.0.1:8000/",wait_until="networkidle")
               page.wait_for_timeout(900)
-              mbg=css(page,".proposal-banner","backgroundImage")
-              assert "linear-gradient" in mbg and "246, 186, 22" not in mbg,mbg
+              mbg=css(page,".topline","backgroundImage")
+              assert "linear-gradient" in mbg,mbg
+              for yellow in ("242, 183, 20","246, 186, 22","244, 197, 66","255, 217, 90"):
+                  assert yellow not in mbg,mbg
+              for selector in [".hero-actions-core .btn.green",".hero-actions-core .btn.primary"]:
+                  assert "linear-gradient" in css(page,selector,"backgroundImage"),(selector,css(page,selector,"backgroundImage"))
+                  assert css(page,selector,"color")=="rgb(255, 255, 255)"
               page.locator("#clinicalFab").click()
               page.wait_for_timeout(300)
               assert page.locator("#clinicalDrawer").evaluate("el=>el.classList.contains('open')")
