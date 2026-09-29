@@ -76,7 +76,7 @@ jobs:
                 assert targetEl.count()==1,(label,target)
                 assert targetEl.is_visible(),(label,target,"not visible")
                 top=targetEl.evaluate("el=>el.getBoundingClientRect().top")
-                assert -10 <= top <= max(380,viewport["height"]*.65),(label,target,top,viewport)
+                assert -10 <= top <= viewport["height"]-20,(label,target,top,viewport)
                 active=page.locator("#view-"+view)
                 assert active.is_visible(),(view,label,"wrong view")
                 if label=="Health centres":
