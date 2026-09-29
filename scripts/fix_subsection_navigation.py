@@ -127,8 +127,8 @@ function go(btn){
    const finishScroll=()=>{
      const target=document.getElementById(targetId);
      if(!target)return;
-     const y=window.scrollY+target.getBoundingClientRect().top-stickyOffset();
-     window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+     target.scrollIntoView({behavior:'auto',block:'start'});
+     window.scrollBy({top:-stickyOffset(),left:0,behavior:'auto'});
      target.classList.add('hstu-subsection-arrival');
      setTimeout(()=>target.classList.remove('hstu-subsection-arrival'),900);
      try{history.replaceState(null,'','#'+targetId)}catch(_){}
