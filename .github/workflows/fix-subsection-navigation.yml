@@ -59,10 +59,18 @@ jobs:
               page.goto("http://127.0.0.1:8000/",wait_until="domcontentloaded")
               page.wait_for_timeout(1200)
               for view,label,target in cases:
+                main=page.locator(f'.hstu-nav-item > .nav-btn[data-view="{view}"]').first
+                assert main.count()==1,(view,label,"main nav missing")
+                if viewport["width"]>950:
+                  main.hover()
+                else:
+                  main.focus()
+                page.wait_for_timeout(120)
                 sel=f'.hstu-nav-item > .nav-btn[data-view="{view}"] + .hstu-nav-dropdown button'
                 btn=page.locator(sel).filter(has_text=label).first
                 assert btn.count()==1,(view,label)
-                btn.click(force=True)
+                assert btn.is_visible(),(view,label,"dropdown not visible")
+                btn.click()
                 page.wait_for_timeout(650)
                 targetEl=page.locator("#"+target)
                 assert targetEl.count()==1,(label,target)
