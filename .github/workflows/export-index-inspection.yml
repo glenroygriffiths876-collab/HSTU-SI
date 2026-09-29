@@ -1,0 +1,19 @@
+name: Export HSTU index for inspection
+on:
+  push:
+    paths:
+      - '.github/workflows/export-index-inspection.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hstu-index-inspection
+          path: index.html
+          if-no-files-found: error
