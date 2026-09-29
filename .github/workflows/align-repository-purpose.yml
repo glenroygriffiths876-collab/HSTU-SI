@@ -1,0 +1,85 @@
+name: Align HSTU with Research Data Repository purpose
+on:
+  push:
+    paths:
+      - '.github/workflows/align-repository-purpose.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  align:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install beautifulsoup4
+      - name: Apply purpose alignment
+        run: python scripts/align_repository_purpose.py
+      - name: Refresh PWA cache
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("service-worker.js")
+          s=p.read_text(encoding="utf-8")
+          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20260929-purpose-aligned-v1";', s, count=1)
+          p.write_text(s,encoding="utf-8")
+          PY
+      - name: Browser QA desktop + mobile
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+          python -m http.server 8000 >/tmp/hstu.log 2>&1 &
+          sleep 2
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          banned=["j-merg","legacy resource","recovered entries","reconstructed in this build"]
+          with sync_playwright() as p:
+            for viewport in ({"width":1440,"height":1000},{"width":390,"height":844}):
+              b=p.chromium.launch(headless=True)
+              page=b.new_page(viewport=viewport)
+              page.goto("http://127.0.0.1:8000/",wait_until="domcontentloaded")
+              page.wait_for_timeout(1800)
+              body=page.locator("body").inner_text()
+              assert "About the Research Data Repository" in body
+              assert "Evidence. Research. Strategic Information." in body
+              assert "The Research Data Repository was conceptualized in 2023" in body
+              assert "Jamaica and the wider Caribbean" in body
+              assert "15 Thematic Research Areas" in body
+              assert "Unveiling Hope" in body
+              for x in banned: assert x not in body.lower(),x
+              # Purpose section must appear before deep homepage content/footer.
+              top=page.locator("#repository-purpose").bounding_box()
+              assert top and top["y"]<1800,top
+              # All 8 approved views still exist and open.
+              for view in ["home","research","capacity","reports","data-audit","gallery","resources","services"]:
+                assert page.locator("#view-"+view).count()==1,view
+                page.evaluate("(v)=>window.setView(v)",view)
+                page.wait_for_timeout(80)
+              # Gia purpose-aligned copy and fuzzy search still work.
+              page.evaluate("()=>window.setView('home')")
+              page.locator(".clinical-fab").first.click()
+              page.wait_for_timeout(200)
+              g=page.locator(".clinical-drawer").inner_text()
+              assert "Research Data Repository and Resource Centre" in g
+              inp=page.locator(".clinical-search input")
+              inp.fill("syphlis")
+              page.wait_for_timeout(650)
+              assert "no strong match yet" not in page.locator(".clinical-results").inner_text().lower()
+              if viewport["width"]<=430:
+                overflow=page.evaluate("document.documentElement.scrollWidth-window.innerWidth")
+                assert overflow<=3,overflow
+              b.close()
+          print("Purpose alignment QA PASS")
+          PY
+      - name: Commit aligned build
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html repository-content.json service-worker.js
+          git commit -m "Make Research Data Repository the governing purpose of HSTU hub"
+          git pull --rebase origin main
+          git push origin main
