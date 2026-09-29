@@ -1,4 +1,4 @@
-name: Fix dropdown subsection navigation # rerun 4
+name: Fix dropdown subsection navigation # rerun 5
 on:
   push:
     paths:
@@ -64,6 +64,11 @@ jobs:
                 if viewport["width"]>950:
                   main.hover()
                 else:
+                  menu=page.locator("#menuToggle")
+                  nav=page.locator("#mainNav")
+                  if menu.count() and not nav.evaluate("el=>el.classList.contains('open')"):
+                    menu.click()
+                    page.wait_for_timeout(100)
                   main.focus()
                 page.wait_for_timeout(120)
                 sel=f'.hstu-nav-item > .nav-btn[data-view="{view}"] + .hstu-nav-dropdown button'
