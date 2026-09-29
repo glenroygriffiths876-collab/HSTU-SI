@@ -1,4 +1,4 @@
-name: Fix dropdown subsection navigation # rerun 7
+name: Fix dropdown subsection navigation # rerun 8
 on:
   push:
     paths:
@@ -25,7 +25,7 @@ jobs:
           import re
           p=Path("service-worker.js")
           s=p.read_text(encoding="utf-8")
-          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20260929-subsection-nav-v1";', s, count=1)
+          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20260929-subsection-nav-v2";', s, count=1)
           p.write_text(s,encoding="utf-8")
           PY
       - name: Browser QA all dropdown destinations
@@ -68,16 +68,21 @@ jobs:
                   nav=page.locator("#mainNav")
                   if menu.count() and not nav.evaluate("el=>el.classList.contains('open')"):
                     menu.click()
-                    page.wait_for_timeout(100)
-                  main.focus()
+                    page.wait_for_timeout(140)
+                  assert nav.is_visible(),(view,label,"mobile nav did not open")
+                  main.click()
+                  page.wait_for_timeout(180)
+                  assert main.get_attribute("aria-expanded")=="true",(view,label,"touch submenu did not expand")
                 page.wait_for_timeout(120)
                 sel=f'.hstu-nav-item > .nav-btn[data-view="{view}"] + .hstu-nav-dropdown button'
                 btn=page.locator(sel).filter(has_text=label).first
                 assert btn.count()==1,(view,label)
                 assert btn.is_visible(),(view,label,"dropdown not visible")
-                btn.dispatch_event('click')
+                btn.click()
                 page.wait_for_timeout(1250)
                 assert page.url.endswith("#"+target),(label,target,page.url)
+                if viewport["width"]<=950:
+                  assert not page.locator("#mainNav").evaluate("el=>el.classList.contains('open')"),(label,"mobile nav stayed open")
                 targetEl=page.locator("#"+target)
                 assert targetEl.count()==1,(label,target)
                 assert targetEl.is_visible(),(label,target,"not visible")
