@@ -1,0 +1,37 @@
+name: Gia visual selector diagnostic
+on:
+  push:
+    paths:
+      - '.github/workflows/gia-visual-selector-diagnostic.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install beautifulsoup4
+      - name: Inspect Gia and clinical assistant styling
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from bs4 import BeautifulSoup
+          import re
+          html=Path("index.html").read_text(encoding="utf-8",errors="ignore")
+          soup=BeautifulSoup(html,"html.parser")
+          print("=== ELEMENTS ===")
+          for el in soup.find_all(True):
+              marker=" ".join(filter(None,[el.get("id","")," ".join(el.get("class",[]))]))
+              if re.search(r"(gia|clinical|assistant|chat|greeting)",marker,re.I):
+                  print(el.name,"id=",el.get("id"),"class="," ".join(el.get("class",[])))
+          print("\n=== CSS BLOCKS ===")
+          for st in soup.find_all("style"):
+              txt=st.get_text("\n")
+              for b in re.findall(r'[^{}]*\{[^{}]*\}',txt,re.S):
+                  if re.search(r"(clinical|gia|assistant|greeting)",b,re.I):
+                      print(" ".join(b.split())[:1400])
+          PY
