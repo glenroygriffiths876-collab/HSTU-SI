@@ -10,9 +10,9 @@ const objective=document.getElementById('refineResearchObjective');if(objective)
 const q=document.getElementById('refineResearchSearch'),level=document.getElementById('refineResearchLevel'),grid=document.getElementById('refineResearchGrid'),status=document.getElementById('refineResearchStatus'),viewAll=document.getElementById('refineResearchViewAll');let expanded=false;
 function renderResearch(){
  const search=norm(q.value);
- let rows=research.filter(r=>(objective.value==='All'||String(r.objective)===objective.value)&&(!search||norm([r.title,r.authors,r.category,r.year,...(r.topics||[])].join(' ')).includes(search)));
- if(level.value==='Jamaica')rows=rows.filter(r=>/\bjamaica(?:n)?\b/i.test([r.title,r.category,r.legacyPage].join(' '))||/^JMERG-ADOL-/.test(r.id||''));
- if(level.value==='Caribbean')rows=rows.filter(r=>/\bcaribbean\b|\bwest indies\b|\bjamaica(?:n)?\b/i.test([r.title,r.category,r.legacyPage].join(' '))||/^JMERG-ADOL-/.test(r.id||''));
+ let rows=research.filter(r=>(objective.value==='All'||(Array.isArray(r.objectives)?r.objectives.includes(Number(objective.value)):String(r.objective)===objective.value))&&(!search||norm([r.title,r.authors,r.category,r.year,...(r.topics||[])].join(' ')).includes(search)));
+ if(level.value==='Jamaica')rows=rows.filter(r=>r.geography==='Jamaica');
+ if(level.value==='Caribbean')rows=rows.filter(r=>r.geography==='Jamaica'||r.geography==='Caribbean');
  const unclassified=research.filter(r=>!r.objective).length;
  const note=rows.length?'':objective.value!=='All'?'No studies are verified under this objective in the current catalogue. Other studies remain available under All Research.':level.value!=='All'?'No studies have verified location metadata matching this filter. Try Jamaica and Caribbean.':'No matching studies. Try clearing the search.';
  status.textContent=rows.length+' research records'+(objective.value==='All'&&unclassified?' · '+unclassified+' awaiting objective verification':'')+(note?' · '+note:'');
