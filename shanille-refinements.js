@@ -4,7 +4,7 @@ const objectiveAliases=[['coinfection','co infection','communicable'],['sexually
 function getObjective(r){if(/^JMERG-ADOL-/.test(r.id||''))return 8;const exact=OBJECTIVES.findIndex(x=>norm(x)===norm(r.category));return exact>=0?exact+1:null;}
 const year=r=>{let m=String(r.year||r.title).match(/20\d{2}/);return m?Number(m[0]):0};const sort=(a,b)=>year(b)-year(a)||a.title.localeCompare(b.title);
 const route=r=>{const x=norm([r.destination,r.category,r.title,r.legacyPage].join(' '));if(/report|kabp final|national strategic plan/.test(x)&&(/report|special|national/.test(x)))return'reports';if(/data audit|data utili|dhis|tsis|dqa|data quality/.test(x))return'data-audit';if(/capacity building|manual|guideline|clinical guide|pharmacology|opportunistic infection/.test(x))return'capacity';if(/presentation|poster|resource/.test(norm(r.destination+' '+r.legacyPage)))return'resources';return'research'};
-const cards=(rows)=>rows.map(r=>{const nums=Array.isArray(r.objectives)&&r.objectives.length?r.objectives:(r.objective?[r.objective]:[]);const labels=nums.map(n=>`${n}. ${OBJECTIVES[n-1]}`).filter(Boolean).join(' · ');return `<article class="hstu-refine-card"><span class="badge">${esc(r.year||'Undated')} · ${esc(r.type||'Resource')}</span><h3>${esc(r.title)}</h3><p>${esc(r.authors||r.category||r.destination||'HSTU Research Repository')}</p>${labels?`<p>Strategic Objective${nums.length>1?'s':''}: ${esc(labels)}</p>`:''}<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">Open original resource ↗</a></article>`}).join('');
+const cards=(rows)=>rows.map(r=>{const nums=Array.isArray(r.objectives)&&r.objectives.length?r.objectives:(r.objective?[r.objective]:[]);const labels=nums.map(n=>`${n}. ${OBJECTIVES[n-1]}`).filter(Boolean).join(' · ');return `<article class="hstu-refine-card"><span class="badge">${esc(r.year||'Undated')} · ${esc(r.type||'Resource')}</span><h3>${esc(r.title)}</h3><p>${esc(r.authors||r.category||r.destination||'HSTU Research Repository')}</p>${labels?`<p>Strategic Objective${nums.length>1?'s':''}: ${esc(labels)}</p>`:''}<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">View resource ↗</a></article>`}).join('');
 DATA.forEach(r=>{r.route=route(r);r.objective=getObjective(r)});let research=DATA.filter(r=>r.route==='research').sort(sort);
 const objective=document.getElementById('refineResearchObjective');if(objective){const selected=objective.value;objective.replaceChildren(new Option('All 15 Strategic Objectives','All'));OBJECTIVES.forEach((name,i)=>objective.add(new Option(`${i+1}. ${name}`,String(i+1))));objective.value=OBJECTIVES.some((_,i)=>String(i+1)===selected)?selected:'All';}
 const q=document.getElementById('refineResearchSearch'),level=document.getElementById('refineResearchLevel'),grid=document.getElementById('refineResearchGrid'),status=document.getElementById('refineResearchStatus'),viewAll=document.getElementById('refineResearchViewAll');let expanded=false;if(level&&level.options[0])level.options[0].textContent='All Research';
@@ -14,7 +14,7 @@ function renderResearch(){
  if(level.value==='Jamaica')rows=rows.filter(r=>r.geography==='Jamaica');
  if(level.value==='Caribbean')rows=rows.filter(r=>r.geography==='Jamaica'||r.geography==='Caribbean');
  const unclassified=research.filter(r=>!r.objective).length;
- const note=rows.length?'':objective.value!=='All'?'No studies are verified under this objective in the current catalogue. Other studies remain available under All Research.':level.value!=='All'?'No studies have verified location metadata matching this filter. Try Jamaica and Caribbean.':'No matching studies. Try clearing the search.';
+ const note=rows.length?'':objective.value!=='All'?'No studies match this Strategic Objective.':level.value!=='All'?'No studies match this location filter.':'No matching studies. Try clearing the search.';
  status.textContent=rows.length+' research records'+(objective.value==='All'&&unclassified?' · '+unclassified+' awaiting objective verification':'')+(note?' · '+note:'');
  grid.innerHTML=rows.length?cards(expanded?rows:rows.slice(0,8)):'<p class="hstu-research-empty">'+esc(note)+'</p>';
  viewAll.hidden=rows.length<=8;viewAll.textContent=expanded?'Show recent selection':'View all '+rows.length+' records';
@@ -35,9 +35,9 @@ fetch('research-catalogue.json',{cache:'no-cache'})
  })
  .catch(err=>{
    console.warn('Recovered research catalogue could not load',err);
-   status.textContent+=' · Additional research records are temporarily unavailable.';
+   status.textContent+=' · Research records could not be loaded. Please refresh.';
  });
-for(const [id,filter] of [['reports',r=>r.route==='reports'],['data-audit',r=>r.route==='data-audit']]){let node=document.getElementById('refine-'+id+'-grid');if(node){let rows=DATA.filter(filter).sort(sort);node.innerHTML=rows.length?cards(rows):'<p>Resources in this section are being reconciled against the original repository.</p>';}}
+for(const [id,filter] of [['reports',r=>r.route==='reports'],['data-audit',r=>r.route==='data-audit']]){let node=document.getElementById('refine-'+id+'-grid');if(node){let rows=DATA.filter(filter).sort(sort);node.innerHTML=rows.length?cards(rows):'<p>No resources are available in this section.</p>';}}
 // Wire new navigation controls, preserving original setView and PWA routing.
 document.querySelectorAll('.hstu-nav-item [data-view],.hstu-intro-links [data-view]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(typeof setView==='function')setView(b.dataset.view)}));
 })();
@@ -78,7 +78,7 @@ document.querySelectorAll('.hstu-nav-item [data-view],.hstu-intro-links [data-vi
       frame.title='Research poster preview: '+(card.querySelector('h3,h4')?.textContent||'Poster');
       frame.setAttribute('referrerpolicy','no-referrer');
       wrap.append(frame);
-      const hint=document.createElement('p');hint.className='hstu-poster-hint';hint.textContent='Poster preview · Select View full poster for the original PDF.';
+      const hint=document.createElement('p');hint.className='hstu-poster-hint';hint.textContent='Poster preview · Select View full poster to open the document.';
       wrap.append(hint);
       card.insertBefore(wrap,anchor);
     }
