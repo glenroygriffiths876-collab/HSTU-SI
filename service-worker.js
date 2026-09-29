@@ -1,6 +1,8 @@
 const CACHE_NAME="hstu-sept-2026-refinements-v1";
 const APP_SHELL=[
   "./index.html",
+  "./refinements-2026.js",
+  "./jmerg_complete_migration_manifest.json",
   "./health-snake.html",
   "./manifest.webmanifest",
   "./hstu-app-icon-192.png","./hstu-app-icon-512.png",
