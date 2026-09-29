@@ -18,7 +18,6 @@ def setid(el,idv):
     if el: el["id"]=idv
     return el
 
-# Stable subsection anchors
 setid(soup.find(id="repository-purpose"),"repository-purpose")
 
 research=soup.find(id="view-research")
@@ -27,8 +26,7 @@ if research:
     setid(controls,"research-filters")
     grid=soup.find(id="refineResearchGrid")
     if grid:
-        parent=grid.parent
-        setid(parent,"research-results")
+        setid(grid.parent,"research-results")
 
 capacity=soup.find(id="view-capacity")
 if capacity:
@@ -74,6 +72,10 @@ mapping={
 for item in soup.select(".hstu-nav-item"):
     main=item.select_one(":scope > .nav-btn")
     view=main.get("data-view") if main else None
+    dropdown=item.select_one(":scope > .hstu-nav-dropdown")
+    if main and dropdown:
+        main["aria-haspopup"]="true"
+        main["aria-expanded"]="false"
     for b in item.select(".hstu-nav-dropdown button"):
         key=(view,b.get_text(" ",strip=True))
         if key in mapping:
@@ -81,7 +83,6 @@ for item in soup.select(".hstu-nav-item"):
             b["data-target"]=target
             if mode:b["data-service-mode-target"]=mode
 
-# Remove old implementation on reruns.
 for oldid in ["hstu-subsection-nav-v1","hstu-subsection-nav-v1-styles"]:
     old=soup.find(id=oldid)
     if old:old.decompose()
@@ -93,6 +94,21 @@ style.string="""
 #resources-presentations,#services-directory,#repository-purpose{scroll-margin-top:110px}
 .hstu-nav-dropdown button[data-target]::after{content:"↘";float:right;margin-left:12px;opacity:.48;font-size:.85em}
 .hstu-nav-dropdown button[data-target]:hover::after,.hstu-nav-dropdown button[data-target]:focus::after{opacity:.9}
+@media(max-width:950px){
+  .hstu-nav-item.touch-open>.hstu-nav-dropdown{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+    transform:none!important;
+    position:static!important;
+    width:100%!important;
+    max-width:none!important;
+    max-height:none!important;
+    flex-direction:column!important;
+  }
+  .hstu-nav-item.touch-open>.nav-btn::after{transform:rotate(180deg)}
+}
 """
 soup.head.append(style)
 
@@ -100,17 +116,37 @@ script=soup.new_tag("script",id="hstu-subsection-nav-v1")
 script.string=r"""
 (()=>{
 'use strict';
+const compact=()=>window.matchMedia('(max-width:950px)').matches;
+
 function stickyOffset(){
  const header=document.querySelector('header,.navbar,.site-header');
  const r=header?.getBoundingClientRect();
  return Math.max(76,(r&&r.height)||0)+18;
+}
+function collapseTouchMenus(except){
+ document.querySelectorAll('.hstu-nav-item.touch-open').forEach(item=>{
+   if(item===except)return;
+   item.classList.remove('touch-open');
+   const main=item.querySelector(':scope > .nav-btn[aria-expanded]');
+   if(main)main.setAttribute('aria-expanded','false');
+ });
+}
+function closeMobileNav(){
+ collapseTouchMenus(null);
+ const nav=document.querySelector('#mainNav');
+ if(nav)nav.classList.remove('open');
+ const toggle=document.querySelector('#menuToggle');
+ if(toggle?.hasAttribute('aria-expanded'))toggle.setAttribute('aria-expanded','false');
+ document.querySelectorAll('.nav-menu.open,.mobile-menu.open,.navbar.open,[aria-expanded="true"].nav-toggle').forEach(el=>{
+   el.classList.remove('open');
+   if(el.matches('[aria-expanded]'))el.setAttribute('aria-expanded','false');
+ });
 }
 function go(btn){
  const view=btn.dataset.view;
  const targetId=btn.dataset.target;
  if(!view||!targetId)return;
  if(typeof window.setView==='function'){
-   // Suppress setView's own smooth scroll-to-top; this navigation has a precise subsection target.
    const nativeScrollTo=window.scrollTo;
    window.scrollTo=()=>{};
    try{window.setView(view)}finally{window.scrollTo=nativeScrollTo}
@@ -119,11 +155,7 @@ function go(btn){
  }
  const scroller=document.scrollingElement||document.documentElement;
  scroller.scrollTop=0;
- // Close compact/mobile nav if it is open.
- document.querySelectorAll('.nav-menu.open,.mobile-menu.open,.navbar.open,[aria-expanded="true"].nav-toggle').forEach(el=>{
-   el.classList.remove('open');
-   if(el.matches('[aria-expanded]'))el.setAttribute('aria-expanded','false');
- });
+ closeMobileNav();
  setTimeout(()=>{
    const mode=btn.dataset.serviceModeTarget;
    if(mode){
@@ -140,12 +172,25 @@ function go(btn){
      setTimeout(()=>target.classList.remove('hstu-subsection-arrival'),900);
      try{history.replaceState(null,'','#'+targetId)}catch(_){}
    };
-   // Dynamic cards and mobile menu collapse can change page height after the first jump.
-   // Re-anchor briefly while the layout settles so the requested subsection stays in view.
    const base=mode?160:0;
    [base,base+260,base+760].forEach(delay=>setTimeout(finishScroll,delay));
  },120);
 }
+
+document.addEventListener('click',e=>{
+ const main=e.target.closest('.hstu-nav-item > .nav-btn[data-view]');
+ if(!main||!compact())return;
+ const item=main.closest('.hstu-nav-item');
+ const dropdown=item?.querySelector(':scope > .hstu-nav-dropdown');
+ if(!dropdown)return;
+ e.preventDefault();
+ e.stopImmediatePropagation();
+ const willOpen=!item.classList.contains('touch-open');
+ collapseTouchMenus(item);
+ item.classList.toggle('touch-open',willOpen);
+ main.setAttribute('aria-expanded',willOpen?'true':'false');
+},true);
+
 document.addEventListener('click',e=>{
  const btn=e.target.closest('.hstu-nav-dropdown button[data-target]');
  if(!btn)return;
@@ -153,11 +198,17 @@ document.addEventListener('click',e=>{
  e.stopImmediatePropagation();
  go(btn);
 },true);
+
+document.addEventListener('keydown',e=>{
+ if(e.key!=='Escape')return;
+ collapseTouchMenus(null);
+},true);
+
+window.addEventListener('resize',()=>{if(!compact())collapseTouchMenus(null)});
 })();
 """
 soup.body.append(script)
 
-# Add a brief arrival visual cue.
 style.string += """
 .hstu-subsection-arrival{animation:hstuArrival .9s ease}
 @keyframes hstuArrival{0%{outline:0 solid rgba(15,140,71,0)}30%{outline:4px solid rgba(15,140,71,.22);outline-offset:8px}100%{outline:0 solid rgba(15,140,71,0)}}
