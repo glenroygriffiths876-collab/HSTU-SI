@@ -1,0 +1,77 @@
+name: Upgrade Gia universal hub search
+on:
+  push:
+    paths:
+      - '.github/workflows/upgrade-gia-universal-search.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install beautifulsoup4
+      - name: Upgrade Gia
+        run: python scripts/upgrade_gia_universal_search.py
+      - name: Refresh PWA
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("service-worker.js")
+          s=p.read_text(encoding="utf-8")
+          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20260929-gia-universal-v2";', s, count=1)
+          p.write_text(s,encoding="utf-8")
+          PY
+      - name: Browser QA — typo, partial-word and whole-hub searches
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+          python -m http.server 8000 >/tmp/hstu.log 2>&1 &
+          sleep 2
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          tests=[
+            ("syphlis","syph"),
+            ("pharmacolgy arvs","pharmacol"),
+            ("adolesent hiv","adoles"),
+            ("DHIS","dhis"),
+            ("mystery shop","mystery"),
+            ("tubercu","tuberc"),
+            ("Hanov","hanov"),
+            ("stigma","stigma")
+          ]
+          with sync_playwright() as p:
+            for viewport in ({"width":1440,"height":1000},{"width":390,"height":844}):
+              b=p.chromium.launch(headless=True)
+              page=b.new_page(viewport=viewport)
+              page.goto("http://127.0.0.1:8000/",wait_until="domcontentloaded")
+              page.wait_for_timeout(1600)
+              page.locator(".clinical-fab").first.click()
+              page.wait_for_timeout(250)
+              header=page.locator(".clinical-head-copy").inner_text()
+              assert "entire HSTU Resource Centre" in header
+              assert "source manual and page" not in page.locator(".clinical-drawer").inner_text()
+              inp=page.locator(".clinical-search input")
+              for query,needle in tests:
+                inp.fill(query)
+                page.wait_for_timeout(650)
+                txt=page.locator(".clinical-results").inner_text().lower()
+                assert "no strong match yet" not in txt,(query,txt[:500])
+                assert needle in txt,(query,needle,txt[:700])
+              b.close()
+          print("Gia universal fuzzy-search QA PASS")
+          PY
+      - name: Commit Gia upgrade
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html service-worker.js
+          git commit -m "Upgrade Gia to typo-tolerant whole-hub search"
+          git pull --rebase origin main
+          git push origin main
