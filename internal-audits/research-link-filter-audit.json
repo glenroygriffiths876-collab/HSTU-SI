@@ -1,0 +1,1415 @@
+{
+  "record_count": 276,
+  "unique_url_count": 276,
+  "duplicate_url_records": 0,
+  "link_summary": {
+    "restricted": 222,
+    "reachable": 53,
+    "network_error": 1
+  },
+  "objective_counts": {
+    "1": 12,
+    "2": 81,
+    "3": 12,
+    "4": 20,
+    "5": 6,
+    "6": 7,
+    "7": 12,
+    "8": 18,
+    "9": 22,
+    "10": 32,
+    "11": 32,
+    "12": 17,
+    "13": 25,
+    "14": 2,
+    "15": 4
+  },
+  "geography_counts": {
+    "Caribbean": 30,
+    "Unspecified": 33,
+    "Jamaica": 213
+  },
+  "links": [
+    {
+      "url": "https://europepmc.org/article/med/9792363",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://ijoc.org/index.php/ijoc/article/view/167",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://journals.sagepub.com/doi/10.1177/1367549420951578",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://journals.sagepub.com/doi/abs/10.1177/0956462419839514",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://journals.ukzn.ac.za/index.php/soa/article/view/1281",
+      "status": null,
+      "result": "network_error",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    },
+    {
+      "url": "https://knowledgecommons.popcouncil.org/departments_sbsr-hiv/731/",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://link.springer.com/chapter/10.1007/978-3-319-29936-5_14",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://nicpd.ac.in/ojs-/index.php/gjmedph/article/view/3867",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://openurl.ebsco.com/EPDB%3Agcd%3A8%3A413896/detailv2?sid=ebsco%3Aplink%3Acrawler-gcd&id=",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6154803/",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/10023362/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/10368624/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/10448346/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/10452639/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/10494360/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/10555764/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/10726944/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/10754948/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/11090751/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/11211544/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/11341177/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/11354264/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/11463935/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/11719928/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/11769024/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/11875373/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/11993012/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12232946/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12285809/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12288827/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12319044/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12347581/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12369492/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12454365/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12806748/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12838087/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/1290231/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12962255/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/14110553/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/14290709/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15114897/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15266994/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15675491/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15675492/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15675493/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15675494/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15675495/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15675496/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15675497/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15675498/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15675499/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15675500/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15675501/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15675502/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15675503/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15675504/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15991377/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/16385220/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/16536937/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/16630035/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/1664562/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/16864208/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/16921701/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/16923646/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/17012096/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/17260568/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/17303487/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/17362708/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/17403495/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/17450311/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/17579339/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/17593771/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/17624035/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/17706448/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/18178540/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/18482079/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/18565635/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/18814406/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/19583128/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/19583134/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/20089997/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/20182645/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/20390514/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/20545916/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/20780696/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/20929350/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/21106514/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/21355507/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/21355510/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/2187794/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/21942116/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/22004468/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/22049946/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/22240464/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/22558590/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/2264331/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/22893195/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/23038892/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/23321990/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/23485671/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/23562357/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/23744572/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24066164/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24171329/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24378516/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24618497/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24695013/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24756602/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24756653/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24756654/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/25659122/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/26079469/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/26122980/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/26138898/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/2623847/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/27001008/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/27305908/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/27610463/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/2789009/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/2827394/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/28406274/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/28406598/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/28476913/#0",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/2854684/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/28669320/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/28718488/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/28836955/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/28971701/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29026375/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29302172/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29400261/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29420443/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29476435/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29631931/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29654017/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29697593/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29925463/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29951864/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30345791/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30444450/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30475167/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30484752/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30600454/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/31074362/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/3123360/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/31423952/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/3216301/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/32666244/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/32894795/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/33245295/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/33650933/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/34343124/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/34383797/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/3439162/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/34557895/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/34986729/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35147490/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35479291/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/36332062/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37235603/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37395626/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37505666/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37966358/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38662640/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39095070/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39098884/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39316078/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39652821/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39967284/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39998752/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40021301/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40048580/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40083883/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40135708/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40266811/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40296980/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40529950/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40657168/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40676510/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40976860/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40988523/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40990574/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41039293/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41059582/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41074705/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41118141/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41126510/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41268736/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41414743/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41543971/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41592909/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41664877/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41666189/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41820907/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41874001/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41946354/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42042949/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42189145/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42281294/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42385762/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42432553/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42453835/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42502244/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42502254/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42502255/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42576182/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/7545339/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/7546422/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/7624812/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/7652657/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/7667970/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/8106971/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/8205644/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/8693741/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/8735897/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/8749630/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/9257658/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/9260533/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/9534744/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/9619092/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/9792363/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/9792366/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/9861862/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/9935171/",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://www.academia.edu/download/29331446/hiv_modes_of_transmission_model.pdf",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://www.jstor.org/stable/41675010",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.liebertpub.com/doi/abs/10.1089/AID.2015.0040",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/101",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/1041",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/1190",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/1263",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/1269",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/1270",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/1273",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/1274",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/1278",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/1280",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/1942",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/2",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/307",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/327",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/3608",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/406",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/591",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/701",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/742",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/743",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/744",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/745",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/746",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/747",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/749",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/750",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/751",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/752",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/753",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/754",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/755",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/756",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/757",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/758",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/760",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/814",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/842",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/847",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/848",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/945",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/946",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.mona.uwi.edu/fms/wimj/article/976",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2600223/",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5739366/",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.ohiocomm.org/wp-content/uploads/2017/01/Darlington-OCJ-2017.pdf",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.omicsonline.org/open-access/women-promiscuity-and-reproductive-health-matters-findings-and-policy-implications-1522-4821-17-146.php?aid=35289",
+      "status": 200,
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.tandfonline.com/doi/abs/10.1080/10282580.2015.1101687",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://www.tandfonline.com/doi/abs/10.1080/19317611003648195",
+      "status": 403,
+      "result": "restricted"
+    },
+    {
+      "url": "https://www.tandfonline.com/doi/abs/10.1080/19371918.2022.2039829",
+      "status": 403,
+      "result": "restricted"
+    }
+  ]
+}
