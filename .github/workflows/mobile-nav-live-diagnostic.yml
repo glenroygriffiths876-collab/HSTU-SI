@@ -1,0 +1,72 @@
+name: Mobile nav live diagnostic
+on:
+  push:
+    paths:
+      - '.github/workflows/mobile-nav-live-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Inspect deployed mobile nav
+        run: |
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          SITE="https://glenroygriffiths876-collab.github.io/HSTU-SI/"
+          def snap(page,label):
+              print("\n---",label,"---")
+              for sel in ["#menuToggle","#mainNav",".nav-menu",".mobile-menu",".navbar",".hstu-nav-item > .nav-btn[data-view='home']"]:
+                  loc=page.locator(sel)
+                  print(sel,"count=",loc.count())
+                  for i in range(min(loc.count(),3)):
+                      el=loc.nth(i)
+                      try:
+                          print(" ",i,{
+                            "visible":el.is_visible(),
+                            "class":el.get_attribute("class"),
+                            "aria_expanded":el.get_attribute("aria-expanded"),
+                            "style":el.get_attribute("style"),
+                            "display":el.evaluate("el=>getComputedStyle(el).display"),
+                            "visibility":el.evaluate("el=>getComputedStyle(el).visibility"),
+                            "opacity":el.evaluate("el=>getComputedStyle(el).opacity"),
+                            "position":el.evaluate("el=>getComputedStyle(el).position"),
+                            "maxHeight":el.evaluate("el=>getComputedStyle(el).maxHeight"),
+                            "transform":el.evaluate("el=>getComputedStyle(el).transform"),
+                          })
+                      except Exception as e:
+                          print(" ",i,"ERR",repr(e))
+              print("body classes",page.locator("body").get_attribute("class"))
+              print("all buttons with menu/nav text:")
+              for i in range(min(page.locator("button").count(),30)):
+                  b=page.locator("button").nth(i)
+                  txt=(b.inner_text() or "").strip()
+                  if "menu" in txt.lower() or "nav" in txt.lower():
+                      print(i,txt,b.get_attribute("id"),b.get_attribute("class"),b.is_visible())
+          with sync_playwright() as p:
+              browser=p.chromium.launch(headless=True)
+              page=browser.new_page(viewport={"width":390,"height":844})
+              page.goto(SITE,wait_until="networkidle",timeout=90000)
+              page.wait_for_timeout(1500)
+              snap(page,"initial")
+              menu=page.locator("#menuToggle")
+              if menu.count():
+                  print("clicking menuToggle; visible=",menu.is_visible())
+                  if menu.is_visible():
+                      menu.click()
+                  else:
+                      menu.dispatch_event("click")
+                  page.wait_for_timeout(500)
+              snap(page,"after menu click")
+              browser.close()
+          PY
