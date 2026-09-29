@@ -1,4 +1,4 @@
-const CACHE_NAME="hstu-resource-centre-v20260929-research-recovery-v4";
+const CACHE_NAME="hstu-resource-centre-v20260929-full-parity-v1";
 const APP_SHELL=[
   "./index.html",
   "./health-snake.html",
