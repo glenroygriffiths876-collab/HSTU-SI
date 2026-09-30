@@ -1,0 +1,60 @@
+name: Finalize repository wording
+on:
+  push:
+    paths:
+      - '.github/workflows/finalize-repository-wording.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Apply exact wording
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path("index.html")
+          s=p.read_text(encoding="utf-8")
+          phrase="Studies stored on the Research Repository"
+          marker='<h1>HIV/STI/TB Research</h1>'
+          if phrase not in s:
+              if marker not in s:
+                  raise SystemExit("Research heading not found")
+              s=s.replace(marker,marker+'<p class="hstu-repository-wording">'+phrase+'</p>',1)
+          css='<style id="hstu-repository-wording-css">.hstu-repository-wording{display:inline-block;margin:14px 0 0!important;padding:8px 12px;border:1px solid rgba(101,189,58,.30);border-radius:999px;background:rgba(255,255,255,.92);color:#315f34!important;font-size:13px;font-weight:900}</style>'
+          if 'hstu-repository-wording-css' not in s:
+              s=s.replace('</head>',css+'</head>',1)
+          p.write_text(s,encoding="utf-8")
+          PY
+      - name: Refresh cache
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("service-worker.js")
+          s=p.read_text(encoding="utf-8")
+          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20260929-final-refinements";', s, count=1)
+          p.write_text(s,encoding="utf-8")
+          PY
+      - name: Verify
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path("index.html").read_text(encoding="utf-8")
+          assert s.count("Studies stored on the Research Repository")==1
+          assert s.count("media/repository/")>=51
+          print("FINAL REFINEMENT QA PASS")
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html service-worker.js
+          git commit -m "Finalize Shanille repository refinements"
+          git pull --rebase origin main
+          git push origin main
