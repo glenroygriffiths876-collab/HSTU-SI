@@ -24,6 +24,12 @@ for row in rows:
 s=s[:body_start]+"\n".join(kept)+s[end:]
 s=s.replace("C-TECH/MOHW Jamaica learning is prioritised.","Trusted local, regional and international learning resources are prioritised.")
 s=s.replace("Current C-TECH Jamaica learning plus carefully separated supplementary learning resources.","Verified local, regional and international learning resources.")
+# Replace the retired UNICEF Agora SBC course with the current SBC Basics learning pathway.
+s=s.replace("https://agora.unicef.org/course/info.php?id=35045","https://agora.unicef.org/course/info.php?id=41002")
+s=s.replace("Social & Behaviour Change — Building Blocks","Social & Behaviour Change — SBC Basics")
+s=s.replace("Eighteen short modules introducing UNICEF social and behaviour change concepts for programme and partner audiences.","UNICEF learning pathway covering foundational social and behaviour change concepts, research methods and programme approaches.")
+s=s.replace("Social &amp; Behaviour Change — Building Blocks","Social &amp; Behaviour Change — SBC Basics")
+
 # Exact wording/capitalization clean-up.
 s=s.replace("Research agenda priorities","Research Agenda Priorities")
 s=s.replace("Campaign Gallery","Gallery")
