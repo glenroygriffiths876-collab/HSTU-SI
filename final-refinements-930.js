@@ -52,13 +52,8 @@ function setDropdown(view,items){
    if(it.gallery) b.dataset.galleryCategory=it.gallery;
    b.addEventListener('click',e=>{
      e.preventDefault(); e.stopPropagation();
-     openView(view,it.target);
-     if(it.gallery){
-       setGalleryFilter(it.gallery);
-       setTimeout(()=>setGalleryFilter(it.gallery),80);
-       setTimeout(()=>setGalleryFilter(it.gallery),220);
-     setTimeout(()=>setGalleryFilter(it.gallery),520);
-     }
+     if(it.gallery) selectGalleryCategory(it.gallery);
+     else openView(view,it.target);
    });
    d.appendChild(b);
  });
@@ -192,9 +187,9 @@ function setupMobileSubnav(buttons,navRoot){
      if(original.dataset.target) b.dataset.target=original.dataset.target;
      if(original.dataset.galleryCategory) b.dataset.galleryCategory=original.dataset.galleryCategory;
      b.addEventListener('click',e=>{
-       e.preventDefault();
-       openView(view,b.dataset.target);
-       if(b.dataset.galleryCategory) setTimeout(()=>setGalleryFilter(b.dataset.galleryCategory),120);
+       e.preventDefault(); e.stopPropagation();
+       if(b.dataset.galleryCategory) selectGalleryCategory(b.dataset.galleryCategory);
+       else openView(view,b.dataset.target);
        close();
      });
      rail.appendChild(b);
@@ -234,6 +229,13 @@ function setupMobileSubnav(buttons,navRoot){
    });
  }
 }
+function selectGalleryCategory(cat){
+ const chosen=['All','HIV','STI','TB','PrEP'].find(x=>x.toLowerCase()===String(cat||'All').toLowerCase())||'All';
+ [0,90,240,520,900].forEach(ms=>setTimeout(()=>{
+   openView('gallery','gallery-images');
+   setGalleryFilter(chosen);
+ },ms));
+}
 function installNavigationDelegation(){
  if(document.documentElement.dataset.hstuNavDelegation930) return;
  document.documentElement.dataset.hstuNavDelegation930='1';
@@ -245,14 +247,7 @@ function installNavigationDelegation(){
      setTimeout(()=>openView(view),90);
    }
    const galleryItem=e.target?.closest?.('#mainNav .hstu-nav-dropdown [data-gallery-category],#hstuMobileSubnav930 [data-gallery-category]');
-   if(galleryItem){
-     const cat=galleryItem.dataset.galleryCategory;
-     const apply=()=>{openView('gallery','gallery-images');setGalleryFilter(cat);};
-     setTimeout(apply,0);
-     setTimeout(()=>setGalleryFilter(cat),80);
-     setTimeout(()=>setGalleryFilter(cat),220);
-     setTimeout(()=>setGalleryFilter(cat),520);
-   }
+   if(galleryItem) selectGalleryCategory(galleryItem.dataset.galleryCategory);
  };
  window.addEventListener('pointerup',delegated,true);
  window.addEventListener('click',delegated,true);
