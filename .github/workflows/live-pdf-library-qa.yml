@@ -1,0 +1,150 @@
+name: Live PDF library QA
+on:
+  push:
+    paths:
+      - '.github/workflows/live-pdf-library-qa.yml'
+      - 'pdf-library.json'
+      - 'documents/pdf-library/**'
+      - 'media/pdf-previews/**'
+      - 'index.html'
+      - 'final-refinements-930.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-pdf-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.57.0 >/dev/null 2>&1
+          npx playwright install chromium >/dev/null
+      - name: Verify live PDF library
+        run: |
+          cat > live-pdf-qa.mjs <<'JS'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const BASE='https://glenroygriffiths876-collab.github.io/HSTU-SI/';
+          const ok=(v,m)=>{if(!v) throw new Error(m);};
+
+          async function openFresh(viewport,name){
+            let last='';
+            for(let attempt=1;attempt<=18;attempt++){
+              const context=await browser.newContext({viewport,serviceWorkers:'block'});
+              const page=await context.newPage();
+              try{
+                await page.goto(BASE+'?pdfqa='+Date.now()+'#home',{waitUntil:'networkidle',timeout:60000});
+                await page.waitForTimeout(1200);
+                const ready=await page.locator('html').getAttribute('data-hstu-refinements930');
+                const mf=await page.request.get(BASE+'pdf-library.json?qa='+Date.now());
+                const data=mf.ok()?await mf.json():null;
+                if(ready==='ready' && data?.stats?.localized>=70){
+                  return {page,context,data};
+                }
+                last='ready='+ready+' manifest='+(data?.stats?.localized??'missing');
+              }catch(e){last=String(e);}
+              await context.close();
+              if(attempt<18) await new Promise(r=>setTimeout(r,10000));
+            }
+            throw new Error(name+': newest deployment not visible: '+last);
+          }
+
+          async function activate(page,view){
+            await page.evaluate(v=>{if(typeof window.setView==='function') window.setView(v);},view);
+            await page.waitForTimeout(500);
+          }
+
+          async function run(name,viewport){
+            const {page,context,data}=await openFresh(viewport,name);
+            const dims=await page.evaluate(()=>({doc:document.documentElement.scrollWidth,body:document.body.scrollWidth,win:innerWidth}));
+            ok(dims.doc<=dims.win+3 && dims.body<=dims.win+3,name+': horizontal overflow '+JSON.stringify(dims));
+
+            const bodyText=await page.locator('body').innerText();
+            ok(!/Why these are separate/i.test(bodyText),name+': technical Why these are separate message remains');
+            ok(!/does not pretend an external server outage/i.test(bodyText),name+': technical outage copy remains');
+
+            await activate(page,'capacity');
+            const refs=page.locator('.external-ref-grid .external-ref');
+            ok(await refs.count()===3,name+': expected 3 official MOHW references');
+            ok(await page.getByText('Official National References',{exact:true}).count()===1,name+': official references heading');
+            ok(await page.locator('.reliability-note').count()===0,name+': reliability note remains');
+
+            for(let i=0;i<3;i++){
+              const card=refs.nth(i);
+              const href=await card.getAttribute('href');
+              ok(href && href.includes('documents/pdf-library/'),name+': official reference '+i+' not local: '+href);
+              ok(await card.locator('.hstu-pdf-preview-image-930').count()===1,name+': official reference '+i+' lacks preview');
+              const img=card.locator('.hstu-pdf-preview-image-930');
+              const src=await img.getAttribute('src');
+              ok(src && src.includes('media/pdf-previews/'),name+': official preview path '+i);
+              const pdfResp=await page.request.get(new URL(href,BASE).href);
+              ok(pdfResp.ok(),name+': local official PDF '+i+' HTTP '+pdfResp.status());
+              const bytes=await pdfResp.body();
+              ok(bytes.length>1000 && bytes.subarray(0,5).toString()==='%PDF-',name+': local official PDF invalid '+i);
+              const imgResp=await page.request.get(new URL(src,BASE).href);
+              ok(imgResp.ok(),name+': preview '+i+' HTTP '+imgResp.status());
+            }
+
+            // Manuals should retain actual cover previews but no developer-facing "Bundled PDF" label.
+            const manualCards=page.locator('#manualGrid .manual-card');
+            ok(await manualCards.count()>0,name+': manuals missing');
+            const manualText=(await manualCards.first().innerText());
+            ok(!/Bundled PDF/i.test(manualText),name+': Bundled PDF label remains in manual card');
+
+            await activate(page,'research');
+            const op=[...await page.locator('.hstu-parity-group').all()].length;
+            const opSection=page.locator('.hstu-parity-group').filter({has:page.locator('h2',{hasText:/^Operational Research$/})}).first();
+            ok(await opSection.count()===1,name+': Operational Research section missing');
+            ok(await opSection.locator('.hstu-parity-card').count()===11,name+': Operational Research does not show all 11');
+            ok(await opSection.locator('details').count()===0,name+': Operational Research details/dropdown remains');
+            ok(await opSection.getByText(/View all 11 operational research/i).count()===0,name+': View all Operational Research text remains');
+            ok(await opSection.locator('.hstu-pdf-preview-930 img').count()>=10,name+': Operational Research PDF previews missing');
+            const opHref=await opSection.locator('.hstu-pdf-preview-930').first().getAttribute('href');
+            ok(opHref && opHref.includes('documents/pdf-library/'),name+': Operational Research not opening local PDF');
+
+            await activate(page,'data-audit');
+            const auditCards=page.locator('#data-audit-reports .hstu-parity-card');
+            ok(await auditCards.count()>=5,name+': audit report cards missing');
+            ok(await auditCards.locator('.hstu-pdf-preview-930 img').count()>=5,name+': audit report previews missing');
+
+            // Manifest integrity.
+            ok(data.stats.localized===75,name+': expected 75 localized PDFs, got '+data.stats.localized);
+            ok(data.stats.previews_generated===75,name+': expected 75 previews, got '+data.stats.previews_generated);
+            ok(data.stats.external_remaining===9,name+': expected 9 external fallbacks, got '+data.stats.external_remaining);
+
+            if(name==='desktop'){
+              await activate(page,'capacity');
+              await page.screenshot({path:'pdf-capacity-desktop.png',fullPage:false});
+              await activate(page,'research');
+              await opSection.scrollIntoViewIfNeeded();
+              await page.screenshot({path:'operational-research-desktop.png',fullPage:false});
+            }else{
+              await activate(page,'capacity');
+              await refs.first().scrollIntoViewIfNeeded();
+              await page.screenshot({path:'pdf-capacity-mobile.png',fullPage:false});
+              await activate(page,'research');
+              await opSection.scrollIntoViewIfNeeded();
+              await page.screenshot({path:'operational-research-mobile.png',fullPage:false});
+            }
+
+            console.log('LIVE PDF QA',name,'PASS',JSON.stringify(data.stats));
+            await context.close();
+          }
+
+          await run('desktop',{width:1440,height:900});
+          await run('mobile',{width:390,height:844});
+          await browser.close();
+          console.log('LIVE PDF LIBRARY QA PASS');
+          JS
+          node live-pdf-qa.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-pdf-library-qa
+          path: |
+            pdf-capacity-desktop.png
+            operational-research-desktop.png
+            pdf-capacity-mobile.png
+            operational-research-mobile.png
