@@ -24,6 +24,8 @@ purposeVisible false
 summaryFacts 4
 themes 15
 quickCards 7
+activeView view-gallery
+galleryFiltersVisible true
 galleryFilterLabels ["All","HIV","STI","TB","PrEP"]
 galleryTotalCards 51
 gallery All visible 51 active true pressed true
@@ -32,13 +34,9 @@ gallery STI visible 5 active true pressed true
 gallery TB visible 1 active true pressed true
 gallery PrEP visible 2 active true pressed true
 galleryTBDropdownCount 1
-FATAL desktop Error: locator.click: Element is not visible
-Call log:
-  - waiting for locator('.nav-btn[data-view="gallery"]').first().locator('..').locator('.hstu-nav-dropdown button').filter({ hasText: /^TB$/ }).first()
-    - locator resolved to <button type="button" data-view="gallery" data-gallery-category="TB" data-target="gallery-images">TB</button>
-  - attempting click action
-    - scrolling into view if needed
-
+desktopTBDropdownVisible true
+galleryAfterTBDropdown 2
+errors []
 === mobile {"width":390,"height":844} ===
 marker ready
 dims {"win":390,"doc":390,"body":390}
@@ -65,6 +63,8 @@ purposeVisible false
 summaryFacts 4
 themes 15
 quickCards 7
+activeView view-home
+galleryFiltersVisible false
 galleryFilterLabels ["All","HIV","STI","TB","PrEP"]
 galleryTotalCards 51
 FATAL mobile TimeoutError: locator.click: Timeout 30000ms exceeded.
