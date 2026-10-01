@@ -245,8 +245,13 @@ function splitResources(){
 function scrubCtech(){
  const root=document.getElementById('resources-learning'); if(!root) return;
  const bad=/c[\s-]?tech/i;
+ const dead=['https://agora.unicef.org/course/info.php?id=41002'];
  [...root.querySelectorAll('a,.training-card,.course-card,.resource-card,.hstu-refine-card,article,li')].forEach(el=>{
-   if(bad.test(tidy(el.textContent)+' '+(el.getAttribute?.('href')||''))) el.remove();
+   const href=el.getAttribute?.('href')||'';
+   if(bad.test(tidy(el.textContent)+' '+href)||dead.some(u=>href.startsWith(u))){
+     const card=el.closest('.training-card,.course-card,.resource-card,.hstu-refine-card,article,li');
+     (card||el).remove();
+   }
  });
 }
 let galleryCategory='All';
