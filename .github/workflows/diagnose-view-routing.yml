@@ -1,0 +1,32 @@
+name: Diagnose HSTU view routing
+on:
+  push:
+    paths:
+      - '.github/workflows/diagnose-view-routing.yml'
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect routing source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path("index.html").read_text(encoding="utf-8")
+          for id_ in ["view-home","view-research","mainNav"]:
+              m=re.search(r'<[^>]+id=["\']'+re.escape(id_)+r'["\'][^>]*>',s,re.I)
+              print(id_, m.group(0) if m else "NOT FOUND")
+          scripts=re.findall(r'<script[^>]*>(.*?)</script>',s,re.I|re.S)
+          for i,b in enumerate(scripts):
+              low=b.lower()
+              if "nav-btn" in low or ("data-view" in low and ("classlist" in low or "view-" in low)):
+                  print("\n=== SCRIPT",i,"===")
+                  for pat in ["nav-btn","dataset.view","data-view","view-","classList.add('active')","classList.remove('active')","hidden"]:
+                      pos=low.find(pat.lower())
+                      if pos>=0:
+                          print(b[max(0,pos-1200):pos+2600])
+                          break
+          PY
