@@ -57,6 +57,7 @@ function setDropdown(view,items){
        setGalleryFilter(it.gallery);
        setTimeout(()=>setGalleryFilter(it.gallery),80);
        setTimeout(()=>setGalleryFilter(it.gallery),220);
+     setTimeout(()=>setGalleryFilter(it.gallery),520);
      }
    });
    d.appendChild(b);
@@ -249,6 +250,7 @@ function installNavigationDelegation(){
      setTimeout(()=>{openView('gallery','gallery-images');setGalleryFilter(cat);},0);
      setTimeout(()=>setGalleryFilter(cat),100);
      setTimeout(()=>setGalleryFilter(cat),240);
+     setTimeout(()=>setGalleryFilter(cat),520);
    }
  },true);
 }
