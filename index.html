@@ -1059,7 +1059,8 @@ button[data-service-mode].active:hover,
 }
 </style>
 
-<style id="hstu-repository-wording-css">.hstu-repository-wording{display:inline-block;margin:14px 0 0!important;padding:8px 12px;border:1px solid rgba(101,189,58,.30);border-radius:999px;background:rgba(255,255,255,.92);color:#315f34!important;font-size:13px;font-weight:900}</style><style id="hstu-shanille-0930-v3">
+<style id="hstu-repository-wording-css">.hstu-repository-wording{display:inline-block;margin:14px 0 0!important;padding:8px 12px;border:1px solid rgba(101,189,58,.30);border-radius:999px;background:rgba(255,255,255,.92);color:#315f34!important;font-size:13px;font-weight:900}</style>
+<style id="hstu-shanille-0930-v3">
 .hstu-home-thematic{margin-top:26px;padding-top:24px;border-top:1px solid #dfe9dc}
 .hstu-section-kicker{font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#9f1c25;margin-bottom:8px}
 .hstu-home-thematic-head{display:flex;gap:24px;align-items:end;justify-content:space-between;margin-bottom:16px}
@@ -2522,7 +2523,8 @@ document.addEventListener('keydown',e=>{
 
 window.addEventListener('resize',()=>{if(!compact())collapseTouchMenus(null)});
 })();
-</script><script id="hstu-shanille-0930-v3-routing">
+</script>
+<script id="hstu-shanille-0930-v3-routing">
 (function(){
 const areas=[
 "Coinfection and Communicable Diseases","Sexually Transmitted Infections","Stigma and Discrimination","Psychosocial Determinants and Effects of HIV/AIDS","Antiretroviral Drug Resistance","Antiretroviral Therapy Outcomes","Prevention of Mother-to-Child Transmission","Adolescent HIV/AIDS","Pediatric HIV/AIDS","Key and Vulnerable Populations","Knowledge, Attitudes, Behaviors, and Practices","Epidemiology of HIV in Jamaica","The National HIV Response","Tuberculosis Prevention and Control","Risk Communication"];
@@ -2555,6 +2557,20 @@ if(purpose){
   const sec=document.createElement('section');sec.className='wrap hstu-home-thematic';sec.id='home-thematic-areas';
   sec.innerHTML='<div class="hstu-section-kicker">Research pathways</div><div class="hstu-home-thematic-head"><div><h2>15 Thematic Research Areas</h2><p>Select an area to go directly to the research represented within that theme.</p></div><button type="button" class="hstu-theme-view-all" data-view="research">View all Research →</button></div><div class="hstu-theme-grid">'+areas.map((a,i)=>'<button class="hstu-theme-link" type="button" data-objective="'+(i+1)+'" data-objective-name="'+a.replace(/"/g,'&quot;')+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+a+'</b><i>→</i></button>').join('')+'</div>';
   const more=purpose.querySelector('.hstu-purpose-more');more?more.before(sec):purpose.append(sec);
+  sec.querySelectorAll('.hstu-theme-link').forEach(btn=>btn.addEventListener('click',ev=>{
+    ev.preventDefault();
+    const n=btn.dataset.objective,name=btn.dataset.objectiveName.toLowerCase();
+    const nav=[...document.querySelectorAll('#mainNav .nav-btn')].find(x=>x.dataset.view==='research');
+    if(nav) nav.click();
+    setTimeout(()=>{
+      const sel=document.getElementById('refineResearchObjective');
+      if(sel){
+        const o=[...sel.options].find(o=>o.value===n||o.textContent.trim().startsWith(n+'.')||o.textContent.toLowerCase().includes(name));
+        if(o){sel.value=o.value;sel.dispatchEvent(new Event('change',{bubbles:true}));sel.dispatchEvent(new Event('input',{bubbles:true}))}
+      }
+      document.getElementById('research-results')?.scrollIntoView({behavior:'smooth',block:'start'});
+    },160);
+  }));
 }
 
 // Quick Access = final top-level groupings.
