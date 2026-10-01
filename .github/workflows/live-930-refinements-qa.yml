@@ -120,6 +120,8 @@ jobs:
               const labs=(await sdd.locator('button').allTextContents()).map(x=>x.trim());
               ok(JSON.stringify(labs)===JSON.stringify(['Treatment and PrEP','Health Centres']),name+': services labels');
               await page.screenshot({path:'mobile-services-menu.png',fullPage:false});
+              if(await mobileMenu.isVisible()) await toggle.click();
+              await page.waitForTimeout(100);
             }
 
             await activate(page,'gallery');
