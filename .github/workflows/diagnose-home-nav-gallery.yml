@@ -22,7 +22,7 @@ jobs:
       - name: Inspect local rendered build
         run: |
           python -m http.server 8000 >/tmp/hstu-diagnostic-server.log 2>&1 &
-          cat > /tmp/diag.mjs <<'JS'
+          cat > diag.mjs <<'JS'
           import { chromium } from 'playwright';
           import fs from 'fs';
           const lines=[];
@@ -80,7 +80,7 @@ jobs:
           await browser.close();
           fs.writeFileSync('HOME_NAV_GALLERY_DIAGNOSTIC.txt',lines.join('\n')+'\n');
           JS
-          node /tmp/diag.mjs
+          node diag.mjs
           cat HOME_NAV_GALLERY_DIAGNOSTIC.txt
       - name: Upload diagnostic screenshots
         uses: actions/upload-artifact@v4
