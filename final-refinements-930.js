@@ -47,7 +47,7 @@ function setDropdown(view,items){
  return true;
 }
 function fixHero(){
- const hero=document.querySelector('#view-home .home-hero')||document.querySelector('#view-home');
+ const hero=document.querySelector('#view-home');
  if(!hero) return;
  [...hero.querySelectorAll('button,a')].forEach(el=>{
    const t=tidy(el.textContent);
