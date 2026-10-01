@@ -313,15 +313,13 @@ function rebuildQuickAccess(){
    'National and Special Reports.',
    'Audit reports and DHIS2/TSIS2 user guides.'
  ];
- const clusters=[...home.querySelectorAll('section,div')].filter(el=>{
-   if(el.id==='home-quick-access'||el.classList.contains('hstu-quick-access-930')) return false;
-   const t=tidy(el.textContent);
-   return markers.filter(m=>t.includes(m)).length>=3 && t.length<4500;
- });
- if(clusters.length){
-   clusters.sort((a,b)=>tidy(a.textContent).length-tidy(b.textContent).length);
-   const victim=clusters[0].closest('section')||clusters[0];
-   if(victim && victim.id!=='home-quick-access') victim.remove();
+ for(const marker of markers){
+   const exact=[...home.querySelectorAll('p,span,small')].find(el=>tidy(el.textContent)===marker);
+   const legacy=exact?.closest('section');
+   if(legacy && legacy.id!=='home-quick-access' && !legacy.querySelector('#home-purpose-hero') && !legacy.classList.contains('hstu-thematic-areas-930')){
+     legacy.remove();
+     break;
+   }
  }
 
  let sec=document.getElementById('home-quick-access');
@@ -669,8 +667,7 @@ function addFinalHotfixStyles(){
  '.hstu-purpose-copy-930{margin-top:16px!important}.hstu-purpose-copy-930 p{font-size:15px!important;line-height:1.52!important}'+
  '.hstu-purpose-cta-930{gap:8px!important;margin-top:18px!important}.hstu-purpose-cta-930 button{min-height:44px!important;padding:9px 13px!important;font-size:13px!important}'+
  '}'+
- '@media(max-width:560px){.hstu-purpose-highlights-930{grid-template-columns:1fr!important}.hstu-purpose-cta-930 button{flex:1 1 100%!important}.hstu-purpose-hero-930 h1{font-size:clamp(36px,11vw,50px)!important}}';
-+
+ '@media(max-width:560px){.hstu-purpose-highlights-930{grid-template-columns:1fr!important}.hstu-purpose-cta-930 button{flex:1 1 100%!important}.hstu-purpose-hero-930 h1{font-size:clamp(36px,11vw,50px)!important}}'+
  '@keyframes hstuTitleSweep930{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}'+
  '.hstu-animated-title-930{background:linear-gradient(105deg,#ffffff 0%,#ffffff 24%,#6bcf45 36%,#ffffff 47%,#e32636 61%,#ffffff 74%,#ffffff 100%)!important;background-size:260% 100%!important;background-position:0% 50%;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;color:transparent!important;animation:hstuTitleSweep930 8.5s ease-in-out infinite!important;filter:drop-shadow(0 2px 14px rgba(255,255,255,.04))}'+
  '.hstu-nav-swipe-hint,#hstuMobileSubnav930{display:none!important}'+
@@ -714,7 +711,7 @@ function init(){
  document.documentElement.dataset.hstuRefinements930='ready';
  addStyles(); addFinalHotfixStyles(); fixHero(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); installNavigationDelegation();
  fixResearchAgenda(); fixCapacity(); splitResources(); fixGallery(); installResourceObserver(); cleanPublicTerms();
- setTimeout(()=>{updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); splitResources(); scrubCtech(); fixGallery(); setMobileMenuOpen(false);},450);
+ setTimeout(()=>{fixHero(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); splitResources(); scrubCtech(); fixGallery(); setMobileMenuOpen(false);},450);
  window.addEventListener('pageshow',()=>{if(window.innerWidth<=1000) setMobileMenuOpen(false);},{once:true});
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(init,0),{once:true}); else setTimeout(init,0);
