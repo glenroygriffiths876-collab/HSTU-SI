@@ -38,7 +38,7 @@ jobs:
           from pathlib import Path
           s=Path("index.html").read_text(encoding="utf-8")
           j=Path("final-refinements-930.js").read_text(encoding="utf-8")
-          assert s.count('final-refinements-930.js?v=20261001-1')==1
+          assert s.count('id="hstu-final-refinements-930"')==1
           assert len(list(Path("media/repository").glob("*.webp")))==51
           for phrase in [
             "15 Thematic Research Areas","Research Agenda Priorities","Presentations","Posters",
