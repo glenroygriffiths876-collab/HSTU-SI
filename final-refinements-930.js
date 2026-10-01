@@ -21,7 +21,16 @@ const tidy=s=>(s||'').replace(/\s+/g,' ').trim();
 function navBtn(view){return document.querySelector('.nav-btn[data-view="'+view+'"]');}
 function openView(view,target){
  const b=navBtn(view); if(b) b.click();
- setTimeout(()=>{const el=target&&document.getElementById(target); if(el) el.scrollIntoView({behavior:'smooth',block:'start'});},90);
+ setTimeout(()=>{
+   const panel=document.getElementById('view-'+view);
+   if(panel && !panel.classList.contains('active')){
+     document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+     panel.classList.add('active');
+     document.querySelectorAll('.nav-btn[data-view]').forEach(n=>n.classList.toggle('active',n.dataset.view===view));
+   }
+   const el=target&&document.getElementById(target);
+   if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+ },90);
 }
 function dropdown(view){
  const b=navBtn(view); if(!b) return null;
