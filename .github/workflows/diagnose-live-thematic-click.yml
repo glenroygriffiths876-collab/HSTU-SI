@@ -1,0 +1,54 @@
+name: Diagnose live thematic click
+on:
+  push:
+    paths:
+      - '.github/workflows/diagnose-live-thematic-click.yml'
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Trace live thematic routing
+        run: |
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          U="https://glenroygriffiths876-collab.github.io/HSTU-SI/"
+          with sync_playwright() as p:
+              b=p.chromium.launch(headless=True)
+              page=b.new_page(viewport={"width":1440,"height":1000})
+              page.on("pageerror",lambda e: print("PAGEERROR",repr(e)))
+              page.on("console",lambda m: print("CONSOLE",m.type,m.text))
+              page.goto(U,wait_until="networkidle",timeout=90000)
+              page.wait_for_timeout(1500)
+              def snap(label):
+                  print(label,{
+                    "homeClass":page.locator("#view-home").get_attribute("class"),
+                    "researchClass":page.locator("#view-research").get_attribute("class"),
+                    "homeVisible":page.locator("#view-home").is_visible(),
+                    "researchVisible":page.locator("#view-research").is_visible(),
+                    "hash":page.evaluate("location.hash"),
+                    "setView":page.evaluate("typeof window.setView"),
+                    "themeCount":page.locator("#home-thematic-areas .hstu-theme-link").count()
+                  })
+              snap("BEFORE")
+              print("DIRECT SETVIEW TEST")
+              page.evaluate("window.setView('research')")
+              page.wait_for_timeout(250)
+              snap("AFTER DIRECT")
+              page.evaluate("window.setView('home')")
+              page.wait_for_timeout(250)
+              snap("BACK HOME")
+              print("CLICK TEST")
+              page.locator("#home-thematic-areas .hstu-theme-link").first.click()
+              page.wait_for_timeout(700)
+              snap("AFTER CLICK")
+              b.close()
+          PY
