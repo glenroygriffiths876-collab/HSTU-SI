@@ -143,8 +143,11 @@ jobs:
               assert(await tbDrop.count()===1,name+': desktop Gallery TB dropdown exists');
               await tbDrop.click();
             }
-            await page.waitForTimeout(240);
-            assert(await visibleGalleryCount(page)===1,name+': Gallery submenu applies TB filter');
+            await page.waitForTimeout(700);
+            const submenuCount=await visibleGalleryCount(page);
+            const activeGallery=(await page.locator('#hstuGalleryFilters button.active').allTextContents()).map(x=>x.trim());
+            console.log('GALLERY_SUBMENU_STATE',name,submenuCount,activeGallery);
+            assert(submenuCount===1 && activeGallery.includes('TB'),name+': Gallery submenu applies TB filter');
 
             await go(page,'home');
             for(const idx of [0,6,9,13,14]){
