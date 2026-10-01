@@ -1,0 +1,45 @@
+name: Shanille 30 Sep browser audit
+on:
+  push:
+    paths:
+      - '.github/workflows/shanille-0930-browser-audit.yml'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Inspect rendered UI
+        run: |
+          python -m http.server 8000 >/tmp/hstu.log 2>&1 &
+          sleep 2
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          import json
+          with sync_playwright() as p:
+              b=p.chromium.launch(headless=True)
+              pg=b.new_page(viewport={"width":1440,"height":1000})
+              pg.goto("http://127.0.0.1:8000/",wait_until="networkidle")
+              pg.wait_for_timeout(1500)
+              data=pg.evaluate("""() => {
+                const txt=e=>(e?.innerText||'').trim();
+                const findText=(q)=>[...document.querySelectorAll('section,div')].filter(e=>txt(e).includes(q)).sort((a,b)=>txt(a).length-txt(b).length)[0];
+                const q=(s)=>document.querySelector(s);
+                return {
+                  hero: txt(q('#view-home .home-hero')),
+                  quick: findText('Everything important') ? {text:txt(findText('Everything important')),html:findText('Everything important').outerHTML.slice(0,12000)} : null,
+                  purpose: q('#repository-purpose')?.outerHTML.slice(0,16000),
+                  galleryFilters:q('#hstuGalleryFilters')?.outerHTML,
+                  galleryCards:[...document.querySelectorAll('#hstuGalleryGrid > *')].slice(0,60).map(e=>({text:txt(e).slice(0,240),dataset:{...e.dataset},cls:e.className})),
+                  resourcesLearning:q('#resources-learning')?.outerHTML.slice(0,16000),
+                  resourcesPresent:q('#resources-presentations')?.outerHTML.slice(0,12000),
+                  nav:q('#mainNav')?.outerHTML.slice(0,20000)
+                };
+              }""")
+              print(json.dumps(data,indent=2,ensure_ascii=False))
+              b.close()
+          PY
