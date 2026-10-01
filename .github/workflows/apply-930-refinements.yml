@@ -66,8 +66,14 @@ jobs:
           const assert=(ok,msg)=>{checks.push([!!ok,msg]); if(!ok) throw new Error(msg);};
           async function run(viewport,name){
             const page=await browser.newPage({viewport});
+            page.on('pageerror',e=>console.log('PAGEERROR',name,e.message));
+            page.on('console',m=>{if(m.type()==='error') console.log('CONSOLEERROR',name,m.text());});
             await page.goto('http://127.0.0.1:8000/',{waitUntil:'networkidle'});
             await page.waitForTimeout(900);
+            const marker=await page.locator('html').getAttribute('data-hstu-refinements930');
+            console.log('RUNTIME_MARKER',name,marker);
+            console.log('HOME_EXPLORE_TEXTS',name,await page.locator('#view-home button,#view-home a').allTextContents());
+            assert(marker==='ready',name+': refinement runtime executed');
             const nav=await page.locator('.nav-btn[data-view]').allTextContents();
             for(const x of ['Home','Research','Capacity Building','Reports','Data Audit and Utilization','Gallery','Resources','Find Services']){
               assert(nav.some(t=>t.trim()===x),name+': nav '+x);
