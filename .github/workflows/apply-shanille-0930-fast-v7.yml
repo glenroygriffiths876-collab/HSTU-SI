@@ -1,4 +1,4 @@
-name: Apply Shanille 30 Sep refinements v9
+name: Apply Shanille 30 Sep refinements v10
 on:
   push:
     paths:
@@ -22,7 +22,7 @@ jobs:
           import re
           p=Path("service-worker.js")
           s=p.read_text(encoding="utf-8")
-          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20261001-shanille-0930-v6";', s, count=1)
+          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20261001-shanille-0930-v7";', s, count=1)
           p.write_text(s,encoding="utf-8")
           PY
       - name: Source QA
@@ -47,11 +47,24 @@ jobs:
           assert len(list(Path("media/repository").glob("*.webp")))==51
           print("SOURCE QA PASS")
           PY
+      - name: JavaScript syntax QA
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path("index.html").read_text(encoding="utf-8")
+          scripts=re.findall(r'<script[^>]*>(.*?)</script>',s,re.I|re.S)
+          out=Path(".tmp-js-check");out.mkdir(exist_ok=True)
+          for i,body in enumerate(scripts):
+              (out/f"script-{i}.js").write_text(body,encoding="utf-8")
+          print("scripts",len(scripts))
+          PY
+          for f in .tmp-js-check/*.js; do node --check "$f"; done
       - name: Commit production update
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html service-worker.js
-          git commit -m "Use native HSTU routing for Shanille refinements"
+          git commit -m "Repair HSTU script and finalize Shanille refinements"
           git pull --rebase origin main
           git push origin main
