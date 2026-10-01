@@ -1,0 +1,592 @@
+{
+  "generated": "2026-10-01",
+  "by_url": {
+    "https://www.moh.gov.jm/wp-content/uploads/2026/08/National-Surveillance-Manual-for-Jamaica-July-2026.pdf": {
+      "source": "https://www.moh.gov.jm/wp-content/uploads/2026/08/National-Surveillance-Manual-for-Jamaica-July-2026.pdf",
+      "local": "documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf",
+      "preview": "media/pdf-previews/national-surveillance-manual-for-jamaica-july-2026-be6954d6.webp",
+      "bytes": 10201191,
+      "status": "downloaded"
+    },
+    "https://www.moh.gov.jm/wp-content/uploads/2022/12/Management-of-Interpersonal-Violence-Procedures-for-Healthcare-Workers-2022.pdf": {
+      "source": "https://www.moh.gov.jm/wp-content/uploads/2022/12/Management-of-Interpersonal-Violence-Procedures-for-Healthcare-Workers-2022.pdf",
+      "local": "documents/pdf-library/management-of-interpersonal-violence-procedures-for-healthcare-workers-7ae627da.pdf",
+      "preview": "media/pdf-previews/management-of-interpersonal-violence-procedures-for-healthcare-workers-7ae627da.webp",
+      "bytes": 2695228,
+      "status": "downloaded"
+    },
+    "https://www.moh.gov.jm/wp-content/uploads/2026/02/PharmWatch-Drug-Monitoring-Form-Current-FRM-PMS-SRD-STRD-026-R1-1.pdf": {
+      "source": "https://www.moh.gov.jm/wp-content/uploads/2026/02/PharmWatch-Drug-Monitoring-Form-Current-FRM-PMS-SRD-STRD-026-R1-1.pdf",
+      "local": "documents/pdf-library/pharmwatch-drug-monitoring-form-current-frm-pms-srd-strd-026-r1-1-df1c6256.pdf",
+      "preview": "media/pdf-previews/pharmwatch-drug-monitoring-form-current-frm-pms-srd-strd-026-r1-1-df1c6256.webp",
+      "bytes": 383288,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_8fb5686d22a041839b74e7c9b4dbae9b.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_8fb5686d22a041839b74e7c9b4dbae9b.pdf",
+      "local": "documents/pdf-library/8a054d-8fb5686d22a041839b74e7c9b4dbae9b-ea4594fd.pdf",
+      "preview": "media/pdf-previews/8a054d-8fb5686d22a041839b74e7c9b4dbae9b-ea4594fd.webp",
+      "bytes": 151049,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_4b1521a6445d44e3ba65329dba239ae7.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_4b1521a6445d44e3ba65329dba239ae7.pdf",
+      "local": "documents/pdf-library/8a054d-4b1521a6445d44e3ba65329dba239ae7-9371a7ec.pdf",
+      "preview": "media/pdf-previews/8a054d-4b1521a6445d44e3ba65329dba239ae7-9371a7ec.webp",
+      "bytes": 983253,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_113095e952124786b4d63d78dafba366.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_113095e952124786b4d63d78dafba366.pdf",
+      "local": "documents/pdf-library/8a054d-113095e952124786b4d63d78dafba366-771486ac.pdf",
+      "preview": "media/pdf-previews/8a054d-113095e952124786b4d63d78dafba366-771486ac.webp",
+      "bytes": 1736458,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_9e6b1d09515245948846c854a3614ddc.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_9e6b1d09515245948846c854a3614ddc.pdf",
+      "local": "documents/pdf-library/8a054d-9e6b1d09515245948846c854a3614ddc-cec809eb.pdf",
+      "preview": "media/pdf-previews/8a054d-9e6b1d09515245948846c854a3614ddc-cec809eb.webp",
+      "bytes": 1678711,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_c63a8eaeebfb4ff0b04ffe2914586ee1.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_c63a8eaeebfb4ff0b04ffe2914586ee1.pdf",
+      "local": "documents/pdf-library/8a054d-c63a8eaeebfb4ff0b04ffe2914586ee1-76e6dacc.pdf",
+      "preview": "media/pdf-previews/8a054d-c63a8eaeebfb4ff0b04ffe2914586ee1-76e6dacc.webp",
+      "bytes": 8727252,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_4baa6a2f12c24c6dbaee2ec72b663244.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_4baa6a2f12c24c6dbaee2ec72b663244.pdf",
+      "local": "documents/pdf-library/8a054d-4baa6a2f12c24c6dbaee2ec72b663244-733cba01.pdf",
+      "preview": "media/pdf-previews/8a054d-4baa6a2f12c24c6dbaee2ec72b663244-733cba01.webp",
+      "bytes": 5165243,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_86b718ddb6774860b84054a5957752ab.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_86b718ddb6774860b84054a5957752ab.pdf",
+      "local": "documents/pdf-library/8a054d-86b718ddb6774860b84054a5957752ab-4f98e573.pdf",
+      "preview": "media/pdf-previews/8a054d-86b718ddb6774860b84054a5957752ab-4f98e573.webp",
+      "bytes": 1090328,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_9c6bd60e58804d7e9bd7b1210fd30ba1.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_9c6bd60e58804d7e9bd7b1210fd30ba1.pdf",
+      "local": "documents/pdf-library/8a054d-9c6bd60e58804d7e9bd7b1210fd30ba1-c0e2f213.pdf",
+      "preview": "media/pdf-previews/8a054d-9c6bd60e58804d7e9bd7b1210fd30ba1-c0e2f213.webp",
+      "bytes": 4179589,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_232d4e48bfdb43dc84cad99fb3dd35ac.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_232d4e48bfdb43dc84cad99fb3dd35ac.pdf",
+      "local": "documents/pdf-library/8a054d-232d4e48bfdb43dc84cad99fb3dd35ac-f30936cb.pdf",
+      "preview": "media/pdf-previews/8a054d-232d4e48bfdb43dc84cad99fb3dd35ac-f30936cb.webp",
+      "bytes": 824497,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_0f65d83deb3a4d3492aa49e6ea346f13.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_0f65d83deb3a4d3492aa49e6ea346f13.pdf",
+      "local": "documents/pdf-library/8a054d-0f65d83deb3a4d3492aa49e6ea346f13-338e1294.pdf",
+      "preview": "media/pdf-previews/8a054d-0f65d83deb3a4d3492aa49e6ea346f13-338e1294.webp",
+      "bytes": 1051765,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_186d997de4a14bbea91242b65d64a6d9.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_186d997de4a14bbea91242b65d64a6d9.pdf",
+      "local": "documents/pdf-library/8a054d-186d997de4a14bbea91242b65d64a6d9-beea78d2.pdf",
+      "preview": "media/pdf-previews/8a054d-186d997de4a14bbea91242b65d64a6d9-beea78d2.webp",
+      "bytes": 2075423,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_9c0f0d22003e4b859fa38f15a7413073.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_9c0f0d22003e4b859fa38f15a7413073.pdf",
+      "local": "documents/pdf-library/8a054d-9c0f0d22003e4b859fa38f15a7413073-989da9ec.pdf",
+      "preview": "media/pdf-previews/8a054d-9c0f0d22003e4b859fa38f15a7413073-989da9ec.webp",
+      "bytes": 1364065,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_1f06dc50326b4836a2fdf20ac5a53369.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_1f06dc50326b4836a2fdf20ac5a53369.pdf",
+      "local": "documents/pdf-library/8a054d-1f06dc50326b4836a2fdf20ac5a53369-4bd64c9e.pdf",
+      "preview": "media/pdf-previews/8a054d-1f06dc50326b4836a2fdf20ac5a53369-4bd64c9e.webp",
+      "bytes": 1150130,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_9397627194fb4426b80cc8067aad32ad.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_9397627194fb4426b80cc8067aad32ad.pdf",
+      "local": "documents/pdf-library/8a054d-9397627194fb4426b80cc8067aad32ad-063ff9a7.pdf",
+      "preview": "media/pdf-previews/8a054d-9397627194fb4426b80cc8067aad32ad-063ff9a7.webp",
+      "bytes": 783197,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_f79974bc4057439f847eb7d1d9744fb6.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_f79974bc4057439f847eb7d1d9744fb6.pdf",
+      "local": "documents/pdf-library/8a054d-f79974bc4057439f847eb7d1d9744fb6-18668003.pdf",
+      "preview": "media/pdf-previews/8a054d-f79974bc4057439f847eb7d1d9744fb6-18668003.webp",
+      "bytes": 720730,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_c68f70f880414dd28fd37612302020b2.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_c68f70f880414dd28fd37612302020b2.pdf",
+      "local": "documents/pdf-library/8a054d-c68f70f880414dd28fd37612302020b2-c6c87105.pdf",
+      "preview": "media/pdf-previews/8a054d-c68f70f880414dd28fd37612302020b2-c6c87105.webp",
+      "bytes": 983100,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_d373932716a5460c845c3fda17fc3b9f.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_d373932716a5460c845c3fda17fc3b9f.pdf",
+      "local": "documents/pdf-library/8a054d-d373932716a5460c845c3fda17fc3b9f-ecaebc55.pdf",
+      "preview": "media/pdf-previews/8a054d-d373932716a5460c845c3fda17fc3b9f-ecaebc55.webp",
+      "bytes": 202128,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_6808f75f20314dcd8003183a0941fdae.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_6808f75f20314dcd8003183a0941fdae.pdf",
+      "local": "documents/pdf-library/8a054d-6808f75f20314dcd8003183a0941fdae-99b0aac4.pdf",
+      "preview": "media/pdf-previews/8a054d-6808f75f20314dcd8003183a0941fdae-99b0aac4.webp",
+      "bytes": 118187,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_dfe9cc228be748f19117cba5e03e0bd4.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_dfe9cc228be748f19117cba5e03e0bd4.pdf",
+      "local": "documents/pdf-library/8a054d-dfe9cc228be748f19117cba5e03e0bd4-80366a88.pdf",
+      "preview": "media/pdf-previews/8a054d-dfe9cc228be748f19117cba5e03e0bd4-80366a88.webp",
+      "bytes": 495792,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_409718fa12944c45a238d6b5ac887662.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_409718fa12944c45a238d6b5ac887662.pdf",
+      "local": "documents/pdf-library/8a054d-409718fa12944c45a238d6b5ac887662-cbcb9e00.pdf",
+      "preview": "media/pdf-previews/8a054d-409718fa12944c45a238d6b5ac887662-cbcb9e00.webp",
+      "bytes": 360081,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_a297e910f7374b659bccf31cc929274b.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_a297e910f7374b659bccf31cc929274b.pdf",
+      "local": "documents/pdf-library/8a054d-a297e910f7374b659bccf31cc929274b-71b6f9cd.pdf",
+      "preview": "media/pdf-previews/8a054d-a297e910f7374b659bccf31cc929274b-71b6f9cd.webp",
+      "bytes": 120168,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_542f8a625ae14a77ab07e43beb524030.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_542f8a625ae14a77ab07e43beb524030.pdf",
+      "local": "documents/pdf-library/8a054d-542f8a625ae14a77ab07e43beb524030-5bafbafa.pdf",
+      "preview": "media/pdf-previews/8a054d-542f8a625ae14a77ab07e43beb524030-5bafbafa.webp",
+      "bytes": 4524064,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_b66e1bccc3224e7ea899354e0f243e32.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_b66e1bccc3224e7ea899354e0f243e32.pdf",
+      "local": "documents/pdf-library/8a054d-b66e1bccc3224e7ea899354e0f243e32-ad12a1c7.pdf",
+      "preview": "media/pdf-previews/8a054d-b66e1bccc3224e7ea899354e0f243e32-ad12a1c7.webp",
+      "bytes": 931989,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_973c7d998ca64bd6a42be2fe6d44ffc8.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_973c7d998ca64bd6a42be2fe6d44ffc8.pdf",
+      "local": "documents/pdf-library/8a054d-973c7d998ca64bd6a42be2fe6d44ffc8-af2681cc.pdf",
+      "preview": "media/pdf-previews/8a054d-973c7d998ca64bd6a42be2fe6d44ffc8-af2681cc.webp",
+      "bytes": 1160743,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_1306c4a299fe43418953073eff2e83f0.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_1306c4a299fe43418953073eff2e83f0.pdf",
+      "local": "documents/pdf-library/8a054d-1306c4a299fe43418953073eff2e83f0-f282f085.pdf",
+      "preview": "media/pdf-previews/8a054d-1306c4a299fe43418953073eff2e83f0-f282f085.webp",
+      "bytes": 558403,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_44c0d25b3c4941c5b03d90fc5dddcde4.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_44c0d25b3c4941c5b03d90fc5dddcde4.pdf",
+      "local": "documents/pdf-library/8a054d-44c0d25b3c4941c5b03d90fc5dddcde4-6c911883.pdf",
+      "preview": "media/pdf-previews/8a054d-44c0d25b3c4941c5b03d90fc5dddcde4-6c911883.webp",
+      "bytes": 720710,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_9307151d33c84848bfb7d4144381ead9.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_9307151d33c84848bfb7d4144381ead9.pdf",
+      "local": "documents/pdf-library/8a054d-9307151d33c84848bfb7d4144381ead9-6099b3ce.pdf",
+      "preview": "media/pdf-previews/8a054d-9307151d33c84848bfb7d4144381ead9-6099b3ce.webp",
+      "bytes": 141424,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_e236fc7ceb80486ca466bc77dd6ee8f7.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_e236fc7ceb80486ca466bc77dd6ee8f7.pdf",
+      "local": "documents/pdf-library/8a054d-e236fc7ceb80486ca466bc77dd6ee8f7-759f5da4.pdf",
+      "preview": "media/pdf-previews/8a054d-e236fc7ceb80486ca466bc77dd6ee8f7-759f5da4.webp",
+      "bytes": 138734,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_26171ce634e3407ab019aa823114b006.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_26171ce634e3407ab019aa823114b006.pdf",
+      "local": "documents/pdf-library/8a054d-26171ce634e3407ab019aa823114b006-7fbad52c.pdf",
+      "preview": "media/pdf-previews/8a054d-26171ce634e3407ab019aa823114b006-7fbad52c.webp",
+      "bytes": 137855,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_15a7ae0cce5847008c9f8ec8c2d53176.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_15a7ae0cce5847008c9f8ec8c2d53176.pdf",
+      "local": "documents/pdf-library/8a054d-15a7ae0cce5847008c9f8ec8c2d53176-8d32a557.pdf",
+      "preview": "media/pdf-previews/8a054d-15a7ae0cce5847008c9f8ec8c2d53176-8d32a557.webp",
+      "bytes": 138757,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_430f7bf76e2d47dd86da527d9371805d.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_430f7bf76e2d47dd86da527d9371805d.pdf",
+      "local": "documents/pdf-library/8a054d-430f7bf76e2d47dd86da527d9371805d-9d298dac.pdf",
+      "preview": "media/pdf-previews/8a054d-430f7bf76e2d47dd86da527d9371805d-9d298dac.webp",
+      "bytes": 3259528,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_8484c96c34774617831454d7e94f40d7.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_8484c96c34774617831454d7e94f40d7.pdf",
+      "local": "documents/pdf-library/8a054d-8484c96c34774617831454d7e94f40d7-920616c0.pdf",
+      "preview": "media/pdf-previews/8a054d-8484c96c34774617831454d7e94f40d7-920616c0.webp",
+      "bytes": 14916709,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_79c7ab8aca8f4850bb4901c9ebdc3c1d.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_79c7ab8aca8f4850bb4901c9ebdc3c1d.pdf",
+      "local": "documents/pdf-library/8a054d-79c7ab8aca8f4850bb4901c9ebdc3c1d-0413df69.pdf",
+      "preview": "media/pdf-previews/8a054d-79c7ab8aca8f4850bb4901c9ebdc3c1d-0413df69.webp",
+      "bytes": 1801128,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_cb9a47bb7218476da075cdf82cfe6f86.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_cb9a47bb7218476da075cdf82cfe6f86.pdf",
+      "local": "documents/pdf-library/8a054d-cb9a47bb7218476da075cdf82cfe6f86-1ee5aa76.pdf",
+      "preview": "media/pdf-previews/8a054d-cb9a47bb7218476da075cdf82cfe6f86-1ee5aa76.webp",
+      "bytes": 4287802,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_b76482ee88cc4952a110ea8e803482fd.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_b76482ee88cc4952a110ea8e803482fd.pdf",
+      "local": "documents/pdf-library/8a054d-b76482ee88cc4952a110ea8e803482fd-5e14ac1e.pdf",
+      "preview": "media/pdf-previews/8a054d-b76482ee88cc4952a110ea8e803482fd-5e14ac1e.webp",
+      "bytes": 11193795,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_089d438912ef4d23a90c6a211e3c9f05.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_089d438912ef4d23a90c6a211e3c9f05.pdf",
+      "local": "documents/pdf-library/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf",
+      "preview": "media/pdf-previews/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.webp",
+      "bytes": 3319798,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_1479a1a62dc646c79c0da8c220455801.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_1479a1a62dc646c79c0da8c220455801.pdf",
+      "local": "documents/pdf-library/8a054d-1479a1a62dc646c79c0da8c220455801-d583c09d.pdf",
+      "preview": "media/pdf-previews/8a054d-1479a1a62dc646c79c0da8c220455801-d583c09d.webp",
+      "bytes": 1992296,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_428f44b7b0b64a1f87bc716e7135b508.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_428f44b7b0b64a1f87bc716e7135b508.pdf",
+      "local": "documents/pdf-library/8a054d-428f44b7b0b64a1f87bc716e7135b508-6001b34f.pdf",
+      "preview": "media/pdf-previews/8a054d-428f44b7b0b64a1f87bc716e7135b508-6001b34f.webp",
+      "bytes": 320478,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_cb05a673b0ac43d48b0ba8138e25164d.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_cb05a673b0ac43d48b0ba8138e25164d.pdf",
+      "local": "documents/pdf-library/8a054d-cb05a673b0ac43d48b0ba8138e25164d-d48008d6.pdf",
+      "preview": "media/pdf-previews/8a054d-cb05a673b0ac43d48b0ba8138e25164d-d48008d6.webp",
+      "bytes": 602134,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_ac05204be77a43d48aaa598686d13c44.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_ac05204be77a43d48aaa598686d13c44.pdf",
+      "local": "documents/pdf-library/8a054d-ac05204be77a43d48aaa598686d13c44-8de83362.pdf",
+      "preview": "media/pdf-previews/8a054d-ac05204be77a43d48aaa598686d13c44-8de83362.webp",
+      "bytes": 1130644,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_686eba28dc2f46d8bd58015d586ce1c8.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_686eba28dc2f46d8bd58015d586ce1c8.pdf",
+      "local": "documents/pdf-library/8a054d-686eba28dc2f46d8bd58015d586ce1c8-46161952.pdf",
+      "preview": "media/pdf-previews/8a054d-686eba28dc2f46d8bd58015d586ce1c8-46161952.webp",
+      "bytes": 597303,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_91624b54be8d44dcbcbb63d6dd91db21.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_91624b54be8d44dcbcbb63d6dd91db21.pdf",
+      "local": "documents/pdf-library/8a054d-91624b54be8d44dcbcbb63d6dd91db21-f86e3c22.pdf",
+      "preview": "media/pdf-previews/8a054d-91624b54be8d44dcbcbb63d6dd91db21-f86e3c22.webp",
+      "bytes": 1586526,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_4295db50ce3d463ea5b72e1c7287ecf6.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_4295db50ce3d463ea5b72e1c7287ecf6.pdf",
+      "local": "documents/pdf-library/8a054d-4295db50ce3d463ea5b72e1c7287ecf6-2d77e0c9.pdf",
+      "preview": "media/pdf-previews/8a054d-4295db50ce3d463ea5b72e1c7287ecf6-2d77e0c9.webp",
+      "bytes": 1301669,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_1d343e95846d406eb9b7a2e25ce23592.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_1d343e95846d406eb9b7a2e25ce23592.pdf",
+      "local": "documents/pdf-library/8a054d-1d343e95846d406eb9b7a2e25ce23592-b191a326.pdf",
+      "preview": "media/pdf-previews/8a054d-1d343e95846d406eb9b7a2e25ce23592-b191a326.webp",
+      "bytes": 718420,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_4eeac0c75daf4f2f8e9872e311f86861.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_4eeac0c75daf4f2f8e9872e311f86861.pdf",
+      "local": "documents/pdf-library/8a054d-4eeac0c75daf4f2f8e9872e311f86861-030a4770.pdf",
+      "preview": "media/pdf-previews/8a054d-4eeac0c75daf4f2f8e9872e311f86861-030a4770.webp",
+      "bytes": 663031,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_e8bb427890524e4eb4f181a5252b2b91.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_e8bb427890524e4eb4f181a5252b2b91.pdf",
+      "local": "documents/pdf-library/8a054d-e8bb427890524e4eb4f181a5252b2b91-2088c449.pdf",
+      "preview": "media/pdf-previews/8a054d-e8bb427890524e4eb4f181a5252b2b91-2088c449.webp",
+      "bytes": 485615,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_3f80f0231b7c4e3f96c1d1f247d2eb51.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_3f80f0231b7c4e3f96c1d1f247d2eb51.pdf",
+      "local": "documents/pdf-library/8a054d-3f80f0231b7c4e3f96c1d1f247d2eb51-eb5adad9.pdf",
+      "preview": "media/pdf-previews/8a054d-3f80f0231b7c4e3f96c1d1f247d2eb51-eb5adad9.webp",
+      "bytes": 1093235,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_e809e24019ea4156a36af7b272432e55.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_e809e24019ea4156a36af7b272432e55.pdf",
+      "local": "documents/pdf-library/8a054d-e809e24019ea4156a36af7b272432e55-d00c27a4.pdf",
+      "preview": "media/pdf-previews/8a054d-e809e24019ea4156a36af7b272432e55-d00c27a4.webp",
+      "bytes": 1346676,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_32cf5fce0d294d38bc37f114cdb97df9.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_32cf5fce0d294d38bc37f114cdb97df9.pdf",
+      "local": "documents/pdf-library/8a054d-32cf5fce0d294d38bc37f114cdb97df9-3da05271.pdf",
+      "preview": "media/pdf-previews/8a054d-32cf5fce0d294d38bc37f114cdb97df9-3da05271.webp",
+      "bytes": 2848624,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_8ad5d4329efc43718ec95abf8b3f1ebf.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_8ad5d4329efc43718ec95abf8b3f1ebf.pdf",
+      "local": "documents/pdf-library/8a054d-8ad5d4329efc43718ec95abf8b3f1ebf-9a335b05.pdf",
+      "preview": "media/pdf-previews/8a054d-8ad5d4329efc43718ec95abf8b3f1ebf-9a335b05.webp",
+      "bytes": 948716,
+      "status": "downloaded"
+    },
+    "https://www.stigmaindex.org/wp-content/uploads/2020/06/Jamaica-SI-Report-2020.pdf": {
+      "source": "https://www.stigmaindex.org/wp-content/uploads/2020/06/Jamaica-SI-Report-2020.pdf",
+      "local": "documents/pdf-library/jamaica-si-report-2020-f52bc874.pdf",
+      "preview": "media/pdf-previews/jamaica-si-report-2020-f52bc874.webp",
+      "bytes": 1351108,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_a2e0939746a94fda8650744b478d9c3e.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_a2e0939746a94fda8650744b478d9c3e.pdf",
+      "local": "documents/pdf-library/8a054d-a2e0939746a94fda8650744b478d9c3e-f9cdcf78.pdf",
+      "preview": "media/pdf-previews/8a054d-a2e0939746a94fda8650744b478d9c3e-f9cdcf78.webp",
+      "bytes": 9119436,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_41e2a7f3aa334a26a0063d9525c6cea0.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_41e2a7f3aa334a26a0063d9525c6cea0.pdf",
+      "local": "documents/pdf-library/8a054d-41e2a7f3aa334a26a0063d9525c6cea0-cf521553.pdf",
+      "preview": "media/pdf-previews/8a054d-41e2a7f3aa334a26a0063d9525c6cea0-cf521553.webp",
+      "bytes": 1932549,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_726e0dd7ed5247a480fc88d29c268af2.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_726e0dd7ed5247a480fc88d29c268af2.pdf",
+      "local": "documents/pdf-library/8a054d-726e0dd7ed5247a480fc88d29c268af2-f700dc75.pdf",
+      "preview": "media/pdf-previews/8a054d-726e0dd7ed5247a480fc88d29c268af2-f700dc75.webp",
+      "bytes": 5421058,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_808940ad37ff4310a4482e2b16c4ca06.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_808940ad37ff4310a4482e2b16c4ca06.pdf",
+      "local": "documents/pdf-library/8a054d-808940ad37ff4310a4482e2b16c4ca06-fbb62fb6.pdf",
+      "preview": "media/pdf-previews/8a054d-808940ad37ff4310a4482e2b16c4ca06-fbb62fb6.webp",
+      "bytes": 2884587,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_5b2796473da548c1848bff878b6f324f.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_5b2796473da548c1848bff878b6f324f.pdf",
+      "local": "documents/pdf-library/8a054d-5b2796473da548c1848bff878b6f324f-de8ae80d.pdf",
+      "preview": "media/pdf-previews/8a054d-5b2796473da548c1848bff878b6f324f-de8ae80d.webp",
+      "bytes": 1025445,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_b71d11e41ac640609d5b9ad4f2cebf5f.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_b71d11e41ac640609d5b9ad4f2cebf5f.pdf",
+      "local": "documents/pdf-library/8a054d-b71d11e41ac640609d5b9ad4f2cebf5f-4463fa64.pdf",
+      "preview": "media/pdf-previews/8a054d-b71d11e41ac640609d5b9ad4f2cebf5f-4463fa64.webp",
+      "bytes": 1248199,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_719c768ab64d4f1587e5bda30769d3d0.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_719c768ab64d4f1587e5bda30769d3d0.pdf",
+      "local": "documents/pdf-library/8a054d-719c768ab64d4f1587e5bda30769d3d0-f1499ce0.pdf",
+      "preview": "media/pdf-previews/8a054d-719c768ab64d4f1587e5bda30769d3d0-f1499ce0.webp",
+      "bytes": 1727855,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_9a00af4364d243b19f3cd6ad48d2d126.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_9a00af4364d243b19f3cd6ad48d2d126.pdf",
+      "local": "documents/pdf-library/8a054d-9a00af4364d243b19f3cd6ad48d2d126-f0d10937.pdf",
+      "preview": "media/pdf-previews/8a054d-9a00af4364d243b19f3cd6ad48d2d126-f0d10937.webp",
+      "bytes": 1248199,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_214c146c40b84cac810622e89260c860.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_214c146c40b84cac810622e89260c860.pdf",
+      "local": "documents/pdf-library/8a054d-214c146c40b84cac810622e89260c860-2f94b427.pdf",
+      "preview": "media/pdf-previews/8a054d-214c146c40b84cac810622e89260c860-2f94b427.webp",
+      "bytes": 1068798,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_7b2be1720fc24132ac6bcfb19cf87e9b.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_7b2be1720fc24132ac6bcfb19cf87e9b.pdf",
+      "local": "documents/pdf-library/8a054d-7b2be1720fc24132ac6bcfb19cf87e9b-bdf8c231.pdf",
+      "preview": "media/pdf-previews/8a054d-7b2be1720fc24132ac6bcfb19cf87e9b-bdf8c231.webp",
+      "bytes": 2459113,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_e0e3718b9d5d4c2999bb124f3647785e.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_e0e3718b9d5d4c2999bb124f3647785e.pdf",
+      "local": "documents/pdf-library/8a054d-e0e3718b9d5d4c2999bb124f3647785e-fefc9a33.pdf",
+      "preview": "media/pdf-previews/8a054d-e0e3718b9d5d4c2999bb124f3647785e-fefc9a33.webp",
+      "bytes": 2048550,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_e9863a4cd2464e59bd20be83416ef1db.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_e9863a4cd2464e59bd20be83416ef1db.pdf",
+      "local": "documents/pdf-library/8a054d-e9863a4cd2464e59bd20be83416ef1db-af84d0fa.pdf",
+      "preview": "media/pdf-previews/8a054d-e9863a4cd2464e59bd20be83416ef1db-af84d0fa.webp",
+      "bytes": 2845659,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_7bba4c847eeb41b690a7d7d0c4e74f1a.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_7bba4c847eeb41b690a7d7d0c4e74f1a.pdf",
+      "local": "documents/pdf-library/8a054d-7bba4c847eeb41b690a7d7d0c4e74f1a-0be795aa.pdf",
+      "preview": "media/pdf-previews/8a054d-7bba4c847eeb41b690a7d7d0c4e74f1a-0be795aa.webp",
+      "bytes": 296384,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_be0da640263d48f8be133853c42b4c33.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_be0da640263d48f8be133853c42b4c33.pdf",
+      "local": "documents/pdf-library/8a054d-be0da640263d48f8be133853c42b4c33-3affa5c1.pdf",
+      "preview": "media/pdf-previews/8a054d-be0da640263d48f8be133853c42b4c33-3affa5c1.webp",
+      "bytes": 220246,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_a6fd1230b2ae4f42baa6dc20c3485a28.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_a6fd1230b2ae4f42baa6dc20c3485a28.pdf",
+      "local": "documents/pdf-library/8a054d-a6fd1230b2ae4f42baa6dc20c3485a28-493ad403.pdf",
+      "preview": "media/pdf-previews/8a054d-a6fd1230b2ae4f42baa6dc20c3485a28-493ad403.webp",
+      "bytes": 2630747,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_701051e9c915407eaa3ed2a439ab2a21.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_701051e9c915407eaa3ed2a439ab2a21.pdf",
+      "local": "documents/pdf-library/8a054d-701051e9c915407eaa3ed2a439ab2a21-06be72c2.pdf",
+      "preview": "media/pdf-previews/8a054d-701051e9c915407eaa3ed2a439ab2a21-06be72c2.webp",
+      "bytes": 338748,
+      "status": "downloaded"
+    },
+    "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_368a50632f094415bbc8e8c7dbc87a51.pdf": {
+      "source": "https://2aef310d-9351-419e-9a0a-317bf599b4ac.filesusr.com/ugd/8a054d_368a50632f094415bbc8e8c7dbc87a51.pdf",
+      "local": "documents/pdf-library/8a054d-368a50632f094415bbc8e8c7dbc87a51-fbac6ff6.pdf",
+      "preview": "media/pdf-previews/8a054d-368a50632f094415bbc8e8c7dbc87a51-fbac6ff6.webp",
+      "bytes": 1167618,
+      "status": "downloaded"
+    },
+    "https://hstu.moh.gov.jm/wp-content/uploads/2024/02/Prep-Handbook-Complete_final_October-9-2023-1.pdf": {
+      "source": "https://hstu.moh.gov.jm/wp-content/uploads/2024/02/Prep-Handbook-Complete_final_October-9-2023-1.pdf",
+      "local": "documents/pdf-library/prep-handbook-complete-final-october-9-2023-1-c39fe0c4.pdf",
+      "preview": "media/pdf-previews/prep-handbook-complete-final-october-9-2023-1-c39fe0c4.webp",
+      "bytes": 9300461,
+      "status": "downloaded"
+    },
+    "https://moh.gov.jm/wp-content/uploads/2016/11/Revised-MOH-Policy-and-Procedure-Manual-for-the-Referral-and-Transfer-of-Patients-22.09.16.pdf": {
+      "source": "https://moh.gov.jm/wp-content/uploads/2016/11/Revised-MOH-Policy-and-Procedure-Manual-for-the-Referral-and-Transfer-of-Patients-22.09.16.pdf",
+      "local": "documents/pdf-library/revised-moh-policy-and-procedure-manual-for-the-referral-and-transfer--5b1c624e.pdf",
+      "preview": "media/pdf-previews/revised-moh-policy-and-procedure-manual-for-the-referral-and-transfer--5b1c624e.webp",
+      "bytes": 3472226,
+      "status": "downloaded"
+    },
+    "https://drive.google.com/file/d/${drive[1]}/preview`,external:url,local:false};if(/\\.pdf": {
+      "source": "https://drive.google.com/file/d/${drive[1]}/preview`,external:url,local:false};if(/\\.pdf",
+      "local": null,
+      "preview": null,
+      "status": "external"
+    },
+    "https://aidsinfo.nih.gov/contentfiles/lvguidelines/oi_guidelines_pediatrics.pdf": {
+      "source": "https://aidsinfo.nih.gov/contentfiles/lvguidelines/oi_guidelines_pediatrics.pdf",
+      "local": null,
+      "preview": null,
+      "status": "external"
+    },
+    "https://caricom.org/documents/11265-executive_plan_vol_1_-_final.pdf": {
+      "source": "https://caricom.org/documents/11265-executive_plan_vol_1_-_final.pdf",
+      "local": "documents/pdf-library/11265-executive-plan-vol-1-final-b8bd842e.pdf",
+      "preview": "media/pdf-previews/11265-executive-plan-vol-1-final-b8bd842e.webp",
+      "bytes": 1069774,
+      "status": "downloaded"
+    },
+    "http://carpha.org/downloads/CCH-IV-Version7.pdf": {
+      "source": "http://carpha.org/downloads/CCH-IV-Version7.pdf",
+      "local": null,
+      "preview": null,
+      "status": "external"
+    },
+    "https://apps.who.int/iris/bitstream/handle/10665/79199/9789241505345_eng.pdf?sequ": {
+      "source": "https://apps.who.int/iris/bitstream/handle/10665/79199/9789241505345_eng.pdf?sequ",
+      "local": null,
+      "preview": null,
+      "status": "external"
+    },
+    "https://moj.gov.jm/sites/default/files/laws/Public%20Health%20Act.pdf": {
+      "source": "https://moj.gov.jm/sites/default/files/laws/Public%20Health%20Act.pdf",
+      "local": null,
+      "preview": null,
+      "status": "external"
+    },
+    "http://apps.who.int/iris/bitstream/handle/10665/77741/9789241504492_eng.pdf": {
+      "source": "http://apps.who.int/iris/bitstream/handle/10665/77741/9789241504492_eng.pdf",
+      "local": null,
+      "preview": null,
+      "status": "external"
+    },
+    "https://www.who.int/tb/publications/Final_TB_Screening_guidelines.pdf": {
+      "source": "https://www.who.int/tb/publications/Final_TB_Screening_guidelines.pdf",
+      "local": null,
+      "preview": null,
+      "status": "external"
+    },
+    "https://moh.gov.jm/wp-content/uploads/2016/05/Linkage-to-Care-protocol.pdf": {
+      "source": "https://moh.gov.jm/wp-content/uploads/2016/05/Linkage-to-Care-protocol.pdf",
+      "local": "documents/pdf-library/linkage-to-care-protocol-f127420f.pdf",
+      "preview": "media/pdf-previews/linkage-to-care-protocol-f127420f.webp",
+      "bytes": 1029237,
+      "status": "downloaded"
+    },
+    "https://www.who.int/ethics/topics/opening_up_ethics_and_disclosure_en_2000.pdf": {
+      "source": "https://www.who.int/ethics/topics/opening_up_ethics_and_disclosure_en_2000.pdf",
+      "local": null,
+      "preview": null,
+      "status": "external"
+    },
+    "http://apps.who.int/iris/bitstream/10665/189977/1/WHO_HIV_2015.36_eng.pdf?ua=1": {
+      "source": "http://apps.who.int/iris/bitstream/10665/189977/1/WHO_HIV_2015.36_eng.pdf?ua=1",
+      "local": null,
+      "preview": null,
+      "status": "external"
+    }
+  },
+  "stats": {
+    "pdf_urls_discovered": 84,
+    "localized": 75,
+    "external_remaining": 9,
+    "previews_generated": 75,
+    "failures": 9,
+    "localized_bytes": 164013656
+  }
+}

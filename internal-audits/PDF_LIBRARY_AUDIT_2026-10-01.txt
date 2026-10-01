@@ -1,0 +1,22 @@
+HSTU PDF LIBRARY AUDIT — 2026-10-01
+PDF URLs discovered: 84
+Localized PDFs: 75
+External PDFs remaining: 9
+First-page previews available: 75
+Localized bytes: 164013656
+
+Official MOHW references:
+- https://www.moh.gov.jm/wp-content/uploads/2026/08/National-Surveillance-Manual-for-Jamaica-July-2026.pdf -> documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf | preview=media/pdf-previews/national-surveillance-manual-for-jamaica-july-2026-be6954d6.webp
+- https://www.moh.gov.jm/wp-content/uploads/2022/12/Management-of-Interpersonal-Violence-Procedures-for-Healthcare-Workers-2022.pdf -> documents/pdf-library/management-of-interpersonal-violence-procedures-for-healthcare-workers-7ae627da.pdf | preview=media/pdf-previews/management-of-interpersonal-violence-procedures-for-healthcare-workers-7ae627da.webp
+- https://www.moh.gov.jm/wp-content/uploads/2026/02/PharmWatch-Drug-Monitoring-Form-Current-FRM-PMS-SRD-STRD-026-R1-1.pdf -> documents/pdf-library/pharmwatch-drug-monitoring-form-current-frm-pms-srd-strd-026-r1-1-df1c6256.pdf | preview=media/pdf-previews/pharmwatch-drug-monitoring-form-current-frm-pms-srd-strd-026-r1-1-df1c6256.webp
+
+Failures / external fallbacks:
+- https://drive.google.com/file/d/${drive[1]}/preview`,external:url,local:false};if(/\.pdf :: 404 Client Error: Not Found for url: https://drive.google.com/file/d/$%7Bdrive%5B1%5D%7D/preview%60,external:url,local:false%7D;if(/%5C.pdf
+- https://aidsinfo.nih.gov/contentfiles/lvguidelines/oi_guidelines_pediatrics.pdf :: HTTPSConnectionPool(host='aidsinfo.nih.gov', port=443): Max retries exceeded with url: /contentfiles/lvguidelines/oi_guidelines_pediatrics.pdf (Caused by NameResolutionError("HTTPSConnection(host='aidsinfo.nih.gov', port=443): Failed to resolve 'aidsinfo.nih.gov' ([Errno -5] No address associated wi
+- http://carpha.org/downloads/CCH-IV-Version7.pdf :: 404 Client Error: Not Found for url: https://carpha.org/downloads/CCH-IV-Version7.pdf
+- https://apps.who.int/iris/bitstream/handle/10665/79199/9789241505345_eng.pdf?sequ :: response is not a PDF
+- https://moj.gov.jm/sites/default/files/laws/Public%20Health%20Act.pdf :: HTTPSConnectionPool(host='moj.gov.jm', port=443): Max retries exceeded with url: /sites/default/files/laws/Public%20Health%20Act.pdf (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1016)')))
+- http://apps.who.int/iris/bitstream/handle/10665/77741/9789241504492_eng.pdf :: response is not a PDF
+- https://www.who.int/tb/publications/Final_TB_Screening_guidelines.pdf :: 404 Client Error: Not Found for url: https://www.who.int/tb/publications/Final_TB_Screening_guidelines.pdf
+- https://www.who.int/ethics/topics/opening_up_ethics_and_disclosure_en_2000.pdf :: 404 Client Error: Not Found for url: https://www.who.int/ethics/topics/opening_up_ethics_and_disclosure_en_2000.pdf
+- http://apps.who.int/iris/bitstream/10665/189977/1/WHO_HIV_2015.36_eng.pdf?ua=1 :: response is not a PDF
