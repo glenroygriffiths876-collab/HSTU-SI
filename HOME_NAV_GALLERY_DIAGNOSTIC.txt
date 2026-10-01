@@ -1,0 +1,87 @@
+=== desktop {"width":1440,"height":900} ===
+marker ready
+dims {"win":1440,"doc":1440,"body":1440}
+navText ["Home","Research","Capacity Building","Reports","Data Audit and Utilization","Gallery","Resources","Find Services"]
+findServicesVisible true
+findServicesBox {"x":1190.1875,"y":31.734375,"width":114.21875,"height":40.53125}
+visibleDropdowns 0
+mainNavVisible true
+navScroller {"scrollWidth":774,"clientWidth":762,"overflowX":"visible","flexDirection":"row","display":"flex"}
+heroCount 1
+heroText HSTU · HIV/STI/TB UNIT · JAMAICA
+About the Research Data Repository
+
+The Research Data Repository was conceptualized in 2023 by the Strategic Information Component with the aim of systematically collecting and collating published and unpublished studies and reports.
+
+The repository supports navigation of HIV/STI/TB research from Jamaica and the wider Caribbean, alongside capacity-building tools, national-level reports and data-utilization SOPs/User Guides for DHIS2 and TSIS2.
+
+Explore Research →
+View Reports
+Data Audit & Utilization
+▦
+Go to GalleryExplore HIV, STI, TB and PrEP imagery →
+purposeVisible false
+summaryFacts 4
+themes 15
+quickCards 7
+galleryFilterLabels ["All","HIV","STI","TB","PrEP"]
+galleryTotalCards 51
+gallery All visible 51 active true pressed true
+gallery HIV visible 21 active true pressed true
+gallery STI visible 5 active true pressed true
+gallery TB visible 1 active true pressed true
+gallery PrEP visible 2 active true pressed true
+galleryTBDropdownCount 1
+FATAL desktop Error: locator.click: Element is not visible
+Call log:
+  - waiting for locator('.nav-btn[data-view="gallery"]').first().locator('..').locator('.hstu-nav-dropdown button').filter({ hasText: /^TB$/ }).first()
+    - locator resolved to <button type="button" data-view="gallery" data-gallery-category="TB" data-target="gallery-images">TB</button>
+  - attempting click action
+    - scrolling into view if needed
+
+=== mobile {"width":390,"height":844} ===
+marker ready
+dims {"win":390,"doc":390,"body":390}
+navText ["Home","Research","Capacity Building","Reports","Data Audit and Utilization","Gallery","Resources","Find Services"]
+findServicesVisible true
+findServicesBox {"x":2593,"y":92,"width":126.21875,"height":40.53125}
+visibleDropdowns 0
+mainNavVisible true
+navScroller {"scrollWidth":2992,"clientWidth":388,"overflowX":"auto","flexDirection":"row","display":"flex"}
+heroCount 1
+heroText HSTU · HIV/STI/TB UNIT · JAMAICA
+About the Research Data Repository
+
+The Research Data Repository was conceptualized in 2023 by the Strategic Information Component with the aim of systematically collecting and collating published and unpublished studies and reports.
+
+The repository supports navigation of HIV/STI/TB research from Jamaica and the wider Caribbean, alongside capacity-building tools, national-level reports and data-utilization SOPs/User Guides for DHIS2 and TSIS2.
+
+Explore Research →
+View Reports
+Data Audit & Utilization
+▦
+Go to GalleryExplore HIV, STI, TB and PrEP imagery →
+purposeVisible false
+summaryFacts 4
+themes 15
+quickCards 7
+galleryFilterLabels ["All","HIV","STI","TB","PrEP"]
+galleryTotalCards 51
+FATAL mobile TimeoutError: locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('#hstuGalleryFilters button').filter({ hasText: /^All$/ }).first()
+    - locator resolved to <button type="button" aria-pressed="true" data-gallery-filter="All" class="hstu-gallery-filter-930 active">All</button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    56 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
