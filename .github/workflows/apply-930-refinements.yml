@@ -51,7 +51,7 @@ jobs:
           ]:
             assert phrase in j, phrase
           assert "Swipe tabs" not in j
-          assert "hstuMobileSubnav930" in j
+          assert "hstuMobileMenu930" in j
           print("STATIC QA PASS")
           PY
       - name: Install Playwright
@@ -112,21 +112,23 @@ jobs:
             }else{
               ok(await page.getByText('Swipe tabs →',{exact:true}).count()===0,name+': Swipe tabs remains');
               const toggle=page.locator('#menuToggle');
+              const mobileMenu=page.locator('#hstuMobileMenu930');
               ok(await toggle.isVisible(),name+': hamburger hidden');
-              ok(await page.locator('#mainNav').isVisible()===false,name+': mobile nav must start closed');
+              ok(await page.locator('#mainNav').isVisible()===false,name+': desktop nav visible on mobile');
+              ok(await mobileMenu.count()===1,name+': dedicated mobile menu missing');
+              ok(await mobileMenu.isVisible()===false,name+': mobile menu must start closed');
               ok(await page.locator('#hstuMobileSubnav930').count()===0,name+': detached mobile subnav remains');
               await toggle.click();
               await page.waitForTimeout(120);
-              ok(await page.locator('#mainNav').isVisible(),name+': menu did not open');
-              const dir=await page.locator('#mainNav').evaluate(el=>getComputedStyle(el).flexDirection);
+              ok(await mobileMenu.isVisible(),name+': menu did not open');
+              const dir=await mobileMenu.evaluate(el=>getComputedStyle(el).flexDirection);
               ok(dir==='column',name+': mobile menu not vertical '+dir);
-              const gallery=page.locator('.nav-btn[data-view="gallery"]').first();
+              const gallery=mobileMenu.locator('.hstu-mobile-parent-930').filter({hasText:/^Gallery$/});
               await gallery.click();
               await page.waitForTimeout(100);
-              const gdd=gallery.locator('xpath=..').locator('.hstu-nav-dropdown');
+              const group=gallery.locator('xpath=..');
+              const gdd=group.locator('.hstu-mobile-children-930');
               ok(await gdd.isVisible(),name+': Gallery accordion did not expand');
-              const gdir=await gdd.evaluate(el=>getComputedStyle(el).flexDirection);
-              ok(gdir==='column',name+': Gallery accordion not vertical');
               const labels=(await gdd.locator('button').allTextContents()).map(x=>x.trim());
               ok(JSON.stringify(labels)===JSON.stringify(['All','HIV','STI','TB','PrEP']),name+': Gallery accordion labels '+JSON.stringify(labels));
               await page.screenshot({path:'/tmp/mobile-menu.png',fullPage:false});
@@ -134,7 +136,7 @@ jobs:
               await page.waitForTimeout(650);
               ok(await page.locator('#view-gallery.active').count()===1,name+': TB did not open Gallery');
               ok(await visibleGalleryCount(page)===1,name+': TB filter from accordion');
-              ok(await page.locator('#mainNav').isVisible()===false,name+': menu did not close after selection');
+              ok(await mobileMenu.isVisible()===false,name+': menu did not close after selection');
               await page.screenshot({path:'/tmp/mobile-gallery.png',fullPage:false});
             }
 
