@@ -477,20 +477,10 @@ function galleryCardCategory(card){
    return known;
  }
  const declared=tidy(card.dataset.galleryCategory||card.dataset.category||'');
- if(/^(HIV|STI|TB|PrEP)$/i.test(declared)){
-   const normalized=/^prep$/i.test(declared)?'PrEP':declared.toUpperCase();
-   card.dataset.galleryCategory=normalized;
-   return normalized;
- }
- const hay=(tidy(card.textContent)+' '+tidy(img?.alt)+' '+tidy(img?.title)+' '+file).toLowerCase();
- let inferred='';
- if(/\bprep\b|pre[- ]?exposure prophylaxis/.test(hay)) inferred='PrEP';
- else if(/\btb\b|tuberculosis/.test(hay)) inferred='TB';
- else if(/\bsti\b|sexually transmitted|syphilis|gonorr|chlamyd|hpv|herpes/.test(hay)) inferred='STI';
- else if(/\bhiv\b|\baids\b|antiretroviral|viral load|undetectable|pep\b/.test(hay)) inferred='HIV';
- if(inferred){
-   card.dataset.galleryCategory=inferred;
-   return inferred;
+ if(/^(HIV|STI|TB|PrEP)$/i.test(declared)) return declared;
+ if(/^archive-\d+\.webp$/i.test(file)){
+   card.dataset.galleryCategory='Unclassified';
+   return 'Unclassified';
  }
  card.dataset.galleryCategory='Unclassified';
  return 'Unclassified';
@@ -693,7 +683,7 @@ function cleanPublicTerms(){
  }
 }
 function init(){
- document.documentElement.dataset.hstuRefinements930='ready-v2';
+ document.documentElement.dataset.hstuRefinements930='ready';
  addStyles(); addFinalHotfixStyles(); fixHero(); fixPrimaryNav(); installNavigationDelegation(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess();
  fixResearchAgenda(); fixCapacity(); splitResources(); fixGallery(); installResourceObserver(); cleanPublicTerms();
  closeMobileSubnav930();
