@@ -1,0 +1,36 @@
+name: Shanille 30 Sep structure audit
+on:
+  push:
+    paths:
+      - '.github/workflows/shanille-0930-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install beautifulsoup4
+      - name: Audit current DOM
+        run: |
+          python - <<'PY'
+          from bs4 import BeautifulSoup
+          from pathlib import Path
+          import json,re
+          s=Path("index.html").read_text(encoding="utf-8")
+          soup=BeautifulSoup(s,"html.parser")
+          def text(el):
+              return " ".join(el.stripped_strings) if el else None
+          out={}
+          out["title"]=soup.title.string if soup.title else None
+          out["nav_buttons"]=[{"text":text(x),"class":x.get("class"),"data_view":x.get("data-view"),"id":x.get("id")} for x in soup.select("nav button, .nav-btn")]
+          out["dropdowns"]=[{"text":text(x)[:1200],"html":str(x)[:5000]} for x in soup.select(".hstu-nav-dropdown")]
+          for vid in ["view-home","view-research","view-capacity","view-reports","view-data-audit","view-gallery","view-resources","view-services"]:
+              el=soup.find(id=vid)
+              out[vid]={"text":text(el)[:12000] if el else None,"headings":[text(h) for h in el.select("h1,h2,h3,h4")][:100] if el else []}
+          terms=["Open Manual Library","Essential Manuals and Guidance","Campaign Gallery","Campaign","C-Tech","C-TECH","Manuals & protocols","Training & learning","Explore Capacity Building","Explore research","Explore Research","Research agenda priorities","Research Agenda Priorities","Studies stored on the Research Repository","Find Services","Presentations & Posters"]
+          out["term_counts"]={t:s.lower().count(t.lower()) for t in terms}
+          out["ids"]=[x.get("id") for x in soup.find_all(id=True) if x.get("id")][:400]
+          print(json.dumps(out,indent=2,ensure_ascii=False))
+          PY
