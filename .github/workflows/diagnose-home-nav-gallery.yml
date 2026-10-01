@@ -1,0 +1,99 @@
+name: Diagnose Home nav Gallery fixes
+on:
+  push:
+    paths:
+      - '.github/workflows/diagnose-home-nav-gallery.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.57.0 >/dev/null 2>&1
+          npx playwright install chromium >/dev/null
+      - name: Inspect local rendered build
+        run: |
+          python -m http.server 8000 >/tmp/hstu-diagnostic-server.log 2>&1 &
+          cat > /tmp/diag.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+          const lines=[];
+          const out=(...x)=>lines.push(x.map(v=>typeof v==='string'?v:JSON.stringify(v)).join(' '));
+          const browser=await chromium.launch({headless:true});
+          async function inspect(name,viewport){
+            const page=await browser.newPage({viewport});
+            const errs=[];
+            page.on('pageerror',e=>errs.push('PAGE '+e.message));
+            page.on('console',m=>{if(m.type()==='error') errs.push('CONSOLE '+m.text());});
+            try{
+              await page.goto('http://127.0.0.1:8000/',{waitUntil:'networkidle',timeout:90000});
+              await page.waitForTimeout(1200);
+              out('===',name,viewport,'===');
+              out('marker',await page.locator('html').getAttribute('data-hstu-refinements930'));
+              out('dims',await page.evaluate(()=>({win:innerWidth,doc:document.documentElement.scrollWidth,body:document.body.scrollWidth})));
+              out('navText',(await page.locator('.nav-btn[data-view]').allTextContents()).map(x=>x.trim()));
+              out('findServicesVisible',await page.locator('.nav-btn[data-view="services"]').first().isVisible());
+              out('findServicesBox',await page.locator('.nav-btn[data-view="services"]').first().boundingBox());
+              out('visibleDropdowns',await page.locator('#mainNav .hstu-nav-dropdown:visible').count());
+              out('mainNavVisible',await page.locator('#mainNav').isVisible());
+              if(await page.locator('.hstu-primary-nav-scroll').count()){
+                out('navScroller',await page.locator('.hstu-primary-nav-scroll').first().evaluate(el=>({scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,overflowX:getComputedStyle(el).overflowX,flexDirection:getComputedStyle(el).flexDirection,display:getComputedStyle(el).display})));
+              }
+              out('heroCount',await page.locator('#home-purpose-hero').count());
+              if(await page.locator('#home-purpose-hero').count()) out('heroText',(await page.locator('#home-purpose-hero').innerText()).slice(0,1400));
+              out('purposeVisible',await page.locator('#repository-purpose').count()?await page.locator('#repository-purpose').isVisible():false);
+              out('summaryFacts',await page.locator('#home-purpose-summary .hstu-purpose-highlights-930 > *').count());
+              out('themes',await page.locator('#home-thematic-areas .hstu-theme-card').count());
+              out('quickCards',await page.locator('#home-quick-access .hstu-quick-card').count());
+              const g=page.locator('.nav-btn[data-view="gallery"]').first();
+              if(await g.count()){await g.click();await page.waitForTimeout(250);}
+              out('galleryFilterLabels',(await page.locator('#hstuGalleryFilters button').allTextContents()).map(x=>x.trim()));
+              out('galleryTotalCards',await page.locator('#hstuGalleryGrid > *').count());
+              for(const key of ['All','HIV','STI','TB','PrEP']){
+                const b=page.locator('#hstuGalleryFilters button').filter({hasText:new RegExp('^'+key+'$')}).first();
+                if(await b.count()){
+                  await b.click();await page.waitForTimeout(100);
+                  out('gallery',key,'visible',await page.locator('#hstuGalleryGrid > *:visible').count(),'active',await b.evaluate(el=>el.classList.contains('active')),'pressed',await b.getAttribute('aria-pressed'));
+                } else out('gallery',key,'MISSING');
+              }
+              const dd=page.locator('.nav-btn[data-view="gallery"]').first().locator('xpath=..').locator('.hstu-nav-dropdown button').filter({hasText:/^TB$/}).first();
+              out('galleryTBDropdownCount',await dd.count());
+              if(await dd.count()){
+                await dd.click({force:true}); await page.waitForTimeout(220);
+                out('galleryAfterTBDropdown',await page.locator('#hstuGalleryGrid > *:visible').count());
+              }
+              out('errors',errs);
+              await page.screenshot({path:'/tmp/'+name+'.png',fullPage:false});
+            }catch(e){out('FATAL',name,String(e));}
+            await page.close();
+          }
+          await inspect('desktop',{width:1440,height:900});
+          await inspect('mobile',{width:390,height:844});
+          await browser.close();
+          fs.writeFileSync('HOME_NAV_GALLERY_DIAGNOSTIC.txt',lines.join('\n')+'\n');
+          JS
+          node /tmp/diag.mjs
+          cat HOME_NAV_GALLERY_DIAGNOSTIC.txt
+      - name: Upload diagnostic screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: home-nav-gallery-diagnostic
+          path: |
+            /tmp/desktop.png
+            /tmp/mobile.png
+      - name: Commit diagnostic report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add HOME_NAV_GALLERY_DIAGNOSTIC.txt
+          git commit -m "Record Home nav Gallery diagnostic" || exit 0
+          git pull --rebase origin main
+          git push origin main
