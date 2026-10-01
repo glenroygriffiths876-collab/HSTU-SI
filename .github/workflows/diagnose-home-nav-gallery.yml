@@ -55,6 +55,8 @@ jobs:
               out('quickCards',await page.locator('#home-quick-access .hstu-quick-card').count());
               const g=page.locator('.nav-btn[data-view="gallery"]').first();
               if(await g.count()){await g.click();await page.waitForTimeout(250);}
+              out('activeView',await page.locator('.view.active').count()?await page.locator('.view.active').first().getAttribute('id'):'none');
+              out('galleryFiltersVisible',await page.locator('#hstuGalleryFilters').isVisible());
               out('galleryFilterLabels',(await page.locator('#hstuGalleryFilters button').allTextContents()).map(x=>x.trim()));
               out('galleryTotalCards',await page.locator('#hstuGalleryGrid > *').count());
               for(const key of ['All','HIV','STI','TB','PrEP']){
@@ -64,11 +66,18 @@ jobs:
                   out('gallery',key,'visible',await page.locator('#hstuGalleryGrid > *:visible').count(),'active',await b.evaluate(el=>el.classList.contains('active')),'pressed',await b.getAttribute('aria-pressed'));
                 } else out('gallery',key,'MISSING');
               }
-              const dd=page.locator('.nav-btn[data-view="gallery"]').first().locator('xpath=..').locator('.hstu-nav-dropdown button').filter({hasText:/^TB$/}).first();
-              out('galleryTBDropdownCount',await dd.count());
-              if(await dd.count()){
-                await dd.click({force:true}); await page.waitForTimeout(220);
-                out('galleryAfterTBDropdown',await page.locator('#hstuGalleryGrid > *:visible').count());
+              if(name==='mobile'){
+                await g.click(); await page.waitForTimeout(120);
+                out('mobileSubnavVisible',await page.locator('#hstuMobileSubnav930').isVisible());
+                const dd=page.locator('#hstuMobileSubnav930 button').filter({hasText:/^TB$/}).first();
+                out('galleryTBDropdownCount',await dd.count());
+                if(await dd.count()){await dd.click();await page.waitForTimeout(260);out('galleryAfterTBDropdown',await page.locator('#hstuGalleryGrid > *:visible').count());}
+              }else{
+                await g.hover(); await page.waitForTimeout(80);
+                const dd=g.locator('xpath=..').locator('.hstu-nav-dropdown button').filter({hasText:/^TB$/}).first();
+                out('galleryTBDropdownCount',await dd.count());
+                out('desktopTBDropdownVisible',await dd.count()?await dd.isVisible():false);
+                if(await dd.count()){await dd.click();await page.waitForTimeout(260);out('galleryAfterTBDropdown',await page.locator('#hstuGalleryGrid > *:visible').count());}
               }
               out('errors',errs);
               await page.screenshot({path:'/tmp/'+name+'.png',fullPage:false});
