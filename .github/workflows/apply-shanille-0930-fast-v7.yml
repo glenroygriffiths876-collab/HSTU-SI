@@ -1,0 +1,231 @@
+name: Apply Shanille 30 Sep refinements fast v7
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-shanille-0930-fast-v7.yml'
+permissions:
+  contents: write
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch repository without external dependencies
+        run: |
+          cat > scripts/apply_shanille_0930_v3.py <<'PY'
+          from pathlib import Path
+          import re
+
+          p=Path("index.html")
+          s=p.read_text(encoding="utf-8")
+
+          # Remove C-TECH at the source-data level so cards/search cannot regenerate it.
+          marker="const TRAINING=["
+          start=s.find(marker)
+          if start<0: raise SystemExit("TRAINING array not found")
+          body_start=start+len(marker)
+          end=s.find("];",body_start)
+          if end<0: raise SystemExit("TRAINING array terminator not found")
+          training_body=s[body_start:end]
+          rows=training_body.splitlines()
+          kept=[];removed=0
+          for row in rows:
+              if "C-TECH" in row.upper() or "ctech-caribbean" in row.lower():
+                  removed+=1
+              else:
+                  kept.append(row)
+          s=s[:body_start]+"\\n".join(kept)+s[end:]
+          s=s.replace("C-TECH/MOHW Jamaica learning is prioritised.","Trusted local, regional and international learning resources are prioritised.")
+          s=s.replace("Current C-TECH Jamaica learning plus carefully separated supplementary learning resources.","Verified local, regional and international learning resources.")
+          # Exact wording/capitalization clean-up.
+          s=s.replace("Research agenda priorities","Research Agenda Priorities")
+          s=s.replace("Campaign Gallery","Gallery")
+          s=s.replace("Search campaign images","Search gallery images")
+          s=s.replace("Programme campaign and activity imagery supporting the wider HSTU knowledge and communication environment.","HIV, STI, TB and PrEP imagery supporting the wider HSTU knowledge and communication environment.")
+          s=s.replace("Explore HIV, STI, TB and PrEP campaign images from the HST Health Living media collection.","Explore HIV, STI, TB and PrEP images from the HST Health Living media collection.")
+          # Remove old injected final patch if re-run.
+          s=re.sub(r'<style id="hstu-shanille-0930-v3">.*?</style>','',s,flags=re.I|re.S)
+          s=re.sub(r'<script id="hstu-shanille-0930-v3-routing">.*?</script>','',s,flags=re.I|re.S)
+
+          css=r'''<style id="hstu-shanille-0930-v3">
+          .hstu-home-thematic{margin-top:26px;padding-top:24px;border-top:1px solid #dfe9dc}
+          .hstu-section-kicker{font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#9f1c25;margin-bottom:8px}
+          .hstu-home-thematic-head{display:flex;gap:24px;align-items:end;justify-content:space-between;margin-bottom:16px}
+          .hstu-home-thematic-head h2{margin:0 0 6px;color:#264c2e}.hstu-home-thematic-head p{margin:0;max-width:760px;color:#657169}
+          .hstu-theme-view-all{border:1px solid #d9e7d4;background:#fff;color:#315f34;border-radius:999px;padding:10px 14px;font-weight:900;white-space:nowrap}
+          .hstu-theme-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+          .hstu-theme-link{display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;text-align:left;min-height:66px;padding:11px 13px;border:1px solid #dce8d8;border-radius:15px;background:linear-gradient(135deg,#f5faf2,#fff 68%,#fff6f6);color:#233c29;cursor:pointer;transition:.18s ease}
+          .hstu-theme-link:hover,.hstu-theme-link:focus-visible{transform:translateY(-2px);border-color:#8fbd78;box-shadow:0 10px 24px rgba(43,86,48,.10);outline:none}
+          .hstu-theme-link span{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#eaf5e4;color:#315f34;font-size:12px;font-weight:900}
+          .hstu-theme-link b{font-size:13px;line-height:1.3}.hstu-theme-link i{font-style:normal;color:#b2222b;font-weight:900}
+          .hstu-final-quick{width:100%}.hstu-quick-head{max-width:850px;margin-bottom:18px}.hstu-quick-head p{color:#66746a}
+          .hstu-final-quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+          .hstu-final-quick-grid button{min-height:150px;text-align:left;padding:18px;border:1px solid #dfe8dc;border-radius:18px;background:#fff;color:#203326;display:flex;flex-direction:column;gap:8px;cursor:pointer;box-shadow:0 8px 24px rgba(39,70,43,.06)}
+          .hstu-final-quick-grid button:nth-child(even){background:linear-gradient(145deg,#f5faf2,#fff)}.hstu-final-quick-grid button:nth-child(3n){background:linear-gradient(145deg,#fff,#fff4f4)}
+          .hstu-final-quick-grid b{font-size:17px;color:#315f34}.hstu-final-quick-grid span{font-size:13px;line-height:1.45;color:#657169;flex:1}.hstu-final-quick-grid i{font-style:normal;font-size:12px;font-weight:900;color:#a51f28}
+          .hstu-nav-instruction{border:1px solid #d8e7d2!important;border-left:5px solid #65bd3a!important;background:linear-gradient(135deg,#f2f8ee,#fff 65%,#fff1f2)!important;box-shadow:0 12px 30px rgba(54,91,56,.08)!important}
+          .hstu-nav-instruction h2,.hstu-nav-instruction h3{color:#9f1c25!important}
+          .hstu-resource-section-nav{display:flex;gap:9px;flex-wrap:wrap;margin-top:-8px;margin-bottom:24px;padding:12px;border:1px solid #dfe8dc;border-radius:16px;background:#f8faf7}
+          .hstu-resource-section-nav button{border:1px solid #d9e7d4;background:#fff;color:#315f34;border-radius:999px;padding:10px 14px;font-weight:900;cursor:pointer}
+          .hstu-resource-section-nav button:hover,.hstu-resource-section-nav button:focus-visible{background:#eef7ea;border-color:#87b971;outline:none}
+          .hstu-resource-subsection .hstu-subsection-head{border-left:4px solid #65bd3a;padding-left:12px;margin-bottom:14px}.hstu-resource-subsection h2,.hstu-subsection-title{color:#9f1c25!important}.hstu-subsection-intro{color:#69746d}
+          #view-reports .hstu-parity-group>h2,#view-data-audit .hstu-parity-group>h2,#view-capacity .hstu-parity-group>h2{color:#9f1c25!important;border-left:4px solid #65bd3a;padding-left:10px}
+          #hstuGalleryFilters{gap:10px!important}#hstuGalleryFilters .hstu-gallery-filter{font-size:15px!important;font-weight:900!important;padding:11px 17px!important;min-height:44px!important}#hstuGallerySearch{font-size:16px!important;min-height:48px!important}
+          .hstu-mobile-section-rail{display:none}
+          @media(max-width:1000px){
+            .hstu-theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hstu-final-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+            .hstu-mobile-section-rail{display:flex;gap:8px;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;padding:9px 12px 11px;background:#fff;border-bottom:1px solid #e2e9df;position:relative;z-index:30;scrollbar-width:thin}
+            .hstu-mobile-section-rail button{flex:0 0 auto;scroll-snap-align:start;border:1px solid #dce7d8;background:#f8faf7;color:#315f34;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:900;white-space:nowrap}
+            .hstu-mobile-section-rail button:last-child{background:linear-gradient(135deg,#315f34,#4d9a3c 50%,#bd1822);color:#fff;border-color:transparent}
+          }
+          @media(max-width:620px){.hstu-home-thematic-head{display:block}.hstu-theme-view-all{margin-top:12px}.hstu-theme-grid{grid-template-columns:1fr}.hstu-final-quick-grid{grid-template-columns:1fr 1fr}.hstu-final-quick-grid button{min-height:135px;padding:14px}.hstu-final-quick-grid b{font-size:15px}}
+          </style>'''
+          if "</head>" not in s: raise SystemExit("Missing head close")
+          s=s.replace("</head>",css+"\n</head>",1)
+
+          js=r'''<script id="hstu-shanille-0930-v3-routing">
+          (function(){
+          const areas=[
+          "Coinfection and Communicable Diseases","Sexually Transmitted Infections","Stigma and Discrimination","Psychosocial Determinants and Effects of HIV/AIDS","Antiretroviral Drug Resistance","Antiretroviral Therapy Outcomes","Prevention of Mother-to-Child Transmission","Adolescent HIV/AIDS","Pediatric HIV/AIDS","Key and Vulnerable Populations","Knowledge, Attitudes, Behaviors, and Practices","Epidemiology of HIV in Jamaica","The National HIV Response","Tuberculosis Prevention and Control","Risk Communication"];
+          const text=e=>(e?.innerText||'').trim();
+          const switchView=v=>{const b=[...document.querySelectorAll('#mainNav .nav-btn')].find(x=>x.dataset.view===v);if(b){b.click();return true}return false};
+
+          // Hero exact CTA treatment.
+          const hero=document.querySelector('#view-home .home-hero');
+          if(hero){
+            [...hero.querySelectorAll('a,button')].forEach(el=>{
+              const t=text(el).replace(/→/g,'').trim().toLowerCase();
+              if(t==='explore research') el.textContent='Explore Research →';
+              if(t==='explore capacity building') el.remove();
+              if(t.includes('explore hst health living')) el.textContent='View HST Health Living media →';
+            });
+          }
+
+          // Updated About highlights.
+          const purpose=document.getElementById('repository-purpose');
+          if(purpose){
+            const facts=[...purpose.querySelectorAll('.hstu-purpose-facts article')];
+            const vals=[
+              ['Research Data Repository','Published and unpublished HIV/STI/TB evidence'],
+              ['Jamaica + Wider Caribbean','Research from Jamaica and the wider Caribbean'],
+              ['15 Thematic Research Areas','Clickable pathways into the research collection'],
+              ['One connected repository','Research · Capacity Building · Reports · Data Audit · Resources · Services']
+            ];
+            facts.forEach((a,i)=>{if(!vals[i])return;const b=a.querySelector('b'),sp=a.querySelector('span');if(b)b.textContent=vals[i][0];if(sp)sp.textContent=vals[i][1]});
+            document.getElementById('home-thematic-areas')?.remove();
+            const sec=document.createElement('section');sec.className='wrap hstu-home-thematic';sec.id='home-thematic-areas';
+            sec.innerHTML='<div class="hstu-section-kicker">Research pathways</div><div class="hstu-home-thematic-head"><div><h2>15 Thematic Research Areas</h2><p>Select an area to go directly to the research represented within that theme.</p></div><button type="button" class="hstu-theme-view-all" data-view="research">View all Research →</button></div><div class="hstu-theme-grid">'+areas.map((a,i)=>'<button class="hstu-theme-link" type="button" data-objective="'+(i+1)+'" data-objective-name="'+a.replace(/"/g,'&quot;')+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+a+'</b><i>→</i></button>').join('')+'</div>';
+            const more=purpose.querySelector('.hstu-purpose-more');more?more.before(sec):purpose.append(sec);
+          }
+
+          // Quick Access = final top-level groupings.
+          const qh=[...document.querySelectorAll('#view-home h2,#view-home h3')].find(h=>text(h).toLowerCase()==='everything important, easier to reach.');
+          if(qh){
+            const q=qh.closest('section')||qh.parentElement?.parentElement;
+            if(q) q.innerHTML='<div class="wrap hstu-final-quick"><div class="hstu-quick-head"><div class="eyebrow"><i></i> Quick access</div><h2>Everything important, easier to reach.</h2><p>Go directly to the main areas of the Research Data Repository.</p></div><div class="hstu-final-quick-grid">'+
+            [['research','Research','Studies across 15 thematic research areas.'],['capacity','Capacity Building','Current manuals and training materials.'],['reports','Reports','National and Special Reports.'],['data-audit','Data Audit & Utilization','Audit reports and DHIS2/TSIS2 user guides.'],['gallery','Gallery','HIV, STI, TB and PrEP media.'],['resources','Resources','Presentations, posters, external links and learning.'],['services','Find Services','Treatment, PrEP and health service locations.']].map(x=>'<button type="button" data-view="'+x[0]+'"><b>'+x[1]+'</b><span>'+x[2]+'</span><i>Open →</i></button>').join('')+'</div></div>';
+          }
+
+          // Research Agenda instruction contrast.
+          [...document.querySelectorAll('#view-research h2,#view-research h3,#view-research h4')].forEach(h=>{if(text(h).toLowerCase()==='research agenda priorities'){h.textContent='Research Agenda Priorities';(h.closest('.hstu-agenda-block')||h.parentElement)?.classList.add('hstu-nav-instruction')}});
+
+          // Gallery visible terminology.
+          const gallery=document.getElementById('view-gallery');
+          if(gallery){
+            [...gallery.querySelectorAll('h1,h2')].forEach(h=>{if(text(h).toLowerCase().includes('campaign gallery'))h.textContent='Gallery'});
+            [...gallery.querySelectorAll('input')].forEach(i=>{if((i.placeholder||'').toLowerCase().includes('campaign'))i.placeholder='Search gallery images'});
+          }
+
+          // Resources: exact four subsections.
+          const resources=document.getElementById('view-resources');
+          const learning=document.getElementById('resources-learning');
+          if(learning){
+            const note=learning.querySelector('.training-feature-note');if(note)note.innerHTML='<b>Trusted learning.</b><span>Functional local, regional and international learning resources that complement current MOHW/HSTU guidance.</span>';
+            const cnt=learning.querySelector('#trainingCount');if(cnt)cnt.textContent=learning.querySelectorAll('.training-card').length+' learning resources';
+            if(![...learning.querySelectorAll(':scope > h2,:scope > h3')].some(h=>text(h)==='Learning'))learning.insertAdjacentHTML('afterbegin','<h2 class="hstu-subsection-title">Learning</h2><p class="hstu-subsection-intro">Verified learning links and supplementary professional development resources.</p>');
+          }
+          if(resources){
+            const ph=resources.querySelector('.page-hero .eyebrow');if(ph)ph.textContent='Presentations · Posters · External Links · Learning';
+            const old=document.getElementById('resources-presentations');
+            if(old && !document.getElementById('resources-posters')){
+              const cards=[...old.querySelectorAll('.hstu-refine-card')];
+              const mk=(id,title,intro)=>{const sec=document.createElement('section');sec.id=id;sec.className='wrap hstu-parity-group hstu-resource-subsection';sec.innerHTML='<div class="hstu-subsection-head"><h2>'+title+'</h2><p>'+intro+'</p></div><div class="hstu-refine-grid"></div>';return sec};
+              const pres=mk('resources-presentations','Presentations','Presentation resources from the repository.');
+              const posts=mk('resources-posters','Posters','Poster resources from the repository.');
+              cards.forEach(c=>(/poster/i.test(text(c))?posts:pres).querySelector('.hstu-refine-grid').append(c));
+              old.replaceWith(pres,posts);
+            }
+            const extH=[...resources.querySelectorAll('h2,h3')].find(h=>['official hstu collections','external links'].includes(text(h).toLowerCase()));
+            if(extH){const ext=extH.closest('.hstu-parity-group')||extH.parentElement;ext.id='resources-external';ext.classList.add('hstu-resource-subsection');extH.textContent='External Links';if(!ext.querySelector('.hstu-subsection-intro'))extH.insertAdjacentHTML('afterend','<p class="hstu-subsection-intro">Official institutional collections and trusted external resources.</p>')}
+            [...resources.querySelectorAll('h2,h3')].forEach(h=>{if(text(h).toLowerCase().includes('campaign presentations')){const box=h.closest('.hstu-pdf-posters')||h.parentElement;box?.remove()}});
+            resources.querySelector('.hstu-resource-section-nav')?.remove();
+            const rn=document.createElement('nav');rn.className='wrap hstu-resource-section-nav';rn.setAttribute('aria-label','Resource subsections');rn.innerHTML='<button data-resource-target="resources-presentations">Presentations</button><button data-resource-target="resources-posters">Posters</button><button data-resource-target="resources-external">External Links</button><button data-resource-target="resources-learning">Learning</button>';
+            const phero=resources.querySelector('.page-hero');phero?phero.after(rn):resources.prepend(rn);
+          }
+
+          // Final dropdown information architecture.
+          const menus={
+          'Home':[['Overview','home','repository-purpose'],['15 Thematic Research Areas','home','home-thematic-areas']],
+          'Research':[['Latest studies','research','research-results'],['Strategic Objectives 1–15','research','research-filters']],
+          'Capacity Building':[['Manuals','capacity','capacity-manuals'],['Training Materials','capacity','capacity-training']],
+          'Reports':[['National Reports','reports','reports-national'],['Special Reports','reports','reports-special']],
+          'Data Audit and Utilization':[['Data Audit','data-audit','data-audit-reports'],['DHIS2 and TSIS2','data-audit','data-systems-guides']],
+          'Gallery':[['All','gallery','gallery-campaigns','All'],['HIV','gallery','gallery-campaigns','HIV'],['STI','gallery','gallery-campaigns','STI'],['TB','gallery','gallery-campaigns','TB'],['PrEP','gallery','gallery-campaigns','PrEP']],
+          'Resources':[['Presentations','resources','resources-presentations'],['Posters','resources','resources-posters'],['External Links','resources','resources-external'],['Learning','resources','resources-learning']],
+          'Find Services':[['Treatment and PrEP','services','services-directory'],['Health Centres','services','services-directory']]
+          };
+          [...document.querySelectorAll('#mainNav .nav-btn')].forEach(top=>{const set=menus[text(top)];if(!set)return;const host=top.parentElement;let dd=host.querySelector('.hstu-nav-dropdown');if(!dd){dd=document.createElement('div');dd.className='hstu-nav-dropdown';host.append(dd)}dd.innerHTML=set.map(x=>'<button type="button" data-view="'+x[1]+'" data-target="'+x[2]+'"'+(x[3]?' data-gallery-select="'+x[3]+'"':'')+'>'+x[0]+'</button>').join('')});
+
+          // Guaranteed horizontal mobile/tablet rail with visible Find Services.
+          document.getElementById('hstuMobileSectionRail')?.remove();
+          const main=document.getElementById('mainNav');if(main){const rail=document.createElement('nav');rail.id='hstuMobileSectionRail';rail.className='hstu-mobile-section-rail';rail.setAttribute('aria-label','Main repository sections');rail.innerHTML=[['home','Home'],['research','Research'],['capacity','Capacity Building'],['reports','Reports'],['data-audit','Data Audit & Utilization'],['gallery','Gallery'],['resources','Resources'],['services','Find Services']].map(x=>'<button type="button" data-view="'+x[0]+'">'+x[1]+'</button>').join('');main.after(rail)}
+
+          // Routing for injected controls.
+          document.addEventListener('click',e=>{
+            const theme=e.target.closest('.hstu-theme-link');if(theme){e.preventDefault();switchView('research');setTimeout(()=>{const sel=document.getElementById('refineResearchObjective');if(sel){const n=theme.dataset.objective,name=theme.dataset.objectiveName.toLowerCase();const o=[...sel.options].find(o=>o.value===n||o.textContent.trim().startsWith(n+'.')||o.textContent.toLowerCase().includes(name));if(o){sel.value=o.value;sel.dispatchEvent(new Event('change',{bubbles:true}));sel.dispatchEvent(new Event('input',{bubbles:true}))}}document.getElementById('research-results')?.scrollIntoView({behavior:'smooth',block:'start'})},120);return}
+            const direct=e.target.closest('.hstu-final-quick [data-view],.hstu-theme-view-all[data-view],#hstuMobileSectionRail [data-view]');if(direct){e.preventDefault();switchView(direct.dataset.view);return}
+            const rt=e.target.closest('[data-resource-target]');if(rt){e.preventDefault();switchView('resources');setTimeout(()=>document.getElementById(rt.dataset.resourceTarget)?.scrollIntoView({behavior:'smooth',block:'start'}),100);return}
+            const dd=e.target.closest('.hstu-nav-dropdown button[data-view]');if(dd){e.preventDefault();switchView(dd.dataset.view);setTimeout(()=>{document.getElementById(dd.dataset.target)?.scrollIntoView({behavior:'smooth',block:'start'});if(dd.dataset.gallerySelect){const f=[...document.querySelectorAll('#hstuGalleryFilters [data-gallery-filter]')].find(x=>x.dataset.galleryFilter===dd.dataset.gallerySelect);f?.click()}},100)}
+          });
+          })();
+          </script>'''
+          if "</body>" not in s: raise SystemExit("Missing body close")
+          s=s.replace("</body>",js+"\n</body>",1)
+          p.write_text(s,encoding="utf-8")
+          print("C-TECH cards removed from source:",removed)
+          PY
+          python scripts/apply_shanille_0930_v3.py
+      - name: Refresh service worker cache
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("service-worker.js");s=p.read_text(encoding="utf-8")
+          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20261001-shanille-0930-v3";', s, count=1)
+          p.write_text(s,encoding="utf-8")
+          PY
+      - name: Source QA
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path("index.html").read_text(encoding="utf-8")
+          assert 'id="hstu-shanille-0930-v3"' in s
+          assert 'id="hstu-shanille-0930-v3-routing"' in s
+          assert "C-TECH" not in s.upper(), "C-TECH still present in source"
+          assert "Research Agenda Priorities" in s
+          assert len(list(Path("media/repository").glob("*.webp")))==51
+          assert "Studies stored on the Research Repository" in s
+          print("SOURCE QA PASS; gallery files=51")
+          PY
+      - name: Commit production update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html service-worker.js scripts/apply_shanille_0930_v3.py
+          git commit -m "Complete Shanille 30 Sep repository refinements"
+          git pull --rebase origin main
+          git push origin main
