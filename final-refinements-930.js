@@ -47,8 +47,8 @@ function setDropdown(view,items){
  items.forEach(it=>{
    const b=document.createElement('button');
    b.type='button'; b.textContent=it.label;
-   b.dataset.view=view;
-   if(it.target) b.dataset.target=it.target;
+   b.dataset.hstuSubview=view;
+   if(it.target) b.dataset.hstuTarget=it.target;
    if(it.gallery) b.dataset.galleryCategory=it.gallery;
    b.addEventListener('click',e=>{
      e.preventDefault(); e.stopPropagation();
@@ -183,13 +183,13 @@ function setupMobileSubnav(buttons,navRoot){
      b.type='button';
      b.textContent=tidy(original.textContent);
      b.className='hstu-mobile-subnav-pill-930';
-     b.dataset.view=view;
-     if(original.dataset.target) b.dataset.target=original.dataset.target;
+     b.dataset.hstuSubview=view;
+     if(original.dataset.hstuTarget) b.dataset.hstuTarget=original.dataset.hstuTarget;
      if(original.dataset.galleryCategory) b.dataset.galleryCategory=original.dataset.galleryCategory;
      b.addEventListener('click',e=>{
        e.preventDefault(); e.stopPropagation();
        if(b.dataset.galleryCategory) selectGalleryCategory(b.dataset.galleryCategory);
-       else openView(view,b.dataset.target);
+       else openView(view,b.dataset.hstuTarget);
        close();
      });
      rail.appendChild(b);
