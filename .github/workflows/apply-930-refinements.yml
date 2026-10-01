@@ -59,6 +59,8 @@ jobs:
       - name: Browser QA desktop and mobile
         run: |
           python -m http.server 8000 >/tmp/hstu-server.log 2>&1 &
+          for i in {1..40}; do curl -fsS http://127.0.0.1:8000/ >/dev/null 2>&1 && break; sleep 0.25; done
+          curl -fsS http://127.0.0.1:8000/ >/dev/null
           cat > qa.mjs <<'JS'
           import { chromium } from 'playwright';
           const browser=await chromium.launch({headless:true});
