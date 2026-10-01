@@ -29,6 +29,7 @@ s=s.replace("https://agora.unicef.org/course/info.php?id=35045","https://agora.u
 s=s.replace("Social & Behaviour Change — Building Blocks","Social & Behaviour Change — SBC Basics")
 s=s.replace("Eighteen short modules introducing UNICEF social and behaviour change concepts for programme and partner audiences.","UNICEF learning pathway covering foundational social and behaviour change concepts, research methods and programme approaches.")
 s=s.replace("Social &amp; Behaviour Change — Building Blocks","Social &amp; Behaviour Change — SBC Basics")
+s=s.replace('title:"Social & Behaviour Change — SBC Basics",level:"international",topics:"leadership data",cost:"FREE — ACCOUNT REQUIRED",costClass:"free",certificate:"CERTIFICATE OF COMPLETION",certClass:"cert",format:"Short e-course",meta:"~2 hours"', 'title:"Social & Behaviour Change — SBC Basics",level:"international",topics:"leadership data",cost:"FREE — ACCOUNT REQUIRED",costClass:"free",certificate:"CERTIFICATE OF COMPLETION",certClass:"cert",format:"Learning Path",meta:"Several weeks"')
 
 # Exact wording/capitalization clean-up.
 s=s.replace("Research agenda priorities","Research Agenda Priorities")
