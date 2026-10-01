@@ -146,12 +146,21 @@ function updatePurpose(){
 function rebuildQuickAccess(){
  const home=document.getElementById('view-home'); if(!home) return;
  const head=[...home.querySelectorAll('h1,h2,h3,h4')].find(x=>/Everything important/i.test(tidy(x.textContent)));
- let sec=head?.closest('section')||head?.closest('.wrap');
- if(!sec){
-   sec=document.getElementById('home-quick-access');
-   if(!sec){sec=document.createElement('section'); home.appendChild(sec);}
+ const oldSection=head?.closest('section');
+ if(oldSection && oldSection!==home) oldSection.style.display='none';
+ else if(head){
+   const small=head.parentElement;
+   if(small && small!==home && tidy(small.textContent).length<1200) small.style.display='none';
  }
- sec.id='home-quick-access';
+ let sec=document.getElementById('home-quick-access');
+ if(sec && sec===oldSection) sec=null;
+ if(!sec){
+   sec=document.createElement('section');
+   sec.id='home-quick-access';
+   sec.className='wrap hstu-quick-access-930';
+   const anchor=document.getElementById('home-thematic-areas')||document.getElementById('repository-purpose')||home.querySelector('.home-hero')||home.firstElementChild;
+   if(anchor) anchor.insertAdjacentElement('afterend',sec); else home.appendChild(sec);
+ }
  sec.classList.add('hstu-quick-access-930');
  sec.innerHTML=
  '<div class="hstu-section-kicker">Quick access</div>'+
