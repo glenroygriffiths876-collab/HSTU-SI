@@ -2560,7 +2560,7 @@ if(purpose){
 // Quick Access = final top-level groupings.
 const qh=[...document.querySelectorAll('#view-home h2,#view-home h3')].find(h=>text(h).toLowerCase()==='everything important, easier to reach.');
 if(qh){
-  const q=qh.closest('section')||qh.parentElement?.parentElement;
+  const q=qh.closest('.section.compact')||qh.closest('.section')||qh.parentElement?.parentElement;
   if(q) q.innerHTML='<div class="wrap hstu-final-quick"><div class="hstu-quick-head"><div class="eyebrow"><i></i> Quick access</div><h2>Everything important, easier to reach.</h2><p>Go directly to the main areas of the Research Data Repository.</p></div><div class="hstu-final-quick-grid">'+
   [['research','Research','Studies across 15 thematic research areas.'],['capacity','Capacity Building','Current manuals and training materials.'],['reports','Reports','National and Special Reports.'],['data-audit','Data Audit & Utilization','Audit reports and DHIS2/TSIS2 user guides.'],['gallery','Gallery','HIV, STI, TB and PrEP media.'],['resources','Resources','Presentations, posters, external links and learning.'],['services','Find Services','Treatment, PrEP and health service locations.']].map(x=>'<button type="button" data-view="'+x[0]+'"><b>'+x[1]+'</b><span>'+x[2]+'</span><i>Open →</i></button>').join('')+'</div></div>';
 }
