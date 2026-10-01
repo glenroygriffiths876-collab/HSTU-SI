@@ -237,22 +237,25 @@ function setupMobileSubnav(buttons,navRoot){
 function installNavigationDelegation(){
  if(document.documentElement.dataset.hstuNavDelegation930) return;
  document.documentElement.dataset.hstuNavDelegation930='1';
- document.addEventListener('click',e=>{
-   const top=e.target.closest?.('#mainNav .nav-btn[data-view]');
+ const delegated=e=>{
+   const top=e.target?.closest?.('#mainNav .nav-btn[data-view]');
    if(top){
      const view=top.dataset.view;
      setTimeout(()=>openView(view),0);
      setTimeout(()=>openView(view),90);
    }
-   const galleryItem=e.target.closest?.('#mainNav .hstu-nav-dropdown button[data-gallery-category],#hstuMobileSubnav930 button[data-gallery-category]');
+   const galleryItem=e.target?.closest?.('#mainNav .hstu-nav-dropdown [data-gallery-category],#hstuMobileSubnav930 [data-gallery-category]');
    if(galleryItem){
      const cat=galleryItem.dataset.galleryCategory;
-     setTimeout(()=>{openView('gallery','gallery-images');setGalleryFilter(cat);},0);
-     setTimeout(()=>setGalleryFilter(cat),100);
-     setTimeout(()=>setGalleryFilter(cat),240);
+     const apply=()=>{openView('gallery','gallery-images');setGalleryFilter(cat);};
+     setTimeout(apply,0);
+     setTimeout(()=>setGalleryFilter(cat),80);
+     setTimeout(()=>setGalleryFilter(cat),220);
      setTimeout(()=>setGalleryFilter(cat),520);
    }
- },true);
+ };
+ window.addEventListener('pointerup',delegated,true);
+ window.addEventListener('click',delegated,true);
 }
 function buildThematicAreas(){
  const purpose=document.getElementById('repository-purpose');
