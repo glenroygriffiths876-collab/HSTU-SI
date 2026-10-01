@@ -17,6 +17,8 @@ jobs:
           from pathlib import Path
           import re, json
           s=Path("index.html").read_text(encoding="utf-8", errors="ignore")
+          # Strip massive embedded base64 payloads from diagnostics only.
+          clean=re.sub(r'data:(?:image|application)/[^;]+;base64,[A-Za-z0-9+/=]+','[DATA_URI_REMOVED]',s)
           terms=[
             "Why these are separate",
             "Live national references",
@@ -34,14 +36,14 @@ jobs:
             print("\n===== TERM:",term,"=====")
             start=0; hits=0
             while True:
-              i=s.lower().find(term.lower(),start)
+              i=clean.lower().find(term.lower(),start)
               if i<0 or hits>=4: break
               print("\n--- hit",hits+1,"at",i,"---")
-              print(s[max(0,i-2200):i+5000])
+              print(clean[max(0,i-2600):i+7000])
               start=i+len(term); hits+=1
             if hits==0: print("NOT FOUND")
           print("\n===== PDF-LIKE URL SAMPLES =====")
-          urls=re.findall(r'''(?:href|src)\s*=\s*["']([^"']+\.(?:pdf|PDF)(?:\?[^"']*)?)["']''',s)
+          urls=re.findall(r'''(?:href|src)\s*=\s*["']([^"']+\.(?:pdf|PDF)(?:\?[^"']*)?)["']''',clean)
           print("count",len(urls))
           for u in urls[:120]: print(u)
           PY
