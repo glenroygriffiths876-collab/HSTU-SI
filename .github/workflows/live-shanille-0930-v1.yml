@@ -1,4 +1,4 @@
-name: Live Shanille 30 Sep QA v4
+name: Live Shanille 30 Sep QA v5
 on:
   push:
     paths:
@@ -30,6 +30,8 @@ jobs:
               browser=p.chromium.launch(headless=True)
               for name,vp in [("desktop",{"width":1440,"height":1000}),("mobile",{"width":390,"height":844})]:
                   page=browser.new_page(viewport=vp)
+                  page_errors=[]
+                  page.on("pageerror",lambda e: page_errors.append(str(e)))
                   page.goto(URL,wait_until="networkidle",timeout=90000)
                   page.wait_for_timeout(1800)
                   text=lambda sel: page.locator(sel).inner_text().strip()
@@ -66,10 +68,14 @@ jobs:
                   facts=page.locator('#repository-purpose .hstu-purpose-facts article').all_inner_texts()
                   assert any("15 Thematic Research Areas" in x for x in facts)
                   assert any("One connected repository" in x for x in facts)
-                  # Thematic route works
-                  page.locator('#home-thematic-areas .hstu-theme-link').first.click()
-                  page.wait_for_timeout(300)
-                  assert page.locator('#view-research').is_visible()
+                  # All 15 thematic routes work.
+                  for idx in range(15):
+                      page.evaluate("window.setView('home')")
+                      page.wait_for_timeout(80)
+                      page.locator('#home-thematic-areas .hstu-theme-link').nth(idx).click()
+                      page.wait_for_timeout(220)
+                      assert page.locator('#view-research').is_visible(),f"{name}: thematic route {idx+1}"
+                      assert page.locator('#refineResearchObjective').input_value() not in ["","ALL","All","all"],f"{name}: thematic filter {idx+1} did not apply"
                   # Research exact text/filter structure
                   assert "HIV/STI/TB Research" in text('#view-research')
                   assert "Studies stored on the Research Repository" in text('#view-research')
@@ -110,16 +116,43 @@ jobs:
                   assert "C-TECH" not in text('#view-resources').upper()
                   resource_dd=page.locator('#mainNav .nav-btn[data-view="resources"]').locator('xpath=..').locator('.hstu-nav-dropdown button').all_inner_texts()
                   assert resource_dd==["Presentations","Posters","External Links","Learning"],resource_dd
-                  # Links present and not known broken.
+                  # Learning/external links must be populated; probe destinations.
                   links=page.locator('#resources-learning a, #resources-external a').evaluate_all("(els)=>els.map(e=>({t:e.innerText.trim(),u:e.href}))")
-                  # Gia
+                  assert links,f"{name}: no resource links"
+                  assert all(x["u"] and x["u"].startswith(("http://","https://")) for x in links),links
+                  link_checks=[]
+                  if name=="desktop":
+                      seen=set()
+                      for x in links:
+                          u=x["u"]
+                          if u in seen: continue
+                          seen.add(u)
+                          try:
+                              resp=page.request.get(u,timeout=20000,fail_on_status_code=False,max_redirects=10)
+                              status=resp.status
+                          except Exception as ex:
+                              status="request-error"
+                          link_checks.append({"title":x["t"],"url":u,"status":status})
+                      broken=[x for x in link_checks if isinstance(x["status"],int) and x["status"] in [404,410]]
+                      assert not broken,f"broken resource links: {broken}"
+                  # Gia launcher must open the panel.
                   assert page.locator('#clinicalLauncher').count()==1
+                  page.locator('#clinicalLauncher').click()
+                  page.wait_for_timeout(180)
+                  assert page.locator('.clinical-panel,.clinical-drawer').filter(has=page.locator('.clinical-head')).count()>=1
+                  assert page.locator('.clinical-head').is_visible()
+                  page.locator('.clinical-close').click()
+                  # No runtime JS errors.
+                  assert not page_errors,f"{name}: JS errors {page_errors}"
                   # Find Services guaranteed accessible on phone
                   if name=="mobile":
                       fs=page.locator('#hstuMobileSectionRail button[data-view="services"]')
                       fs.evaluate("(e)=>e.scrollIntoView({inline:'center',block:'nearest'})")
                       fs.click();page.wait_for_timeout(150)
                       assert page.locator('#view-services').is_visible()
+                  if name=="mobile":
+                      overflow=page.evaluate("document.documentElement.scrollWidth-document.documentElement.clientWidth")
+                      assert overflow<=2,f"mobile horizontal page overflow {overflow}px"
                   page.screenshot(path=f"live-qa/{name}.png",full_page=False)
                   report[name]={
                       "primary_views":"PASS",
@@ -129,6 +162,7 @@ jobs:
                       "gallery_items":51,
                       "resource_subsections":rnav,
                       "resource_links":[x["u"] for x in links],
+                      "link_checks":link_checks if name=="desktop" else [],
                       "gia":"PASS",
                       "find_services":"PASS"
                   }
@@ -139,6 +173,6 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: live-shanille-0930-qa-v4
+          name: live-shanille-0930-qa-v5
           path: live-qa/
           if-no-files-found: error
