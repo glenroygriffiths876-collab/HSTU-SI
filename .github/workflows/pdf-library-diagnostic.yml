@@ -1,0 +1,47 @@
+name: PDF library diagnostic
+on:
+  push:
+    paths:
+      - '.github/workflows/pdf-library-diagnostic.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect PDF/resource structures
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, json
+          s=Path("index.html").read_text(encoding="utf-8", errors="ignore")
+          terms=[
+            "Why these are separate",
+            "Live national references",
+            "National Surveillance Manual for Jamaica",
+            "Management of Interpersonal Violence",
+            "PharmWatch Drug Monitoring Form",
+            "Operational Research Abstracts",
+            "View all 11 operational research",
+            "BUNDLED PDF",
+            "PrEP Handbook",
+            "Open PDF"
+          ]
+          print("INDEX_LEN",len(s))
+          for term in terms:
+            print("\n===== TERM:",term,"=====")
+            start=0; hits=0
+            while True:
+              i=s.lower().find(term.lower(),start)
+              if i<0 or hits>=4: break
+              print("\n--- hit",hits+1,"at",i,"---")
+              print(s[max(0,i-2200):i+5000])
+              start=i+len(term); hits+=1
+            if hits==0: print("NOT FOUND")
+          print("\n===== PDF-LIKE URL SAMPLES =====")
+          urls=re.findall(r'''(?:href|src)\s*=\s*["']([^"']+\.(?:pdf|PDF)(?:\?[^"']*)?)["']''',s)
+          print("count",len(urls))
+          for u in urls[:120]: print(u)
+          PY
