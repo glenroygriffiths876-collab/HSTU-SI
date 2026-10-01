@@ -1,4 +1,4 @@
-name: Live Shanille 30 Sep QA v1
+name: Live Shanille 30 Sep QA v2
 on:
   push:
     paths:
@@ -54,7 +54,7 @@ jobs:
                   else:
                       page.locator('#mainNav .nav-btn[data-view="home"]').click()
                   page.wait_for_timeout(150)
-                  hero=text('#view-home .home-hero')
+                  hero=text('#view-home')
                   assert "Explore Research" in hero
                   assert "Explore Capacity Building" not in hero
                   assert page.locator('#home-thematic-areas .hstu-theme-link').count()==15
