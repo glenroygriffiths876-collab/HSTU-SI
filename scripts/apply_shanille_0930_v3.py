@@ -73,7 +73,7 @@ js=r'''<script id="hstu-shanille-0930-v3-routing">
 const areas=[
 "Coinfection and Communicable Diseases","Sexually Transmitted Infections","Stigma and Discrimination","Psychosocial Determinants and Effects of HIV/AIDS","Antiretroviral Drug Resistance","Antiretroviral Therapy Outcomes","Prevention of Mother-to-Child Transmission","Adolescent HIV/AIDS","Pediatric HIV/AIDS","Key and Vulnerable Populations","Knowledge, Attitudes, Behaviors, and Practices","Epidemiology of HIV in Jamaica","The National HIV Response","Tuberculosis Prevention and Control","Risk Communication"];
 const text=e=>(e?.innerText||'').trim();
-const switchView=v=>{const b=[...document.querySelectorAll('#mainNav .nav-btn')].find(x=>x.dataset.view===v);if(b){b.click();return true}return false};
+const switchView=v=>{if(typeof window.setView==='function'){window.setView(v);return true}const b=[...document.querySelectorAll('#mainNav .nav-btn')].find(x=>x.dataset.view===v);if(b){b.click();return true}document.querySelectorAll('[id^="view-"]').forEach(el=>el.hidden=el.id!=='view-'+v);return !!document.getElementById('view-'+v)};
 
 // Hero exact CTA treatment.
 const hero=document.querySelector('#view-home .home-hero');
@@ -104,8 +104,7 @@ if(purpose){
   sec.querySelectorAll('.hstu-theme-link').forEach(btn=>btn.addEventListener('click',ev=>{
     ev.preventDefault();
     const n=btn.dataset.objective,name=btn.dataset.objectiveName.toLowerCase();
-    const nav=[...document.querySelectorAll('#mainNav .nav-btn')].find(x=>x.dataset.view==='research');
-    if(nav) nav.click();
+    switchView('research');
     setTimeout(()=>{
       const sel=document.getElementById('refineResearchObjective');
       if(sel){
