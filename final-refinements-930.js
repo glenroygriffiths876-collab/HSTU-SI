@@ -250,7 +250,7 @@ function installNavigationDelegation(){
      setTimeout(()=>setGalleryFilter(cat),100);
      setTimeout(()=>setGalleryFilter(cat),240);
    }
- },false);
+ },true);
 }
 function buildThematicAreas(){
  const purpose=document.getElementById('repository-purpose');
