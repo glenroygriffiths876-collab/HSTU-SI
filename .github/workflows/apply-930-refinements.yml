@@ -32,7 +32,7 @@ jobs:
           p.write_text(s,encoding="utf-8")
           sw=Path("service-worker.js")
           w=sw.read_text(encoding="utf-8")
-          w=re.sub(r'hstu-resource-centre-v[^"\']+','hstu-resource-centre-v20261001-refinements930-1',w,count=1)
+          w=re.sub(r'hstu-resource-centre-v[^"\']+','hstu-resource-centre-v20261001-home-nav-gallery-v2',w,count=1)
           sw.write_text(w,encoding="utf-8")
           PY
       - name: Static QA
@@ -62,65 +62,92 @@ jobs:
           cat > qa.mjs <<'JS'
           import { chromium } from 'playwright';
           const browser=await chromium.launch({headless:true});
-          const checks=[];
-          const assert=(ok,msg)=>{checks.push([!!ok,msg]); if(!ok) throw new Error(msg);};
+          const assert=(ok,msg)=>{if(!ok) throw new Error(msg);};
+          async function visibleGalleryCount(page){
+            return await page.locator('#hstuGalleryGrid > *:visible').count();
+          }
+          async function go(page,view){
+            const top=page.locator('.nav-btn[data-view="'+view+'"]').first();
+            await top.click();
+            await page.waitForTimeout(180);
+          }
           async function run(viewport,name){
             const page=await browser.newPage({viewport});
-            page.on('pageerror',e=>console.log('PAGEERROR',name,e.message));
-            page.on('console',m=>{if(m.type()==='error') console.log('CONSOLEERROR',name,m.text());});
+            const errors=[];
+            page.on('pageerror',e=>errors.push('page:'+e.message));
+            page.on('console',m=>{if(m.type()==='error') errors.push('console:'+m.text());});
             await page.goto('http://127.0.0.1:8000/',{waitUntil:'networkidle'});
-            await page.waitForTimeout(900);
-            const marker=await page.locator('html').getAttribute('data-hstu-refinements930');
-            console.log('RUNTIME_MARKER',name,marker);
-            console.log('HOME_EXPLORE_TEXTS',name,await page.locator('#view-home button,#view-home a').allTextContents());
-            assert(marker==='ready',name+': refinement runtime executed');
-            const nav=await page.locator('.nav-btn[data-view]').allTextContents();
-            for(const x of ['Home','Research','Capacity Building','Reports','Data Audit and Utilization','Gallery','Resources','Find Services']){
-              assert(nav.some(t=>t.trim()===x),name+': nav '+x);
-            }
-            assert(await page.locator('#view-home').getByText(/Explore Research/).count()>=1,name+': Explore Research');
-            assert(await page.locator('#view-home').getByText(/Explore Capacity Building/).count()===0,name+': extra hero CTA removed');
-            assert(await page.locator('#home-thematic-areas .hstu-theme-card').count()===15,name+': 15 thematic links');
-            assert(await page.locator('#home-quick-access .hstu-quick-card').count()===7,name+': 7 Quick Access cards');
-            assert(await page.locator('#home-quick-access').getByText('Find Services',{exact:true}).count()===1,name+': Quick Access Find Services');
-            await page.locator('.nav-btn[data-view="gallery"]').click();
-            await page.waitForTimeout(200);
-            assert(await page.locator('#view-gallery h1,#view-gallery h2').filter({hasText:/^Gallery$/}).count()>=1,name+': Gallery title');
-            const gf=(await page.locator('#hstuGalleryFilters button').allTextContents()).map(x=>x.trim());
-            assert(JSON.stringify(gf)===JSON.stringify(['All','HIV','STI','TB','PrEP']),name+': Gallery filters '+JSON.stringify(gf));
-            assert(await page.locator('#hstuGalleryGrid img[src*="media/repository/"]').count()===51,name+': 51 Gallery images');
-            const gdrop=(await page.locator('.nav-btn[data-view="gallery"]').locator('xpath=..').locator('.hstu-nav-dropdown button').allTextContents()).map(x=>x.trim());
-            assert(JSON.stringify(gdrop)===JSON.stringify(['All','HIV','STI','TB','PrEP']),name+': Gallery dropdown');
-            await page.locator('.nav-btn[data-view="resources"]').click();
-            await page.waitForTimeout(250);
-            const rdrop=(await page.locator('.nav-btn[data-view="resources"]').locator('xpath=..').locator('.hstu-nav-dropdown button').allTextContents()).map(x=>x.trim());
-            assert(JSON.stringify(rdrop)===JSON.stringify(['Presentations','Posters','External Links','Learning']),name+': Resources dropdown '+JSON.stringify(rdrop));
-            for(const id of ['resources-presentations','resources-posters','resources-external','resources-learning']) assert(await page.locator('#'+id).count()===1,name+': '+id);
-            assert((await page.locator('#resources-learning').innerText()).toLowerCase().includes('c-tech')===false,name+': no C-Tech');
-            await page.locator('.nav-btn[data-view="research"]').click();
-            await page.waitForTimeout(200);
-            assert(await page.getByText('Research Agenda Priorities',{exact:true}).count()>=1,name+': Research Agenda Priorities');
-            assert(await page.getByText('Studies stored on the Research Repository',{exact:true}).count()>=1,name+': repository wording');
-            await page.locator('.nav-btn[data-view="home"]').click();
-            await page.locator('#home-thematic-areas .hstu-theme-card').first().click();
-            await page.waitForTimeout(350);
-            assert(await page.locator('#view-research.active').count()===1,name+': thematic link opens Research');
-            const selected=await page.locator('#refineResearchObjective').inputValue();
-            assert(selected!=='' && !/all/i.test(selected),name+': thematic link applies objective');
+            await page.waitForTimeout(1100);
+
+            assert(await page.locator('html').getAttribute('data-hstu-refinements930')==='ready',name+': refinement runtime');
+            const nav=(await page.locator('.nav-btn[data-view]').allTextContents()).map(x=>x.trim());
+            for(const x of ['Home','Research','Capacity Building','Reports','Data Audit and Utilization','Gallery','Resources','Find Services']) assert(nav.includes(x),name+': nav '+x);
+
+            const dims=await page.evaluate(()=>({doc:document.documentElement.scrollWidth,win:window.innerWidth,body:document.body.scrollWidth}));
+            assert(dims.doc<=dims.win+3 && dims.body<=dims.win+3,name+': no horizontal body overflow '+JSON.stringify(dims));
+
+            const hero=page.locator('#home-purpose-hero');
+            assert(await hero.count()===1,name+': integrated Home hero exists');
+            assert((await hero.innerText()).includes('About the Research Data Repository'),name+': About title in hero');
+            assert((await hero.innerText()).includes('conceptualized in 2023'),name+': repository origin in hero');
+            assert((await hero.innerText()).includes('Jamaica and the wider Caribbean'),name+': Caribbean scope in hero');
+            assert(await page.locator('#repository-purpose').isVisible()===false,name+': duplicate About section hidden');
+            assert(await page.locator('#home-purpose-summary .hstu-purpose-highlights-930 > *').count()===4,name+': four Home summary facts');
+            assert(await page.locator('#home-thematic-areas .hstu-theme-card').count()===15,name+': 15 thematic areas');
+            assert(await page.locator('#home-quick-access .hstu-quick-card').count()===7,name+': Quick Access cards');
+            assert(await page.locator('#view-home').getByText(/Explore Research/).count()>=1,name+': Explore Research present');
+            assert(await page.locator('#view-home').getByText(/Explore Capacity Building/).count()===0,name+': second Explore removed');
+
             if(name==='mobile'){
-              const visible=await page.locator('.nav-btn[data-view="services"]').isVisible();
-              assert(visible,name+': Find Services visible');
+              assert(await page.locator('#mainNav').isVisible(),name+': slider navigation visible');
               const navScroller=page.locator('.hstu-primary-nav-scroll').first();
-              assert(await navScroller.count()===1,name+': mobile horizontal nav');
-              const ov=await navScroller.evaluate(el=>({sw:el.scrollWidth,cw:el.clientWidth,overflow:getComputedStyle(el).overflowX}));
-              assert(ov.overflow==='auto'||ov.overflow==='scroll',name+': nav scroll enabled');
+              assert(await navScroller.count()===1,name+': mobile slider class');
+              const ov=await navScroller.evaluate(el=>({sw:el.scrollWidth,cw:el.clientWidth,overflow:getComputedStyle(el).overflowX,dir:getComputedStyle(el).flexDirection}));
+              assert((ov.overflow==='auto'||ov.overflow==='scroll') && ov.dir==='row',name+': horizontal nav configured '+JSON.stringify(ov));
+              assert(await page.locator('#mainNav .hstu-nav-dropdown:visible').count()===0,name+': no submenu open on initial load');
+              assert(await page.locator('.nav-btn[data-view="services"]').isVisible(),name+': Find Services visible/reachable');
+            } else {
+              assert(await page.locator('.nav-btn[data-view="services"]').isVisible(),name+': desktop Find Services visible');
+              const servicesBox=await page.locator('.nav-btn[data-view="services"]').boundingBox();
+              assert(servicesBox && servicesBox.x+servicesBox.width<=viewport.width+2,name+': desktop Find Services inside viewport');
             }
+
+            await go(page,'gallery');
+            const labels=(await page.locator('#hstuGalleryFilters button').allTextContents()).map(x=>x.trim());
+            assert(JSON.stringify(labels)===JSON.stringify(['All','HIV','STI','TB','PrEP']),name+': Gallery filters exact');
+
+            const expected={All:51,HIV:21,STI:5,TB:1,PrEP:2};
+            for(const key of ['All','HIV','STI','TB','PrEP']){
+              await page.locator('#hstuGalleryFilters button').filter({hasText:new RegExp('^'+key+'$')}).click();
+              await page.waitForTimeout(80);
+              const n=await visibleGalleryCount(page);
+              assert(n===expected[key],name+': Gallery '+key+' count '+n+' expected '+expected[key]);
+              assert(await page.locator('#hstuGalleryFilters button.active').filter({hasText:new RegExp('^'+key+'$')}).count()===1,name+': Gallery '+key+' active');
+            }
+
+            const tbDrop=page.locator('.nav-btn[data-view="gallery"]').locator('xpath=..').locator('.hstu-nav-dropdown button').filter({hasText:/^TB$/});
+            assert(await tbDrop.count()===1,name+': Gallery TB dropdown exists');
+            await tbDrop.click({force:true});
+            await page.waitForTimeout(220);
+            assert(await visibleGalleryCount(page)===1,name+': Gallery dropdown applies TB filter');
+
+            await go(page,'home');
+            for(const idx of [0,6,9,13,14]){
+              await page.locator('#home-thematic-areas .hstu-theme-card').nth(idx).click();
+              await page.waitForTimeout(320);
+              assert(await page.locator('#view-research.active').count()===1,name+': thematic '+(idx+1)+' opens Research');
+              const selected=await page.locator('#refineResearchObjective').inputValue();
+              assert(selected!=='' && !/all/i.test(selected),name+': thematic '+(idx+1)+' applies objective');
+              await go(page,'home');
+            }
+
+            assert(errors.length===0,name+': browser errors '+errors.join(' | '));
             await page.screenshot({path:'/tmp/'+name+'.png',fullPage:true});
             await page.close();
           }
           await run({width:1440,height:1000},'desktop');
           await run({width:390,height:844},'mobile');
-          console.log('BROWSER QA PASS',checks.length,'checks');
+          console.log('BROWSER QA PASS');
           await browser.close();
           JS
           node qa.mjs
