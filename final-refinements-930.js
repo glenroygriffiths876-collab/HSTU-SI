@@ -152,6 +152,44 @@ function fixPrimaryNav(){
  });
  setupMobileSubnav(buttons,p||document.getElementById('mainNav'));
 }
+function closeMobileSubnav930(){
+ const rail=document.getElementById('hstuMobileSubnav930');
+ if(!rail) return;
+ rail.hidden=true;
+ rail.innerHTML='';
+ delete rail.dataset.view;
+ document.querySelectorAll('#mainNav .nav-btn[data-view]').forEach(x=>x.setAttribute('aria-expanded','false'));
+}
+function showMobileSubnav930(btn){
+ if(window.innerWidth>1000||!btn) return;
+ const rail=document.getElementById('hstuMobileSubnav930');
+ if(!rail) return;
+ const view=btn.dataset.view;
+ const source=dropdown(view);
+ if(!source||!source.children.length){closeMobileSubnav930();return;}
+ if(!rail.hidden && rail.dataset.view===view){closeMobileSubnav930();return;}
+ rail.innerHTML='';
+ rail.dataset.view=view;
+ rail.hidden=false;
+ document.querySelectorAll('#mainNav .nav-btn[data-view]').forEach(x=>x.setAttribute('aria-expanded',x===btn?'true':'false'));
+ [...source.querySelectorAll('button')].forEach(original=>{
+   const b=document.createElement('button');
+   b.type='button';
+   b.textContent=tidy(original.textContent);
+   b.className='hstu-mobile-subnav-pill-930';
+   b.dataset.hstuSubview=view;
+   if(original.dataset.hstuTarget) b.dataset.hstuTarget=original.dataset.hstuTarget;
+   if(original.dataset.galleryCategory) b.dataset.galleryCategory=original.dataset.galleryCategory;
+   b.addEventListener('click',e=>{
+     e.preventDefault(); e.stopPropagation();
+     if(b.dataset.galleryCategory) selectGalleryCategory(b.dataset.galleryCategory);
+     else openView(view,b.dataset.hstuTarget);
+     closeMobileSubnav930();
+   });
+   rail.appendChild(b);
+ });
+ rail.scrollLeft=0;
+}
 function setupMobileSubnav(buttons,navRoot){
  if(!navRoot) return;
  let rail=document.getElementById('hstuMobileSubnav930');
@@ -163,71 +201,16 @@ function setupMobileSubnav(buttons,navRoot){
    rail.hidden=true;
    navRoot.insertAdjacentElement('afterend',rail);
  }
- const close=()=>{
-   rail.hidden=true;
-   rail.innerHTML='';
-   delete rail.dataset.view;
-   buttons.forEach(x=>x.setAttribute('aria-expanded','false'));
- };
- const openFor=(btn)=>{
-   if(window.innerWidth>1000) return;
-   const view=btn.dataset.view;
-   const source=dropdown(view);
-   if(!source||!source.children.length){close();return;}
-   if(!rail.hidden && rail.dataset.view===view){close();return;}
-   rail.innerHTML='';
-   rail.dataset.view=view;
-   rail.hidden=false;
-   buttons.forEach(x=>x.setAttribute('aria-expanded',x===btn?'true':'false'));
-   [...source.querySelectorAll('button')].forEach(original=>{
-     const b=document.createElement('button');
-     b.type='button';
-     b.textContent=tidy(original.textContent);
-     b.className='hstu-mobile-subnav-pill-930';
-     b.dataset.hstuSubview=view;
-     if(original.dataset.hstuTarget) b.dataset.hstuTarget=original.dataset.hstuTarget;
-     if(original.dataset.galleryCategory) b.dataset.galleryCategory=original.dataset.galleryCategory;
-     b.addEventListener('click',e=>{
-       e.preventDefault(); e.stopPropagation();
-       if(b.dataset.galleryCategory) selectGalleryCategory(b.dataset.galleryCategory);
-       else openView(view,b.dataset.hstuTarget);
-       close();
-     });
-     rail.appendChild(b);
-   });
-   rail.scrollLeft=0;
- };
- buttons.forEach(b=>{
-   if(b.dataset.hstuMobileSubnavBound) return;
-   b.dataset.hstuMobileSubnavBound='1';
-   b.addEventListener('click',e=>{
-     if(window.innerWidth<=1000 && e.isTrusted) setTimeout(()=>openFor(b),0);
-   });
- });
  if(!document.documentElement.dataset.hstuMobileSubnavGlobalBound){
    document.documentElement.dataset.hstuMobileSubnavGlobalBound='1';
    document.addEventListener('click',e=>{
      const r=document.getElementById('hstuMobileSubnav930');
      if(!r||r.hidden||window.innerWidth>1000) return;
      if(r.contains(e.target)||e.target.closest?.('#mainNav .nav-btn[data-view]')) return;
-     r.hidden=true; r.innerHTML=''; delete r.dataset.view;
-     document.querySelectorAll('#mainNav .nav-btn[data-view]').forEach(x=>x.setAttribute('aria-expanded','false'));
+     closeMobileSubnav930();
    });
-   document.addEventListener('keydown',e=>{
-     if(e.key!=='Escape') return;
-     const r=document.getElementById('hstuMobileSubnav930');
-     if(r&&!r.hidden){
-       r.hidden=true; r.innerHTML=''; delete r.dataset.view;
-       document.querySelectorAll('#mainNav .nav-btn[data-view]').forEach(x=>x.setAttribute('aria-expanded','false'));
-     }
-   });
-   window.addEventListener('resize',()=>{
-     if(window.innerWidth>1000){
-       const r=document.getElementById('hstuMobileSubnav930');
-       if(r){r.hidden=true;r.innerHTML='';delete r.dataset.view;}
-       document.querySelectorAll('#mainNav .nav-btn[data-view]').forEach(x=>x.setAttribute('aria-expanded','false'));
-     }
-   });
+   document.addEventListener('keydown',e=>{if(e.key==='Escape') closeMobileSubnav930();});
+   window.addEventListener('resize',()=>{if(window.innerWidth>1000) closeMobileSubnav930();});
  }
 }
 let gallerySelectionEpoch=0;
@@ -245,13 +228,16 @@ function installNavigationDelegation(){
  document.documentElement.dataset.hstuNavDelegation930='1';
  const delegated=e=>{
    const top=e.target?.closest?.('#mainNav .nav-btn[data-view]');
-   if(top){
+   if(top && e.type==='click'){
      const view=top.dataset.view;
-     setTimeout(()=>openView(view),0);
+     setTimeout(()=>{
+       openView(view);
+       if(window.innerWidth<=1000) showMobileSubnav930(top);
+     },0);
      setTimeout(()=>openView(view),90);
    }
    const galleryItem=e.target?.closest?.('#mainNav .hstu-nav-dropdown [data-gallery-category],#hstuMobileSubnav930 [data-gallery-category]');
-   if(galleryItem) selectGalleryCategory(galleryItem.dataset.galleryCategory);
+   if(galleryItem && (e.type==='pointerup'||e.type==='click')) selectGalleryCategory(galleryItem.dataset.galleryCategory);
  };
  window.addEventListener('pointerup',delegated,true);
  window.addEventListener('click',delegated,true);
