@@ -1,0 +1,27 @@
+name: Locate CTECH source records
+on:
+  push:
+    paths:
+      - '.github/workflows/ctech-source-diagnostic.yml'
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show CTECH source context
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path("index.html").read_text(encoding="utf-8")
+          low=s.lower()
+          p=0;n=0
+          while True:
+              p=low.find("c-tech",p)
+              if p<0: break
+              n+=1
+              print("\n--- HIT",n,"---\n",s[max(0,p-1200):p+2200])
+              p+=6
+          print("TOTAL",n)
+          PY
