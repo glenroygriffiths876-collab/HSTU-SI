@@ -1,4 +1,4 @@
-name: Locate CTECH source records
+name: Locate UNICEF learning record
 on:
   push:
     paths:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Show CTECH source context
+      - name: Show UNICEF source context
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -22,6 +22,6 @@ jobs:
               if p<0: break
               n+=1
               print("\n--- HIT",n,"---\n",s[max(0,p-1200):p+2200])
-              p+=6
+              p+=5
           print("TOTAL",n)
           PY
