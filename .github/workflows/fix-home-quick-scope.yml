@@ -1,0 +1,57 @@
+name: Fix Home quick access scope
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-home-quick-scope.yml'
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Correct Quick Access runtime target
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          old="const q=qh.closest('section')||qh.parentElement?.parentElement;"
+          new="const q=qh.closest('.section.compact')||qh.closest('.section')||qh.parentElement?.parentElement;"
+          for fn in ["index.html","scripts/apply_shanille_0930_v3.py"]:
+              p=Path(fn)
+              if not p.exists(): continue
+              s=p.read_text(encoding="utf-8")
+              if old not in s:
+                  raise SystemExit(f"Quick Access selector not found in {fn}")
+              p.write_text(s.replace(old,new),encoding="utf-8")
+              print("fixed",fn)
+          PY
+      - name: Bump PWA cache
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("service-worker.js");s=p.read_text(encoding="utf-8")
+          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20261001-shanille-0930-v4";', s, count=1)
+          p.write_text(s,encoding="utf-8")
+          PY
+      - name: Verify source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path("index.html").read_text(encoding="utf-8")
+          assert "qh.closest('.section.compact')" in s
+          assert 'id="repository-purpose"' in s
+          assert 'class="home-hero' in s or 'home-hero' in s
+          assert "C-TECH" not in s.upper()
+          assert len(list(Path("media/repository").glob("*.webp")))==51
+          print("FIX QA PASS")
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html service-worker.js scripts/apply_shanille_0930_v3.py
+          git commit -m "Fix Home Quick Access scope after live QA"
+          git pull --rebase origin main
+          git push origin main
