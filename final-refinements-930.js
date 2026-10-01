@@ -343,6 +343,10 @@ function galleryCardCategory(card){
    card.dataset.galleryCategory=known;
    return known;
  }
+ if(/^archive-\\d+\\.webp$/i.test(file)){
+   card.dataset.galleryCategory='Unclassified';
+   return 'Unclassified';
+ }
  const declared=tidy(card.dataset.galleryCategory||card.dataset.category||'');
  if(/^(HIV|STI|TB|PrEP)$/i.test(declared)) return declared;
  card.dataset.galleryCategory='Unclassified';
