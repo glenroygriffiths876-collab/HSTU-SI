@@ -56,16 +56,44 @@ function setDropdown(view,items){
  return true;
 }
 function fixHero(){
- const hero=document.querySelector('#view-home');
+ const home=document.getElementById('view-home');
+ const hero=home?.querySelector('.home-hero');
  if(!hero) return;
- [...hero.querySelectorAll('button,a')].forEach(el=>{
-   const t=tidy(el.textContent);
-   if(/^Explore research/i.test(t)){
-     el.innerHTML='Explore Research <span aria-hidden="true">→</span>';
-     el.dataset.view='research';
-   }else if(/^Explore Capacity Building/i.test(t)){
-     el.remove();
-   }
+ hero.id='home-purpose-hero';
+ hero.classList.add('hstu-purpose-hero-930');
+
+ const heading=hero.querySelector('h1');
+ const copyHost=heading?.closest('.hero-copy,.home-hero-copy,.hero-content,.home-hero-content,.hero-text')||heading?.parentElement||hero;
+ const eye=copyHost.querySelector('.eyebrow,[class*="eyebrow"]');
+ if(eye) eye.textContent='STRATEGIC INFORMATION · HSTU';
+ if(heading) heading.textContent='About the Research Data Repository';
+
+ let copy=copyHost.querySelector('.hstu-purpose-copy-930');
+ if(!copy){
+   copy=document.createElement('div');
+   copy.className='hstu-purpose-copy-930';
+   heading?.insertAdjacentElement('afterend',copy);
+ }
+ copy.innerHTML=
+   '<p>The Research Data Repository was conceptualized in 2023 by the Strategic Information Component with the aim of systematically collecting and collating published and unpublished studies and reports.</p>'+
+   '<p>The repository supports navigation of HIV/STI/TB research from Jamaica and the wider Caribbean, alongside capacity-building tools, national-level reports and data-utilization SOPs/User Guides for DHIS2 and TSIS2.</p>';
+
+ [...copyHost.querySelectorAll('p')].forEach(p=>{if(!copy.contains(p)) p.style.display='none';});
+ [...copyHost.querySelectorAll('a,button')].forEach(el=>{
+   if(!el.closest('.hstu-purpose-cta-930') && /Explore research|Explore Capacity Building/i.test(tidy(el.textContent))) el.remove();
+ });
+ let actions=copyHost.querySelector('.hstu-purpose-cta-930');
+ if(!actions){
+   actions=document.createElement('div');
+   actions.className='hstu-purpose-cta-930';
+   copy.insertAdjacentElement('afterend',actions);
+ }
+ actions.innerHTML=
+   '<button type="button" class="hstu-purpose-primary-930" data-purpose-view="research">Explore Research <span aria-hidden="true">→</span></button>'+
+   '<button type="button" data-purpose-view="reports">View Reports</button>'+
+   '<button type="button" data-purpose-view="data-audit">Data Audit &amp; Utilization</button>';
+ actions.querySelectorAll('[data-purpose-view]').forEach(b=>{
+   b.addEventListener('click',()=>openView(b.dataset.purposeView));
  });
 }
 function fixPrimaryNav(){
@@ -82,7 +110,7 @@ function fixPrimaryNav(){
      p.parentElement?.insertBefore(hint,p.nextSibling);
    }
  }
- setDropdown('home',[{label:'Overview',target:'repository-purpose'},{label:'15 Thematic Research Areas',target:'home-thematic-areas'},{label:'Quick Access',target:'home-quick-access'}]);
+ setDropdown('home',[{label:'Overview',target:'home-purpose-hero'},{label:'15 Thematic Research Areas',target:'home-thematic-areas'},{label:'Quick Access',target:'home-quick-access'}]);
  setDropdown('research',[{label:'Latest Studies',target:'research-results'},{label:'Strategic Objectives 1–15',target:'research-filters'},{label:'Research Agenda Priorities',target:'research-agenda-priorities'}]);
  setDropdown('capacity',[{label:'Manuals',target:'capacity-manuals'},{label:'Training Materials',target:'capacity-training'}]);
  setDropdown('reports',[{label:'National Reports',target:'reports-national'},{label:'Special Reports',target:'reports-special'}]);
@@ -101,6 +129,16 @@ function fixPrimaryNav(){
    {label:'Learning',target:'resources-learning'}
  ]);
  setDropdown('services',[{label:'Treatment and PrEP',target:'services-directory'},{label:'Health Centres',target:'services-directory'}]);
+
+ document.querySelectorAll('#mainNav .hstu-nav-dropdown').forEach(d=>{
+   d.setAttribute('aria-hidden','true');
+ });
+ buttons.forEach(b=>{
+   if(dropdown(b.dataset.view)){
+     b.setAttribute('aria-haspopup','true');
+     b.setAttribute('aria-expanded','false');
+   }
+ });
 }
 function buildThematicAreas(){
  const purpose=document.getElementById('repository-purpose');
@@ -120,7 +158,8 @@ function buildThematicAreas(){
    b.addEventListener('click',()=>openObjective(n));
    grid.appendChild(b);
  });
- if(purpose) purpose.insertAdjacentElement('afterend',sec);
+ const summary=document.getElementById('home-purpose-summary');
+ if(summary) summary.insertAdjacentElement('afterend',sec);
  else home.querySelector('.home-hero')?.insertAdjacentElement('afterend',sec);
 }
 function openObjective(n){
@@ -136,21 +175,30 @@ function openObjective(n){
  },180);
 }
 function updatePurpose(){
+ const home=document.getElementById('view-home');
+ const hero=home?.querySelector('.home-hero');
  const purpose=document.getElementById('repository-purpose');
- if(!purpose) return;
- purpose.querySelectorAll('.hstu-purpose-highlights-930').forEach(x=>x.remove());
- purpose.querySelectorAll('.card,[class*="stat"],[class*="highlight"]').forEach(el=>{
-   const t=tidy(el.textContent);
-   if(t.length<420 && (/Research Data Repository/i.test(t)||/Jamaica.*Wider Caribbean/i.test(t)||/15 Thematic Research Areas/i.test(t)||/Research.*Reports.*Capacity/i.test(t))) el.style.display='none';
- });
- const box=document.createElement('div');
- box.className='hstu-purpose-highlights-930';
+ if(!home||!hero) return;
+ if(purpose){
+   purpose.setAttribute('aria-hidden','true');
+   purpose.style.display='none';
+ }
+ let box=document.getElementById('home-purpose-summary');
+ if(!box){
+   box=document.createElement('section');
+   box.id='home-purpose-summary';
+   box.className='wrap hstu-purpose-summary-930';
+   hero.insertAdjacentElement('afterend',box);
+ }
  box.innerHTML=
- '<div><b>Research Data Repository</b><span>Published and unpublished HIV/STI/TB evidence in one searchable repository.</span></div>'+
- '<div><b>Jamaica + Wider Caribbean</b><span>Research spanning Jamaica and relevant Caribbean evidence.</span></div>'+
- '<div><b>15 Thematic Research Areas</b><span>Browse research through the repository’s 15 Strategic Objectives.</span></div>'+
- '<div><b>One Connected Evidence Environment</b><span>Research, Reports, Capacity Building and Data Audit & Utilization remain clearly grouped.</span></div>';
- purpose.appendChild(box);
+   '<div class="hstu-purpose-highlights-930">'+
+   '<button type="button" data-summary-view="research"><b>Research Data Repository</b><span>Published and unpublished HIV/STI/TB evidence in one searchable repository.</span></button>'+
+   '<div><b>Jamaica + Wider Caribbean</b><span>Research spanning Jamaica and relevant Caribbean evidence.</span></div>'+
+   '<button type="button" data-summary-target="home-thematic-areas"><b>15 Thematic Research Areas</b><span>Browse research through the repository’s 15 Strategic Objectives.</span></button>'+
+   '<div><b>One Connected Evidence Environment</b><span>Research · Capacity Building · Reports · Data Audit &amp; Utilization · Gallery · Resources · Find Services.</span></div>'+
+   '</div>';
+ box.querySelector('[data-summary-view]')?.addEventListener('click',e=>openView(e.currentTarget.dataset.summaryView));
+ box.querySelector('[data-summary-target]')?.addEventListener('click',e=>document.getElementById(e.currentTarget.dataset.summaryTarget)?.scrollIntoView({behavior:'smooth',block:'start'}));
 }
 function rebuildQuickAccess(){
  const home=document.getElementById('view-home'); if(!home) return;
@@ -254,26 +302,82 @@ function scrubCtech(){
    }
  });
 }
+const CAMPAIGN_CATEGORY={
+ 'campaign-01.webp':'TB',
+ 'campaign-02.webp':'STI',
+ 'campaign-03.webp':'STI',
+ 'campaign-04.webp':'HIV',
+ 'campaign-05.webp':'HIV',
+ 'campaign-06.webp':'HIV',
+ 'campaign-07.webp':'HIV',
+ 'campaign-08.webp':'HIV',
+ 'campaign-09.webp':'HIV',
+ 'campaign-10.webp':'HIV',
+ 'campaign-11.webp':'HIV',
+ 'campaign-12.webp':'PrEP',
+ 'campaign-13.webp':'HIV',
+ 'campaign-14.webp':'HIV',
+ 'campaign-15.webp':'HIV',
+ 'campaign-16.webp':'HIV',
+ 'campaign-17.webp':'HIV',
+ 'campaign-18.webp':'HIV',
+ 'campaign-19.webp':'HIV',
+ 'campaign-20.webp':'HIV',
+ 'campaign-21.webp':'STI',
+ 'campaign-22.webp':'HIV',
+ 'campaign-23.webp':'PrEP',
+ 'campaign-24.webp':'STI',
+ 'campaign-25.webp':'STI',
+ 'campaign-26.webp':'HIV',
+ 'campaign-27.webp':'HIV',
+ 'campaign-28.webp':'HIV',
+ 'campaign-29.webp':'HIV'
+};
 let galleryCategory='All';
+function galleryCardCategory(card){
+ const img=card.querySelector('img');
+ const src=(img?.getAttribute('src')||'').split('?')[0].split('#')[0];
+ const file=src.split('/').pop()?.toLowerCase()||'';
+ const known=CAMPAIGN_CATEGORY[file];
+ if(known){
+   card.dataset.galleryCategory=known;
+   return known;
+ }
+ const declared=tidy(card.dataset.galleryCategory||card.dataset.category||'');
+ if(/^(HIV|STI|TB|PrEP)$/i.test(declared)) return declared;
+ card.dataset.galleryCategory='Unclassified';
+ return 'Unclassified';
+}
 function setGalleryFilter(cat){
- galleryCategory=cat;
+ const allowed=['All','HIV','STI','TB','PrEP'];
+ galleryCategory=allowed.find(x=>x.toLowerCase()===String(cat||'All').toLowerCase())||'All';
  const root=document.getElementById('hstuGalleryFilters');
  if(root){
-   root.querySelectorAll('button').forEach(b=>b.classList.toggle('active',tidy(b.textContent).toLowerCase()===cat.toLowerCase()));
+   root.querySelectorAll('button').forEach(b=>{
+     const on=(b.dataset.galleryFilter||tidy(b.textContent)).toLowerCase()===galleryCategory.toLowerCase();
+     b.classList.toggle('active',on);
+     b.setAttribute('aria-pressed',on?'true':'false');
+   });
  }
  applyGallery();
 }
 function applyGallery(){
  const grid=document.getElementById('hstuGalleryGrid'); if(!grid) return;
- const q=(document.getElementById('hstuGallerySearch')?.value||'').toLowerCase();
+ const q=(document.getElementById('hstuGallerySearch')?.value||'').trim().toLowerCase();
+ let visible=0;
  [...grid.children].forEach(card=>{
-   const txt=tidy(card.textContent).toLowerCase();
-   const data=tidy(card.dataset.category||card.getAttribute('data-category')||'').toLowerCase();
-   const cat=galleryCategory.toLowerCase();
-   const catok=cat==='all'||data===cat||txt.includes(cat==='prep'?'prep':cat);
-   const qok=!q||txt.includes(q);
-   card.style.display=catok&&qok?'':'none';
+   const category=galleryCardCategory(card);
+   const img=card.querySelector('img');
+   const hay=(tidy(card.textContent)+' '+tidy(img?.alt)+' '+tidy(img?.title)).toLowerCase();
+   const catok=galleryCategory==='All'||category.toLowerCase()===galleryCategory.toLowerCase();
+   const qok=!q||hay.includes(q);
+   const show=catok&&qok;
+   card.hidden=!show;
+   card.style.display=show?'':'none';
+   if(show) visible++;
  });
+ const count=document.getElementById('hstuGalleryCount')||document.querySelector('[data-gallery-count]');
+ if(count) count.textContent=visible+' image'+(visible===1?'':'s');
 }
 function fixGallery(){
  const v=document.getElementById('view-gallery'); if(!v) return;
@@ -285,18 +389,36 @@ function fixGallery(){
  if(filters){
    filters.innerHTML='';
    ['All','HIV','STI','TB','PrEP'].forEach(c=>{
-     const b=document.createElement('button'); b.type='button'; b.textContent=c; b.className='hstu-gallery-filter-930'+(c==='All'?' active':'');
-     b.addEventListener('click',()=>setGalleryFilter(c)); filters.appendChild(b);
+     const b=document.createElement('button');
+     b.type='button';
+     b.textContent=c;
+     b.dataset.galleryFilter=c;
+     b.className='hstu-gallery-filter-930'+(c==='All'?' active':'');
+     b.setAttribute('aria-pressed',c==='All'?'true':'false');
+     b.addEventListener('click',()=>setGalleryFilter(c));
+     filters.appendChild(b);
    });
  }
  const search=document.getElementById('hstuGallerySearch');
- if(search){search.placeholder='Search Gallery'; search.addEventListener('input',applyGallery);}
+ if(search){
+   search.placeholder='Search Gallery';
+   if(!search.dataset.hstuFilterBound){
+     search.addEventListener('input',applyGallery);
+     search.dataset.hstuFilterBound='1';
+   }
+ }
  document.querySelectorAll('.hst-gallery-cta').forEach(el=>{
    el.innerHTML='<span class="hst-gallery-cta-icon" aria-hidden="true">▦</span><span><b>Go to Gallery</b><small>Explore HIV, STI, TB and PrEP imagery →</small></span>';
  });
  const grid=document.getElementById('hstuGalleryGrid');
- if(grid) new MutationObserver(applyGallery).observe(grid,{childList:true,subtree:false});
- setTimeout(applyGallery,160);
+ if(grid){
+   [...grid.children].forEach(galleryCardCategory);
+   if(!grid.dataset.hstuGalleryObserved){
+     new MutationObserver(()=>{[...grid.children].forEach(galleryCardCategory);applyGallery();}).observe(grid,{childList:true,subtree:false});
+     grid.dataset.hstuGalleryObserved='1';
+   }
+ }
+ setGalleryFilter(galleryCategory);
 }
 function installResourceObserver(){
  const l=document.getElementById('resources-learning');
@@ -352,6 +474,47 @@ function addStyles(){
  `;
  document.head.appendChild(s);
 }
+function addFinalHotfixStyles(){
+ if(document.getElementById('hstu-final-930-hotfix-styles')) return;
+ const s=document.createElement('style');
+ s.id='hstu-final-930-hotfix-styles';
+ s.textContent=
+ 'html,body{max-width:100%!important;overflow-x:hidden!important}'+
+ '#home-purpose-summary{position:relative;z-index:2}'+
+ '.hstu-purpose-hero-930 h1{font-size:clamp(42px,5.2vw,76px)!important;line-height:.98!important;letter-spacing:-.045em!important;max-width:760px!important}'+
+ '.hstu-purpose-copy-930{max-width:780px;margin-top:22px}'+
+ '.hstu-purpose-copy-930 p{display:block!important;margin:0 0 10px!important;max-width:760px!important;font-size:clamp(15px,1.15vw,18px)!important;line-height:1.58!important;color:rgba(255,255,255,.78)!important}'+
+ '.hstu-purpose-cta-930{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}'+
+ '.hstu-purpose-cta-930 button{min-height:48px;border-radius:16px;padding:11px 17px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);color:#fff;font-weight:900;cursor:pointer;backdrop-filter:blur(8px)}'+
+ '.hstu-purpose-cta-930 .hstu-purpose-primary-930{background:linear-gradient(135deg,#2d8138,#54ad3d 48%,#c91f2b);border-color:transparent;box-shadow:0 10px 24px rgba(0,0,0,.18)}'+
+ '.hstu-purpose-summary-930{padding-top:24px!important;padding-bottom:14px!important}'+
+ '.hstu-purpose-summary-930 .hstu-purpose-highlights-930{margin-top:0!important}'+
+ '.hstu-purpose-highlights-930 button{font:inherit;text-align:left;border:0;cursor:pointer}'+
+ '#repository-purpose[aria-hidden="true"]{display:none!important}'+
+ '#mainNav{min-width:0!important;max-width:100%!important}'+
+ '#mainNav .hstu-nav-item{min-width:0!important;position:relative}'+
+ '@media(min-width:1001px){'+
+ '#mainNav{display:flex!important;align-items:center!important;gap:clamp(2px,.35vw,7px)!important;overflow:visible!important;flex:1 1 auto!important}'+
+ '#mainNav .nav-btn{white-space:nowrap!important;font-size:clamp(12px,.86vw,16px)!important;padding:10px clamp(7px,.58vw,12px)!important}'+
+ '#mainNav .hstu-nav-dropdown{display:none!important;position:absolute!important;top:calc(100% + 8px)!important;left:0!important;min-width:220px!important;max-width:min(360px,90vw)!important;z-index:9999!important}'+
+ '#mainNav .hstu-nav-item:hover>.hstu-nav-dropdown,#mainNav .hstu-nav-item:focus-within>.hstu-nav-dropdown,#mainNav .hstu-nav-dropdown:hover{display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}'+
+ '}'+
+ '@media(max-width:1500px) and (min-width:1001px){#mainNav{gap:2px!important}#mainNav .nav-btn{font-size:13px!important;padding-left:8px!important;padding-right:8px!important}}'+
+ '@media(max-width:1000px){'+
+ '#menuToggle{display:none!important}'+
+ '#mainNav,.hstu-primary-nav-scroll{display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;padding:9px 12px 11px!important;scroll-snap-type:x proximity!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-inline:contain!important;background:rgba(10,18,12,.98)!important}'+
+ '#mainNav .hstu-nav-item,#mainNav .nav-item,#mainNav .nav-group{display:block!important;flex:0 0 auto!important;scroll-snap-align:start!important}'+
+ '#mainNav .nav-btn{display:block!important;width:auto!important;min-width:max-content!important;white-space:nowrap!important;padding:10px 14px!important;border-radius:999px!important;font-size:13px!important}'+
+ '#mainNav .hstu-nav-dropdown,#mainNav .nav-btn.active+.hstu-nav-dropdown,#mainNav .hstu-nav-item:focus-within>.hstu-nav-dropdown{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;position:absolute!important}'+
+ '.hstu-nav-swipe-hint{display:block!important;padding:4px 14px 5px!important;background:#f7faf5!important}'+
+ '#hstuMobileSectionRail{display:none!important}'+
+ '.hstu-purpose-hero-930 h1{font-size:clamp(38px,10.5vw,58px)!important;line-height:1.01!important;letter-spacing:-.04em!important}'+
+ '.hstu-purpose-copy-930{margin-top:16px!important}.hstu-purpose-copy-930 p{font-size:15px!important;line-height:1.52!important}'+
+ '.hstu-purpose-cta-930{gap:8px!important;margin-top:18px!important}.hstu-purpose-cta-930 button{min-height:44px!important;padding:9px 13px!important;font-size:13px!important}'+
+ '}'+
+ '@media(max-width:560px){.hstu-purpose-highlights-930{grid-template-columns:1fr!important}.hstu-purpose-cta-930 button{flex:1 1 100%!important}.hstu-purpose-hero-930 h1{font-size:clamp(36px,11vw,50px)!important}}';
+ document.head.appendChild(s);
+}
 function cleanPublicTerms(){
  const g=document.getElementById('view-gallery');
  if(g){
@@ -360,7 +523,7 @@ function cleanPublicTerms(){
 }
 function init(){
  document.documentElement.dataset.hstuRefinements930='ready';
- addStyles(); fixHero(); fixPrimaryNav(); buildThematicAreas(); updatePurpose(); rebuildQuickAccess();
+ addStyles(); addFinalHotfixStyles(); fixHero(); fixPrimaryNav(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess();
  fixResearchAgenda(); fixCapacity(); splitResources(); fixGallery(); installResourceObserver(); cleanPublicTerms();
  setTimeout(()=>{fixPrimaryNav(); splitResources(); scrubCtech(); fixGallery();},450);
 }
