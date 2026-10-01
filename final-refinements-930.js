@@ -336,6 +336,7 @@ function cleanPublicTerms(){
  }
 }
 function init(){
+ document.documentElement.dataset.hstuRefinements930='ready';
  addStyles(); fixHero(); fixPrimaryNav(); buildThematicAreas(); updatePurpose(); rebuildQuickAccess();
  fixResearchAgenda(); fixCapacity(); splitResources(); fixGallery(); installResourceObserver(); cleanPublicTerms();
  setTimeout(()=>{fixPrimaryNav(); splitResources(); scrubCtech(); fixGallery();},450);
