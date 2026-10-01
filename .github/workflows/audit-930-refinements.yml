@@ -1,0 +1,41 @@
+name: Audit 9.30 refinements
+on:
+  push:
+    paths:
+      - '.github/workflows/audit-930-refinements.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install beautifulsoup4
+      - name: Audit current DOM
+        run: |
+          python - <<'PY'
+          from bs4 import BeautifulSoup
+          from pathlib import Path
+          import re,json
+          s=Path("index.html").read_text(encoding="utf-8")
+          soup=BeautifulSoup(s,"html.parser")
+          terms=["Campaign","Manual","Training","Learning","Find Services","Explore","Research agenda","Research Agenda","C-Tech","Thematic","Strategic Objective","Presentations","Posters","External Links","Everything important","Quick Access"]
+          out={"nav":[],"buttons":[],"ids":[],"matches":{}}
+          for el in soup.select("nav button, nav a, .nav-btn, .hstu-nav-dropdown button, .hstu-nav-dropdown a"):
+              t=" ".join(el.stripped_strings)
+              if t: out["nav"].append({"text":t[:180],"id":el.get("id"),"class":el.get("class"),"data_view":el.get("data-view"),"data_target":el.get("data-target"),"href":el.get("href")})
+          for el in soup.select("button,a"):
+              t=" ".join(el.stripped_strings)
+              if any(k.lower() in t.lower() for k in ["explore","view all","find services","research agenda"]):
+                  out["buttons"].append({"text":t[:180],"id":el.get("id"),"class":el.get("class"),"href":el.get("href"),"data_view":el.get("data-view")})
+          for el in soup.find_all(id=True):
+              if any(k in el["id"].lower() for k in ["research","gallery","resource","capacity","report","data","service","quick","home"]):
+                  out["ids"].append({"tag":el.name,"id":el["id"],"class":el.get("class"),"text":" ".join(el.stripped_strings)[:300]})
+          text=soup.get_text("\n",strip=True)
+          for term in terms:
+              out["matches"][term]=[m.group(0) for m in re.finditer(re.escape(term),text,re.I)][:20]
+          print(json.dumps(out,indent=2))
+          PY
