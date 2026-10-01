@@ -1,0 +1,561 @@
+name: Apply Shanille 30 Sep refinements
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-shanille-0930-refinements.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install QA dependencies
+        run: |
+          pip install beautifulsoup4 requests playwright
+          python -m playwright install --with-deps chromium
+      - name: Create and apply source-grounded patch
+        run: |
+          cat > scripts/apply_shanille_0930.py <<'PY'
+          #!/usr/bin/env python3
+          from pathlib import Path
+          from bs4 import BeautifulSoup
+          import re
+
+          path=Path("index.html")
+          raw=path.read_text(encoding="utf-8")
+          soup=BeautifulSoup(raw,"html.parser")
+
+          AREAS=[
+            "Coinfection and Communicable Diseases",
+            "Sexually Transmitted Infections",
+            "Stigma and Discrimination",
+            "Psychosocial Determinants and Effects of HIV/AIDS",
+            "Antiretroviral Drug Resistance",
+            "Antiretroviral Therapy Outcomes",
+            "Prevention of Mother-to-Child Transmission",
+            "Adolescent HIV/AIDS",
+            "Pediatric HIV/AIDS",
+            "Key and Vulnerable Populations",
+            "Knowledge, Attitudes, Behaviors, and Practices",
+            "Epidemiology of HIV in Jamaica",
+            "The National HIV Response",
+            "Tuberculosis Prevention and Control",
+            "Risk Communication",
+          ]
+
+          def clean_text(el):
+              return " ".join(el.stripped_strings) if el else ""
+
+          def frag(markup):
+              return BeautifulSoup(markup,"html.parser")
+
+          # 1) Hero: exact capitalization, remove the competing Capacity Building CTA.
+          home=soup.find(id="view-home")
+          if not home:
+              raise SystemExit("Missing view-home")
+          hero=home.select_one(".home-hero") or home.find("section")
+          if not hero:
+              raise SystemExit("Missing Home hero")
+          for el in hero.find_all(["a","button"]):
+              t=clean_text(el).replace("→","").strip().lower()
+              if t=="explore research":
+                  # preserve arrow/span structure if present; plain text is clearer and exact
+                  el.clear()
+                  el.append("Explore Research →")
+              elif t=="explore capacity building":
+                  el.decompose()
+              elif "explore hst health living" in t:
+                  el.clear()
+                  el.append("View HST Health Living media →")
+
+          # 2) About facts: align side highlights to final information architecture.
+          purpose=soup.find(id="repository-purpose")
+          if not purpose:
+              raise SystemExit("Missing repository-purpose")
+          facts=purpose.select(".hstu-purpose-facts article")
+          fact_data=[
+              ("Research Data Repository","Published and unpublished HIV/STI/TB evidence"),
+              ("Jamaica + Wider Caribbean","Research from Jamaica and the wider Caribbean"),
+              ("15 Thematic Research Areas","Clickable pathways into the research collection"),
+              ("One connected repository","Research · Capacity Building · Reports · Data Audit · Resources · Services"),
+          ]
+          for art,(btxt,stxt) in zip(facts,fact_data):
+              b=art.find("b"); sp=art.find("span")
+              if b: b.string=btxt
+              if sp: sp.string=stxt
+
+          # 3) Add 15 clickable Thematic Research Areas on Home.
+          old=soup.find(id="home-thematic-areas")
+          if old: old.decompose()
+          cards="".join(
+              f'<button class="hstu-theme-link" type="button" data-objective="{i}" data-objective-name="{name}">'
+              f'<span>{i:02d}</span><b>{name}</b><i aria-hidden="true">→</i></button>'
+              for i,name in enumerate(AREAS,1)
+          )
+          thematic=frag(f'''<section class="wrap hstu-home-thematic" id="home-thematic-areas">
+            <div class="hstu-section-kicker">Research pathways</div>
+            <div class="hstu-home-thematic-head">
+              <div><h2>15 Thematic Research Areas</h2>
+              <p>Select an area to go directly to the research represented within that theme.</p></div>
+              <button type="button" class="hstu-theme-view-all" data-view="research">View all Research →</button>
+            </div>
+            <div class="hstu-theme-grid">{cards}</div>
+          </section>''').find("section")
+          more=purpose.select_one(".hstu-purpose-more")
+          if more: more.insert_before(thematic)
+          else: purpose.append(thematic)
+
+          # 4) Rebuild Quick Access to mirror the approved top-level structure.
+          quick_h2=None
+          for h in home.find_all(["h2","h3"]):
+              if clean_text(h).lower()=="everything important, easier to reach.":
+                  quick_h2=h; break
+          if not quick_h2:
+              raise SystemExit("Quick Access heading not found")
+          quick=quick_h2.find_parent("section")
+          if not quick:
+              # fallback to the closest substantial wrapper
+              quick=quick_h2.parent.parent
+          quick.clear()
+          quick_fragment=frag('''<div class="wrap hstu-final-quick">
+            <div class="hstu-quick-head"><div class="eyebrow"><i></i> Quick access</div>
+              <h2>Everything important, easier to reach.</h2>
+              <p>Go directly to the main areas of the Research Data Repository.</p>
+            </div>
+            <div class="hstu-final-quick-grid">
+              <button type="button" data-view="research"><b>Research</b><span>Studies across 15 thematic research areas.</span><i>Open Research →</i></button>
+              <button type="button" data-view="capacity"><b>Capacity Building</b><span>Current manuals and training materials.</span><i>Open Capacity Building →</i></button>
+              <button type="button" data-view="reports"><b>Reports</b><span>National and Special Reports.</span><i>Open Reports →</i></button>
+              <button type="button" data-view="data-audit"><b>Data Audit &amp; Utilization</b><span>Audit reports and DHIS2/TSIS2 user guides.</span><i>Open Data Audit →</i></button>
+              <button type="button" data-view="gallery"><b>Gallery</b><span>HIV, STI, TB and PrEP media.</span><i>Open Gallery →</i></button>
+              <button type="button" data-view="resources"><b>Resources</b><span>Presentations, posters, external links and learning.</span><i>Open Resources →</i></button>
+              <button type="button" data-view="services"><b>Find Services</b><span>Treatment, PrEP and health service locations.</span><i>Find Services →</i></button>
+            </div>
+          </div>''')
+          for child in list(quick_fragment.contents):
+              quick.append(child)
+
+          # 5) Research Agenda exact capitalization + instruction contrast class.
+          research=soup.find(id="view-research")
+          if not research: raise SystemExit("Missing view-research")
+          target=None
+          for el in research.find_all(["h2","h3","h4"]):
+              if clean_text(el).lower()=="research agenda priorities":
+                  target=el; break
+          if target:
+              target.string="Research Agenda Priorities"
+              block=target.find_parent(class_="hstu-agenda-block") or target.parent
+              classes=list(block.get("class",[]))
+              if "hstu-nav-instruction" not in classes: classes.append("hstu-nav-instruction")
+              block["class"]=classes
+
+          # 6) Gallery: final naming while preserving the verified 51-image/category system.
+          gallery=soup.find(id="view-gallery")
+          if not gallery: raise SystemExit("Missing view-gallery")
+          for h in gallery.find_all(["h1","h2"]):
+              if "campaign gallery" in clean_text(h).lower():
+                  h.string="Gallery"
+          for inp in gallery.find_all("input"):
+              ph=(inp.get("placeholder") or "")
+              if "campaign" in ph.lower():
+                  inp["placeholder"]="Search gallery images"
+          for node in gallery.find_all(string=True):
+              t=str(node)
+              if "Programme campaign and activity imagery supporting the wider HSTU knowledge and communication environment." in t:
+                  node.replace_with("HIV, STI, TB and PrEP imagery supporting the wider HSTU knowledge and communication environment.")
+              elif "Explore HIV, STI, TB and PrEP campaign images from the HST Health Living media collection." in t:
+                  node.replace_with("Explore HIV, STI, TB and PrEP images from the HST Health Living media collection.")
+
+          # 7) Resources: remove all C-TECH learning cards and rebuild as 4 explicit subsections.
+          resources=soup.find(id="view-resources")
+          if not resources: raise SystemExit("Missing view-resources")
+          page_hero=resources.select_one(".page-hero")
+          if page_hero:
+              eye=page_hero.select_one(".eyebrow")
+              if eye: eye.string="Presentations · Posters · External Links · Learning"
+          learning=soup.find(id="resources-learning")
+          if not learning: raise SystemExit("Missing resources-learning")
+          for card in list(learning.select(".training-card")):
+              if "c-tech" in clean_text(card).lower() or "ctech-caribbean" in (card.get("href") or "").lower():
+                  card.decompose()
+          # Replace C-TECH prioritization note.
+          note=learning.select_one(".training-feature-note")
+          if note:
+              note.clear()
+              b=soup.new_tag("b"); b.string="Trusted learning."
+              sp=soup.new_tag("span"); sp.string="Functional local, regional and international learning resources that complement current MOHW/HSTU guidance."
+              note.append(b); note.append(sp)
+          # Add Learning heading if absent.
+          if not any(clean_text(h).lower()=="learning" for h in learning.find_all(["h2","h3"],recursive=False)):
+              hh=soup.new_tag("h2"); hh.string="Learning"; hh["class"]=["hstu-subsection-title"]
+              pp=soup.new_tag("p"); pp.string="Verified learning links and supplementary professional development resources."
+              pp["class"]=["hstu-subsection-intro"]
+              learning.insert(0,pp); learning.insert(0,hh)
+          count=learning.find(id="trainingCount")
+          remaining=len(learning.select(".training-card"))
+          if count: count.string=f"{remaining} learning resources"
+
+          # Split Presentations & Posters into separate sections using current cards/links.
+          old_pp=soup.find(id="resources-presentations")
+          if not old_pp: raise SystemExit("Missing resources-presentations")
+          cards=list(old_pp.select(".hstu-refine-card"))
+          pres=[]; posts=[]
+          for c in cards:
+              (posts if "poster" in clean_text(c).lower() else pres).append(str(c))
+          old_pp.decompose()
+          def section_html(id_,title,intro,items):
+              return f'''<section class="wrap hstu-parity-group hstu-resource-subsection" id="{id_}">
+                <div class="hstu-subsection-head"><h2>{title}</h2><p>{intro}</p></div>
+                <div class="hstu-refine-grid">{''.join(items)}</div>
+              </section>'''
+          pres_sec=frag(section_html("resources-presentations","Presentations","Presentation resources from the repository.",pres)).find("section")
+          post_sec=frag(section_html("resources-posters","Posters","Poster resources from the repository.",posts)).find("section")
+
+          # Rename Official HSTU Collections to External Links and preserve all links.
+          external=None
+          for h in resources.find_all(["h2","h3"]):
+              if clean_text(h).lower()=="official hstu collections":
+                  external=h.find_parent(class_="hstu-parity-group") or h.parent
+                  h.string="External Links"
+                  external["id"]="resources-external"
+                  classes=list(external.get("class",[]))
+                  if "hstu-resource-subsection" not in classes: classes.append("hstu-resource-subsection")
+                  external["class"]=classes
+                  intro=soup.new_tag("p"); intro.string="Official institutional collections and trusted external resources."
+                  intro["class"]=["hstu-subsection-intro"]
+                  h.insert_after(intro)
+                  break
+          if not external: raise SystemExit("Official HSTU Collections section not found")
+          external.insert_before(pres_sec)
+          external.insert_before(post_sec)
+
+          # Clear obsolete campaign wording from resources subsection title.
+          for h in resources.find_all(["h2","h3"]):
+              if "campaign presentations" in clean_text(h).lower():
+                  parent=h.find_parent("section") or h.parent
+                  parent.decompose()
+                  break
+
+          # Add explicit Resources subsection navigation.
+          old_nav=resources.select_one(".hstu-resource-section-nav")
+          if old_nav: old_nav.decompose()
+          rnav=frag('''<nav class="wrap hstu-resource-section-nav" aria-label="Resource subsections">
+            <button type="button" data-resource-target="resources-presentations">Presentations</button>
+            <button type="button" data-resource-target="resources-posters">Posters</button>
+            <button type="button" data-resource-target="resources-external">External Links</button>
+            <button type="button" data-resource-target="resources-learning">Learning</button>
+          </nav>''').find("nav")
+          if page_hero: page_hero.insert_after(rnav)
+          else: resources.insert(0,rnav)
+
+          # 8) Rebuild every dropdown so deeper navigation matches the approved grouping.
+          menu_map={
+            "Home":[("Overview","home","repository-purpose",None),("15 Thematic Research Areas","home","home-thematic-areas",None)],
+            "Research":[("Latest studies","research","research-results",None),("Strategic Objectives 1–15","research","research-filters",None)],
+            "Capacity Building":[("Manuals","capacity","capacity-manuals",None),("Training Materials","capacity","capacity-training",None)],
+            "Reports":[("National Reports","reports","reports-national",None),("Special Reports","reports","reports-special",None)],
+            "Data Audit and Utilization":[("Data Audit","data-audit","data-audit-reports",None),("DHIS2 and TSIS2","data-audit","data-systems-guides",None)],
+            "Gallery":[("All","gallery","gallery-campaigns","All"),("HIV","gallery","gallery-campaigns","HIV"),("STI","gallery","gallery-campaigns","STI"),("TB","gallery","gallery-campaigns","TB"),("PrEP","gallery","gallery-campaigns","PrEP")],
+            "Resources":[("Presentations","resources","resources-presentations",None),("Posters","resources","resources-posters",None),("External Links","resources","resources-external",None),("Learning","resources","resources-learning",None)],
+            "Find Services":[("Treatment and PrEP","services","services-directory",None),("Health Centres","services","services-directory",None)],
+          }
+          mainnav=soup.find(id="mainNav")
+          if not mainnav: raise SystemExit("Missing mainNav")
+          for top in mainnav.select(".nav-btn"):
+              label=clean_text(top)
+              if label not in menu_map: continue
+              host=top.parent
+              dd=host.select_one(".hstu-nav-dropdown") if host else None
+              if not dd:
+                  dd=soup.new_tag("div"); dd["class"]=["hstu-nav-dropdown"]; dd["role"]="group"
+                  host.append(dd)
+              dd.clear()
+              dd["aria-label"]=f"{label} sections"
+              for txt,view,target,gfilter in menu_map[label]:
+                  b=soup.new_tag("button"); b["type"]="button"; b["data-view"]=view; b["data-target"]=target; b.string=txt
+                  if gfilter: b["data-gallery-select"]=gfilter
+                  dd.append(b)
+
+          # 9) Add a guaranteed mobile/tablet horizontal section rail so Find Services cannot be clipped.
+          oldrail=soup.find(id="hstuMobileSectionRail")
+          if oldrail: oldrail.decompose()
+          rail=frag('''<nav id="hstuMobileSectionRail" class="hstu-mobile-section-rail" aria-label="Main repository sections">
+            <button data-view="home" type="button">Home</button>
+            <button data-view="research" type="button">Research</button>
+            <button data-view="capacity" type="button">Capacity Building</button>
+            <button data-view="reports" type="button">Reports</button>
+            <button data-view="data-audit" type="button">Data Audit &amp; Utilization</button>
+            <button data-view="gallery" type="button">Gallery</button>
+            <button data-view="resources" type="button">Resources</button>
+            <button data-view="services" type="button">Find Services</button>
+          </nav>''').find("nav")
+          # place immediately after main nav container
+          mainnav.insert_after(rail)
+
+          # 10) Insert final refinement CSS.
+          oldstyle=soup.find(id="hstu-shanille-0930-final")
+          if oldstyle: oldstyle.decompose()
+          css=r'''
+          <style id="hstu-shanille-0930-final">
+          .hstu-home-thematic{margin-top:26px;padding-top:24px;border-top:1px solid #dfe9dc}
+          .hstu-section-kicker{font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#9f1c25;margin-bottom:8px}
+          .hstu-home-thematic-head{display:flex;gap:24px;align-items:end;justify-content:space-between;margin-bottom:16px}
+          .hstu-home-thematic-head h2{margin:0 0 6px;color:#264c2e}
+          .hstu-home-thematic-head p{margin:0;max-width:760px;color:#657169}
+          .hstu-theme-view-all{border:1px solid #d9e7d4;background:#fff;color:#315f34;border-radius:999px;padding:10px 14px;font-weight:900;white-space:nowrap}
+          .hstu-theme-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+          .hstu-theme-link{display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;text-align:left;min-height:66px;padding:11px 13px;border:1px solid #dce8d8;border-radius:15px;background:linear-gradient(135deg,#f5faf2,#fff 68%,#fff6f6);color:#233c29;cursor:pointer;transition:.18s ease}
+          .hstu-theme-link:hover,.hstu-theme-link:focus-visible{transform:translateY(-2px);border-color:#8fbd78;box-shadow:0 10px 24px rgba(43,86,48,.10);outline:none}
+          .hstu-theme-link span{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#eaf5e4;color:#315f34;font-size:12px;font-weight:900}
+          .hstu-theme-link b{font-size:13px;line-height:1.3}.hstu-theme-link i{font-style:normal;color:#b2222b;font-weight:900}
+          .hstu-final-quick{width:100%}
+          .hstu-quick-head{max-width:850px;margin-bottom:18px}.hstu-quick-head p{color:#66746a}
+          .hstu-final-quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+          .hstu-final-quick-grid button{min-height:150px;text-align:left;padding:18px;border:1px solid #dfe8dc;border-radius:18px;background:#fff;color:#203326;display:flex;flex-direction:column;gap:8px;cursor:pointer;box-shadow:0 8px 24px rgba(39,70,43,.06)}
+          .hstu-final-quick-grid button:nth-child(even){background:linear-gradient(145deg,#f5faf2,#fff)}
+          .hstu-final-quick-grid button:nth-child(3n){background:linear-gradient(145deg,#fff,#fff4f4)}
+          .hstu-final-quick-grid b{font-size:17px;color:#315f34}.hstu-final-quick-grid span{font-size:13px;line-height:1.45;color:#657169;flex:1}.hstu-final-quick-grid i{font-style:normal;font-size:12px;font-weight:900;color:#a51f28}
+          .hstu-nav-instruction{border:1px solid #d8e7d2!important;border-left:5px solid #65bd3a!important;background:linear-gradient(135deg,#f2f8ee,#fff 65%,#fff1f2)!important;box-shadow:0 12px 30px rgba(54,91,56,.08)!important}
+          .hstu-nav-instruction h2,.hstu-nav-instruction h3{color:#9f1c25!important}
+          .hstu-resource-section-nav{display:flex;gap:9px;flex-wrap:wrap;margin-top:-8px;margin-bottom:24px;padding:12px;border:1px solid #dfe8dc;border-radius:16px;background:#f8faf7}
+          .hstu-resource-section-nav button{border:1px solid #d9e7d4;background:#fff;color:#315f34;border-radius:999px;padding:10px 14px;font-weight:900;cursor:pointer}
+          .hstu-resource-section-nav button:hover,.hstu-resource-section-nav button:focus-visible{background:#eef7ea;border-color:#87b971;outline:none}
+          .hstu-resource-subsection>.hstu-subsection-head,.hstu-resource-subsection>h2,.hstu-subsection-title{color:#9f1c25!important}
+          .hstu-subsection-head{border-left:4px solid #65bd3a;padding-left:12px;margin-bottom:14px}.hstu-subsection-head h2{color:#9f1c25;margin-bottom:4px}.hstu-subsection-head p,.hstu-subsection-intro{color:#69746d}
+          #view-reports .hstu-parity-group>h2,#view-data-audit .hstu-parity-group>h2,#view-capacity .hstu-parity-group>h2{color:#9f1c25!important;border-left:4px solid #65bd3a;padding-left:10px}
+          #hstuGalleryFilters{gap:10px!important}
+          #hstuGalleryFilters .hstu-gallery-filter{font-size:15px!important;font-weight:900!important;padding:11px 17px!important;min-height:44px!important}
+          #hstuGallerySearch{font-size:16px!important;min-height:48px!important}
+          .hstu-mobile-section-rail{display:none}
+          @media(max-width:1000px){
+            .hstu-theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+            .hstu-final-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+            .hstu-mobile-section-rail{display:flex;gap:8px;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;padding:9px 12px 11px;background:#fff;border-bottom:1px solid #e2e9df;position:relative;z-index:30;scrollbar-width:thin}
+            .hstu-mobile-section-rail button{flex:0 0 auto;scroll-snap-align:start;border:1px solid #dce7d8;background:#f8faf7;color:#315f34;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:900;white-space:nowrap}
+            .hstu-mobile-section-rail button:last-child{background:linear-gradient(135deg,#315f34,#4d9a3c 50%,#bd1822);color:#fff;border-color:transparent}
+          }
+          @media(max-width:620px){
+            .hstu-home-thematic-head{display:block}.hstu-theme-view-all{margin-top:12px}
+            .hstu-theme-grid{grid-template-columns:1fr}.hstu-theme-link{min-height:60px}
+            .hstu-final-quick-grid{grid-template-columns:1fr 1fr}.hstu-final-quick-grid button{min-height:135px;padding:14px}
+            .hstu-final-quick-grid b{font-size:15px}
+          }
+          </style>
+          '''
+          soup.head.append(frag(css).find("style"))
+
+          # 11) Runtime routing for thematic areas, Resource pills and Gallery dropdown category selection.
+          oldscript=soup.find(id="hstu-shanille-0930-routing")
+          if oldscript: oldscript.decompose()
+          js=r'''
+          <script id="hstu-shanille-0930-routing">
+          (function(){
+            function switchView(view){
+              const top=[...document.querySelectorAll('#mainNav .nav-btn')].find(b=>b.dataset.view===view);
+              if(top){top.click();return true;}
+              return false;
+            }
+            document.addEventListener('click',function(e){
+              const theme=e.target.closest('.hstu-theme-link');
+              if(theme){
+                e.preventDefault();
+                switchView('research');
+                setTimeout(function(){
+                  const sel=document.getElementById('refineResearchObjective');
+                  if(sel){
+                    const n=theme.dataset.objective, name=theme.dataset.objectiveName.toLowerCase();
+                    const opt=[...sel.options].find(o=>o.value===n || o.textContent.trim().startsWith(n+'.') || o.textContent.toLowerCase().includes(name));
+                    if(opt){sel.value=opt.value;sel.dispatchEvent(new Event('change',{bubbles:true}));sel.dispatchEvent(new Event('input',{bubbles:true}));}
+                  }
+                  document.getElementById('research-results')?.scrollIntoView({behavior:'smooth',block:'start'});
+                },100);
+                return;
+              }
+              const rt=e.target.closest('[data-resource-target]');
+              if(rt){
+                e.preventDefault(); switchView('resources');
+                setTimeout(()=>document.getElementById(rt.dataset.resourceTarget)?.scrollIntoView({behavior:'smooth',block:'start'}),100);
+                return;
+              }
+              const gd=e.target.closest('[data-gallery-select]');
+              if(gd){
+                setTimeout(function(){
+                  const wanted=gd.dataset.gallerySelect;
+                  const f=[...document.querySelectorAll('#hstuGalleryFilters [data-gallery-filter]')].find(x=>x.dataset.galleryFilter===wanted);
+                  if(f) f.click();
+                },100);
+              }
+              const rail=e.target.closest('#hstuMobileSectionRail [data-view]');
+              if(rail){e.preventDefault();switchView(rail.dataset.view);}
+            });
+          })();
+          </script>
+          '''
+          soup.body.append(frag(js).find("script"))
+
+          # Keep terminology clean in the user-facing hero/resource copy.
+          # Do not alter legitimate image asset titles that contain the word campaign.
+          path.write_text(str(soup),encoding="utf-8")
+          print("Applied Shanille 30 Sep refinements")
+          PY
+          python scripts/apply_shanille_0930.py
+      - name: Refresh PWA cache
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("service-worker.js")
+          s=p.read_text(encoding="utf-8")
+          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20261001-shanille-0930-v1";', s, count=1)
+          p.write_text(s,encoding="utf-8")
+          PY
+      - name: Static content QA
+        run: |
+          python - <<'PY'
+          from bs4 import BeautifulSoup
+          from pathlib import Path
+          s=Path("index.html").read_text(encoding="utf-8")
+          soup=BeautifulSoup(s,"html.parser")
+          def txt(e): return " ".join(e.stripped_strings) if e else ""
+          visible=txt(soup)
+          nav=[txt(x) for x in soup.select("#mainNav .nav-btn")]
+          expected=["Home","Research","Capacity Building","Reports","Data Audit and Utilization","Gallery","Resources","Find Services"]
+          assert nav==expected,(nav,expected)
+          for bad in ["Open Manual Library","Essential Manuals and Guidance","Campaign Gallery","Training & learning","Explore Capacity Building","92 records currently reconstructed","studies described by the legacy repository"]:
+              assert bad.lower() not in visible.lower(),bad
+          assert "Explore Research →" in txt(soup.select_one("#view-home .home-hero"))
+          assert "Studies stored on the Research Repository" in visible
+          assert "Research Agenda Priorities" in visible
+          assert len(soup.select("#home-thematic-areas .hstu-theme-link"))==15
+          assert [txt(x) for x in soup.select("#hstuGalleryFilters [data-gallery-filter]")]==["All","HIV","STI","TB","PrEP"]
+          assert soup.find(id="resources-presentations")
+          assert soup.find(id="resources-posters")
+          assert soup.find(id="resources-external")
+          assert soup.find(id="resources-learning")
+          assert "C-TECH" not in txt(soup.find(id="resources-learning")).upper()
+          assert soup.find(id="hstuMobileSectionRail")
+          assert "Find Services" in txt(soup.find(id="hstuMobileSectionRail"))
+          assert len(list(Path("media/repository").glob("*.webp")))==51
+          # Ensure Resources dropdown exact order.
+          resbtn=next(x for x in soup.select("#mainNav .nav-btn") if txt(x)=="Resources")
+          dd=resbtn.parent.select_one(".hstu-nav-dropdown")
+          assert [txt(x) for x in dd.find_all("button",recursive=False)]==["Presentations","Posters","External Links","Learning"]
+          galbtn=next(x for x in soup.select("#mainNav .nav-btn") if txt(x)=="Gallery")
+          gd=galbtn.parent.select_one(".hstu-nav-dropdown")
+          assert [txt(x) for x in gd.find_all("button",recursive=False)]==["All","HIV","STI","TB","PrEP"]
+          print("STATIC QA PASS")
+          PY
+      - name: Verify remaining Learning and External links
+        run: |
+          python - <<'PY'
+          from bs4 import BeautifulSoup
+          from pathlib import Path
+          import requests,time
+          soup=BeautifulSoup(Path("index.html").read_text(encoding="utf-8"),"html.parser")
+          urls=[]
+          for sid in ["resources-learning","resources-external"]:
+              sec=soup.find(id=sid)
+              for a in sec.find_all("a",href=True):
+                  if a["href"].startswith("http"): urls.append((sid,a.get_text(" ",strip=True)[:70],a["href"]))
+          seen=set(); bad=[]
+          headers={"User-Agent":"Mozilla/5.0 HSTU Repository Link QA"}
+          for sid,title,url in urls:
+              if url in seen: continue
+              seen.add(url)
+              status=None
+              for attempt in range(2):
+                  try:
+                      r=requests.get(url,headers=headers,timeout=20,allow_redirects=True,stream=True)
+                      status=r.status_code
+                      r.close()
+                      break
+                  except Exception as e:
+                      err=str(e)
+                      time.sleep(1)
+              print(f"{sid}: {status or 'NO RESPONSE'} :: {title} :: {url}")
+              if status in (404,410): bad.append((url,status))
+          if bad: raise SystemExit("Broken links: "+repr(bad))
+          print("LINK QA COMPLETE:",len(seen),"unique links checked")
+          PY
+      - name: Browser QA desktop and mobile
+        run: |
+          python -m http.server 8000 >/tmp/hstu.log 2>&1 &
+          sleep 2
+          mkdir -p internal-audits/shanille-0930-qa
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          import json
+          report={}
+          with sync_playwright() as p:
+              b=p.chromium.launch(headless=True)
+              for name,vp in [("desktop",{"width":1440,"height":1000}),("mobile",{"width":390,"height":844})]:
+                  pg=b.new_page(viewport=vp)
+                  pg.goto("http://127.0.0.1:8000/",wait_until="networkidle")
+                  pg.wait_for_timeout(1200)
+                  # all primary views
+                  views=[]
+                  for v in ["home","research","capacity","reports","data-audit","gallery","resources","services"]:
+                      pg.locator(f'#mainNav .nav-btn[data-view="{v}"]').click(force=True)
+                      pg.wait_for_timeout(80)
+                      visible=pg.locator(f'#view-{v}').is_visible()
+                      views.append([v,visible])
+                      assert visible,v
+                  # Home and thematic route
+                  pg.locator('#mainNav .nav-btn[data-view="home"]').click(force=True)
+                  assert pg.locator('#home-thematic-areas .hstu-theme-link').count()==15
+                  pg.locator('#home-thematic-areas .hstu-theme-link').first.click()
+                  pg.wait_for_timeout(250)
+                  assert pg.locator('#view-research').is_visible()
+                  # Gallery filter categories are exact
+                  pg.locator('#mainNav .nav-btn[data-view="gallery"]').click(force=True)
+                  cats=pg.locator('#hstuGalleryFilters [data-gallery-filter]').all_inner_texts()
+                  assert cats==["All","HIV","STI","TB","PrEP"],cats
+                  # Resources final groups + no visible C-TECH
+                  pg.locator('#mainNav .nav-btn[data-view="resources"]').click(force=True)
+                  rtxt=pg.locator('#view-resources').inner_text()
+                  assert "C-TECH" not in rtxt.upper()
+                  for sid in ["resources-presentations","resources-posters","resources-external","resources-learning"]:
+                      assert pg.locator('#'+sid).count()==1
+                  # Gia still present
+                  assert pg.locator('#clinicalLauncher').count()==1
+                  # mobile rail + Find Services visibility/accessibility
+                  rail_ok=True
+                  if name=="mobile":
+                      assert pg.locator('#hstuMobileSectionRail').is_visible()
+                      fs=pg.locator('#hstuMobileSectionRail button[data-view="services"]')
+                      assert fs.count()==1
+                      fs.evaluate("(e)=>e.scrollIntoView({inline:'center',block:'nearest'})")
+                      assert fs.is_visible()
+                      fs.click()
+                      pg.wait_for_timeout(150)
+                      assert pg.locator('#view-services').is_visible()
+                      assert pg.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 4")
+                  pg.screenshot(path=f"internal-audits/shanille-0930-qa/{name}.png",full_page=False)
+                  report[name]={"views":views,"gallery_filters":cats,"mobile_rail":rail_ok}
+                  pg.close()
+              b.close()
+          Path=None
+          open("internal-audits/shanille-0930-qa/results.json","w").write(json.dumps(report,indent=2))
+          print(json.dumps(report,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shanille-0930-qa
+          path: internal-audits/shanille-0930-qa/
+          if-no-files-found: error
+      - name: Commit verified refinements
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html service-worker.js scripts/apply_shanille_0930.py
+          git commit -m "Action Shanille 30 Sep repository refinements"
+          git pull --rebase origin main
+          git push origin main
