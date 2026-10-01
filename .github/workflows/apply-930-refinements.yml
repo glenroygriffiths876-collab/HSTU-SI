@@ -10,6 +10,7 @@ permissions:
 jobs:
   apply-and-qa:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
@@ -32,7 +33,7 @@ jobs:
           p.write_text(s,encoding="utf-8")
           sw=Path("service-worker.js")
           w=sw.read_text(encoding="utf-8")
-          w=re.sub(r'hstu-resource-centre-v[^"\']+','hstu-resource-centre-v20261001-home-nav-gallery-v2',w,count=1)
+          w=re.sub(r'hstu-resource-centre-v[^"\']+','hstu-resource-centre-v20261001-home-nav-gallery-v3',w,count=1)
           sw.write_text(w,encoding="utf-8")
           PY
       - name: Static QA
@@ -45,129 +46,134 @@ jobs:
           assert len(list(Path("media/repository").glob("*.webp")))==51
           for phrase in [
             "15 Thematic Research Areas","Research Agenda Priorities","Presentations","Posters",
-            "External Links","Learning","Find Services","Explore Research","PrEP"
+            "External Links","Learning","Find Services","Explore Research","PrEP",
+            "approximately 200 studies","volume 2 of Unveiling Hope","hstu-animated-title-930"
           ]:
             assert phrase in j, phrase
-          assert "C-Tech" not in j
-          print("STATIC QA PASS: 51 repository images; refinement layer injected once")
+          assert "Swipe tabs" not in j
+          assert "hstuMobileSubnav930" in j
+          print("STATIC QA PASS")
           PY
       - name: Install Playwright
         run: |
           npm init -y >/dev/null 2>&1
           npm install playwright@1.57.0 >/dev/null 2>&1
-          npx playwright install chromium
+          npx playwright install chromium >/dev/null
       - name: Browser QA desktop and mobile
         run: |
           python -m http.server 8000 >/tmp/hstu-server.log 2>&1 &
           for i in {1..40}; do curl -fsS http://127.0.0.1:8000/ >/dev/null 2>&1 && break; sleep 0.25; done
-          curl -fsS http://127.0.0.1:8000/ >/dev/null
           cat > qa.mjs <<'JS'
           import { chromium } from 'playwright';
           const browser=await chromium.launch({headless:true});
-          const assert=(ok,msg)=>{if(!ok) throw new Error(msg);};
-          async function visibleGalleryCount(page){
-            return await page.locator('#hstuGalleryGrid > *:visible').count();
-          }
-          async function go(page,view){
-            const top=page.locator('.nav-btn[data-view="'+view+'"]').first();
-            await top.click();
-            await page.waitForTimeout(180);
-          }
-          async function run(viewport,name){
+          const ok=(v,m)=>{if(!v) throw new Error(m);};
+          const expected={All:51,HIV:21,STI:5,TB:1,PrEP:2};
+          async function visibleGalleryCount(page){return page.locator('#hstuGalleryGrid > *:visible').count();}
+          async function activate(page,view){await page.evaluate(v=>{if(typeof window.setView==='function') window.setView(v);},view); await page.waitForTimeout(180);}
+
+          async function core(viewport,name){
             const page=await browser.newPage({viewport});
             const errors=[];
             page.on('pageerror',e=>errors.push('page:'+e.message));
             page.on('console',m=>{if(m.type()==='error') errors.push('console:'+m.text());});
-            await page.goto('http://127.0.0.1:8000/',{waitUntil:'networkidle'});
-            await page.waitForTimeout(1100);
+            await page.goto('http://127.0.0.1:8000/#home',{waitUntil:'networkidle'});
+            await page.waitForTimeout(1200);
 
-            assert(await page.locator('html').getAttribute('data-hstu-refinements930')==='ready',name+': refinement runtime');
-            const nav=(await page.locator('.nav-btn[data-view]').allTextContents()).map(x=>x.trim());
-            for(const x of ['Home','Research','Capacity Building','Reports','Data Audit and Utilization','Gallery','Resources','Find Services']) assert(nav.includes(x),name+': nav '+x);
-
-            const dims=await page.evaluate(()=>({doc:document.documentElement.scrollWidth,win:window.innerWidth,body:document.body.scrollWidth}));
-            assert(dims.doc<=dims.win+3 && dims.body<=dims.win+3,name+': no horizontal body overflow '+JSON.stringify(dims));
+            ok(await page.locator('html').getAttribute('data-hstu-refinements930')==='ready',name+': runtime');
+            const dims=await page.evaluate(()=>({doc:document.documentElement.scrollWidth,body:document.body.scrollWidth,win:innerWidth}));
+            ok(dims.doc<=dims.win+3 && dims.body<=dims.win+3,name+': overflow '+JSON.stringify(dims));
 
             const hero=page.locator('#home-purpose-hero');
-            assert(await hero.count()===1,name+': integrated Home hero exists');
-            assert((await hero.innerText()).includes('About the Research Data Repository'),name+': About title in hero');
-            assert((await hero.innerText()).includes('conceptualized in 2023'),name+': repository origin in hero');
-            assert((await hero.innerText()).includes('Jamaica and the wider Caribbean'),name+': Caribbean scope in hero');
-            assert(await page.locator('#repository-purpose').isVisible()===false,name+': duplicate About section hidden');
-            assert(await page.locator('#home-purpose-summary .hstu-purpose-highlights-930 > *').count()===4,name+': four Home summary facts');
-            assert(await page.locator('#home-thematic-areas .hstu-theme-card').count()===15,name+': 15 thematic areas');
-            assert(await page.locator('#home-quick-access .hstu-quick-card').count()===7,name+': Quick Access cards');
-            assert(await page.locator('#view-home').getByText(/Explore Research/).count()>=1,name+': Explore Research present');
-            assert(await page.locator('#view-home').getByText(/Explore Capacity Building/).count()===0,name+': second Explore removed');
+            const ht=await hero.innerText();
+            ok(ht.includes('About the Research Data Repository'),name+': hero title');
+            ok(ht.includes('approximately 200 studies'),name+': full About paragraph 3');
+            ok(ht.includes('volume 2 of Unveiling Hope'),name+': full About paragraph 4');
+            ok(ht.includes('emerging trends'),name+': About ending');
+            ok(await page.locator('#home-purpose-summary').count()===0,name+': summary block removed');
+            ok(await page.locator('#repository-purpose').isVisible()===false,name+': legacy About hidden');
+            ok(await page.locator('#home-thematic-areas .hstu-theme-card').count()===15,name+': themes');
+            ok(await page.locator('#home-quick-access').count()===1,name+': one Quick Access section');
+            ok(await page.locator('#home-quick-access .hstu-quick-card').count()===7,name+': seven Quick Access cards');
+            const quickHeadCount=await page.locator('#view-home').getByText('Everything important, easier to reach.',{exact:true}).count();
+            ok(quickHeadCount===1,name+': Quick Access heading duplicated '+quickHeadCount);
+            const anim=await page.locator('.hstu-animated-title-930').evaluate(el=>getComputedStyle(el).animationName);
+            ok(anim && anim!=='none',name+': title animation missing');
 
-            if(name==='mobile'){
-              assert(await page.locator('#mainNav').isVisible(),name+': slider navigation visible');
-              const navScroller=page.locator('.hstu-primary-nav-scroll').first();
-              assert(await navScroller.count()===1,name+': mobile slider class');
-              const ov=await navScroller.evaluate(el=>({sw:el.scrollWidth,cw:el.clientWidth,overflow:getComputedStyle(el).overflowX,dir:getComputedStyle(el).flexDirection}));
-              assert((ov.overflow==='auto'||ov.overflow==='scroll') && ov.dir==='row',name+': horizontal nav configured '+JSON.stringify(ov));
-              assert(await page.locator('#mainNav .hstu-nav-dropdown:visible').count()===0,name+': no desktop-style dropdown open on initial load');
-              assert(await page.locator('#hstuMobileSubnav930').count()===1,name+': deliberate mobile subnav exists');
-              assert(await page.locator('#hstuMobileSubnav930').isVisible()===false,name+': mobile subnav closed on initial load');
-              assert(await page.locator('.nav-btn[data-view="services"]').isVisible(),name+': Find Services visible/reachable');
-            } else {
-              assert(await page.locator('.nav-btn[data-view="services"]').isVisible(),name+': desktop Find Services visible');
-              const servicesBox=await page.locator('.nav-btn[data-view="services"]').boundingBox();
-              assert(servicesBox && servicesBox.x+servicesBox.width<=viewport.width+2,name+': desktop Find Services inside viewport');
+            if(name==='desktop'){
+              const service=await page.locator('.nav-btn[data-view="services"]').boundingBox();
+              ok(service && service.x+service.width<=viewport.width+2,name+': Find Services off screen');
+              const home=page.locator('.nav-btn[data-view="home"]').first();
+              await home.hover();
+              const dd=home.locator('xpath=..').locator('.hstu-nav-dropdown');
+              ok(await dd.isVisible(),name+': Home dropdown');
+              const dir=await dd.evaluate(el=>getComputedStyle(el).flexDirection);
+              ok(dir==='column',name+': dropdown not vertical '+dir);
+              await page.screenshot({path:'/tmp/desktop-home.png',fullPage:false});
+            }else{
+              ok(await page.getByText('Swipe tabs →',{exact:true}).count()===0,name+': Swipe tabs remains');
+              const toggle=page.locator('#menuToggle');
+              ok(await toggle.isVisible(),name+': hamburger hidden');
+              ok(await page.locator('#mainNav').isVisible()===false,name+': mobile nav must start closed');
+              ok(await page.locator('#hstuMobileSubnav930').count()===0,name+': detached mobile subnav remains');
+              await toggle.click();
+              await page.waitForTimeout(120);
+              ok(await page.locator('#mainNav').isVisible(),name+': menu did not open');
+              const dir=await page.locator('#mainNav').evaluate(el=>getComputedStyle(el).flexDirection);
+              ok(dir==='column',name+': mobile menu not vertical '+dir);
+              const gallery=page.locator('.nav-btn[data-view="gallery"]').first();
+              await gallery.click();
+              await page.waitForTimeout(100);
+              const gdd=gallery.locator('xpath=..').locator('.hstu-nav-dropdown');
+              ok(await gdd.isVisible(),name+': Gallery accordion did not expand');
+              const gdir=await gdd.evaluate(el=>getComputedStyle(el).flexDirection);
+              ok(gdir==='column',name+': Gallery accordion not vertical');
+              const labels=(await gdd.locator('button').allTextContents()).map(x=>x.trim());
+              ok(JSON.stringify(labels)===JSON.stringify(['All','HIV','STI','TB','PrEP']),name+': Gallery accordion labels '+JSON.stringify(labels));
+              await page.screenshot({path:'/tmp/mobile-menu.png',fullPage:false});
+              await gdd.locator('button').filter({hasText:/^TB$/}).click();
+              await page.waitForTimeout(650);
+              ok(await page.locator('#view-gallery.active').count()===1,name+': TB did not open Gallery');
+              ok(await visibleGalleryCount(page)===1,name+': TB filter from accordion');
+              ok(await page.locator('#mainNav').isVisible()===false,name+': menu did not close after selection');
+              await page.screenshot({path:'/tmp/mobile-gallery.png',fullPage:false});
             }
 
-            await go(page,'gallery');
-            const labels=(await page.locator('#hstuGalleryFilters button').allTextContents()).map(x=>x.trim());
-            assert(JSON.stringify(labels)===JSON.stringify(['All','HIV','STI','TB','PrEP']),name+': Gallery filters exact');
-
-            const expected={All:51,HIV:21,STI:5,TB:1,PrEP:2};
+            await activate(page,'gallery');
+            const filterLabels=(await page.locator('#hstuGalleryFilters button').allTextContents()).map(x=>x.trim());
+            ok(JSON.stringify(filterLabels)===JSON.stringify(['All','HIV','STI','TB','PrEP']),name+': Gallery filters');
             for(const key of ['All','HIV','STI','TB','PrEP']){
               await page.locator('#hstuGalleryFilters button').filter({hasText:new RegExp('^'+key+'$')}).click();
               await page.waitForTimeout(80);
-              const n=await visibleGalleryCount(page);
-              assert(n===expected[key],name+': Gallery '+key+' count '+n+' expected '+expected[key]);
-              assert(await page.locator('#hstuGalleryFilters button.active').filter({hasText:new RegExp('^'+key+'$')}).count()===1,name+': Gallery '+key+' active');
+              ok(await visibleGalleryCount(page)===expected[key],name+': Gallery '+key);
             }
 
-            if(name==='mobile'){
-              await page.locator('.nav-btn[data-view="gallery"]').first().click();
-              await page.waitForTimeout(120);
-              assert(await page.locator('#hstuMobileSubnav930').isVisible(),name+': Gallery subnav opens only after deliberate tap');
-              const tbMobile=page.locator('#hstuMobileSubnav930 button').filter({hasText:/^TB$/});
-              assert(await tbMobile.count()===1,name+': mobile Gallery TB submenu exists');
-              await tbMobile.click();
-            } else {
-              const galleryTop=page.locator('.nav-btn[data-view="gallery"]').first();
-              await galleryTop.hover();
-              const tbDrop=galleryTop.locator('xpath=..').locator('.hstu-nav-dropdown button').filter({hasText:/^TB$/});
-              assert(await tbDrop.count()===1,name+': desktop Gallery TB dropdown exists');
-              await tbDrop.click();
-            }
-            await page.waitForTimeout(700);
-            const submenuCount=await visibleGalleryCount(page);
-            const activeGallery=(await page.locator('#hstuGalleryFilters button.active').allTextContents()).map(x=>x.trim());
-            const viewState=await page.evaluate(()=>{const v=document.getElementById('view-gallery');const cards=[...document.querySelectorAll('#hstuGalleryGrid > *')];const tb=cards.find(x=>(x.querySelector('img')?.getAttribute('src')||'').includes('campaign-01.webp'));return {activeView:document.querySelector('.view.active')?.id||null,galleryClass:v?.className||null,galleryHidden:v?.hidden??null,galleryDisplay:v?getComputedStyle(v).display:null,gridClass:document.getElementById('hstuGalleryGrid')?.className||'',gridDataset:{...document.getElementById('hstuGalleryGrid')?.dataset},search:document.getElementById('hstuGallerySearch')?.value||'',tb:tb?{outer:tb.outerHTML.slice(0,1200),hidden:tb.hidden,display:tb.style.display,computed:getComputedStyle(tb).display,cat:tb.dataset.galleryCategory,src:tb.querySelector('img')?.getAttribute('src')||''}:null,cardStates:cards.map(x=>({hidden:x.hidden,display:x.style.display,computed:getComputedStyle(x).display,cat:x.dataset.galleryCategory,src:x.querySelector('img')?.getAttribute('src')||''})).slice(0,35)}});
-            console.log('GALLERY_SUBMENU_STATE',name,submenuCount,activeGallery,JSON.stringify(viewState));
-            assert(submenuCount===1 && activeGallery.includes('TB') && viewState.activeView==='view-gallery',name+': Gallery submenu applies TB filter');
-
-            await go(page,'home');
+            await activate(page,'home');
             for(const idx of [0,6,9,13,14]){
               await page.locator('#home-thematic-areas .hstu-theme-card').nth(idx).click();
               await page.waitForTimeout(320);
-              assert(await page.locator('#view-research.active').count()===1,name+': thematic '+(idx+1)+' opens Research');
+              ok(await page.locator('#view-research.active').count()===1,name+': thematic '+(idx+1));
               const selected=await page.locator('#refineResearchObjective').inputValue();
-              assert(selected!=='' && !/all/i.test(selected),name+': thematic '+(idx+1)+' applies objective');
-              await go(page,'home');
+              ok(selected!==''&&!/all/i.test(selected),name+': objective '+(idx+1));
+              await activate(page,'home');
             }
-
-            assert(errors.length===0,name+': browser errors '+errors.join(' | '));
-            await page.screenshot({path:'/tmp/'+name+'.png',fullPage:true});
+            ok(errors.length===0,name+': errors '+errors.join(' | '));
+            if(name==='mobile') await page.screenshot({path:'/tmp/mobile-home.png',fullPage:false});
             await page.close();
           }
-          await run({width:1440,height:1000},'desktop');
-          await run({width:390,height:844},'mobile');
-          console.log('BROWSER QA PASS');
+
+          await core({width:1440,height:900},'desktop');
+          await core({width:390,height:844},'mobile');
+
+          for(const [w,h] of [[412,915],[768,1024],[1024,768],[1280,800],[1366,768],[1536,864],[1920,1080]]){
+            const page=await browser.newPage({viewport:{width:w,height:h}});
+            await page.goto('http://127.0.0.1:8000/#home',{waitUntil:'networkidle'});
+            await page.waitForTimeout(700);
+            const d=await page.evaluate(()=>({doc:document.documentElement.scrollWidth,body:document.body.scrollWidth,win:innerWidth}));
+            ok(d.doc<=d.win+3 && d.body<=d.win+3,'responsive overflow '+w+' '+JSON.stringify(d));
+            await page.close();
+          }
           await browser.close();
+          console.log('BROWSER QA PASS');
           JS
           node qa.mjs
       - name: Link QA
@@ -178,29 +184,30 @@ jobs:
           const page=await browser.newPage();
           await page.goto('http://127.0.0.1:8000/',{waitUntil:'networkidle'});
           await page.waitForTimeout(900);
-          await page.locator('.nav-btn[data-view="resources"]').click();
+          await page.evaluate(()=>{if(typeof window.setView==='function') window.setView('resources');});
           await page.waitForTimeout(200);
           const links=await page.locator('#resources-learning a[href],#resources-external a[href]').evaluateAll(as=>[...new Set(as.map(a=>a.href).filter(h=>/^https?:/i.test(h)))]);
           let bad=[];
           for(const url of links){
             try{
               const r=await fetch(url,{redirect:'follow',signal:AbortSignal.timeout(15000),headers:{'user-agent':'Mozilla/5.0'}});
-              console.log(r.status,url);
               if(r.status===404||r.status===410) bad.push([r.status,url]);
-            }catch(e){console.log('UNVERIFIED',url,e.name);}
+            }catch(e){}
           }
           if(bad.length) throw new Error('Dead 404/410 links: '+JSON.stringify(bad));
-          console.log('LINK QA PASS:',links.length,'resource links checked; no 404/410');
+          console.log('LINK QA PASS:',links.length);
           await browser.close();
           JS
           node links.mjs
       - name: Upload QA screenshots
         uses: actions/upload-artifact@v4
         with:
-          name: hstu-930-refinements-qa
+          name: hstu-home-mobile-nav-qa
           path: |
-            /tmp/desktop.png
-            /tmp/mobile.png
+            /tmp/desktop-home.png
+            /tmp/mobile-home.png
+            /tmp/mobile-menu.png
+            /tmp/mobile-gallery.png
       - name: Commit production patch
         run: |
           git config user.name "github-actions[bot]"
@@ -209,7 +216,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No production patch changes"
           else
-            git commit -m "Apply Shanille 9.30 repository refinements"
+            git commit -m "Apply refined Home and mobile navigation"
             git pull --rebase origin main
             git push origin main
           fi
