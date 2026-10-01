@@ -69,8 +69,8 @@ jobs:
             for(const x of ['Home','Research','Capacity Building','Reports','Data Audit and Utilization','Gallery','Resources','Find Services']){
               assert(nav.some(t=>t.trim()===x),name+': nav '+x);
             }
-            assert(await page.locator('#view-home .home-hero').getByText(/Explore Research/).count()>=1,name+': Explore Research');
-            assert(await page.locator('#view-home .home-hero').getByText(/Explore Capacity Building/).count()===0,name+': extra hero CTA removed');
+            assert(await page.locator('#view-home').getByText(/Explore Research/).count()>=1,name+': Explore Research');
+            assert(await page.locator('#view-home').getByText(/Explore Capacity Building/).count()===0,name+': extra hero CTA removed');
             assert(await page.locator('#home-thematic-areas .hstu-theme-card').count()===15,name+': 15 thematic links');
             assert(await page.locator('#home-quick-access .hstu-quick-card').count()===7,name+': 7 Quick Access cards');
             assert(await page.locator('#home-quick-access').getByText('Find Services',{exact:true}).count()===1,name+': Quick Access Find Services');
