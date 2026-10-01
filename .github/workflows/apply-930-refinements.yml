@@ -1,0 +1,160 @@
+name: Apply 9.30 refinements
+on:
+  push:
+    paths:
+      - 'final-refinements-930.js'
+      - '.github/workflows/apply-930-refinements.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  apply-and-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Inject refinement layer and refresh PWA cache
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("index.html")
+          s=p.read_text(encoding="utf-8")
+          s=re.sub(r'<script[^>]+src=["\']final-refinements-930\.js[^"\']*["\'][^>]*></script>','',s,flags=re.I)
+          tag='<script src="final-refinements-930.js?v=20261001-1"></script>'
+          if '</body>' not in s: raise SystemExit("No </body>")
+          s=s.replace('</body>',tag+'\n</body>',1)
+          p.write_text(s,encoding="utf-8")
+          sw=Path("service-worker.js")
+          w=sw.read_text(encoding="utf-8")
+          w=re.sub(r'hstu-resource-centre-v[^"\']+','hstu-resource-centre-v20261001-refinements930-1',w,count=1)
+          sw.write_text(w,encoding="utf-8")
+          PY
+      - name: Static QA
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path("index.html").read_text(encoding="utf-8")
+          j=Path("final-refinements-930.js").read_text(encoding="utf-8")
+          assert s.count('final-refinements-930.js?v=20261001-1')==1
+          assert len(list(Path("media/repository").glob("*.webp")))==51
+          for phrase in [
+            "15 Thematic Research Areas","Research Agenda Priorities","Presentations","Posters",
+            "External Links","Learning","Find Services","Explore Research","PrEP"
+          ]:
+            assert phrase in j, phrase
+          assert "C-Tech" not in j
+          print("STATIC QA PASS: 51 repository images; refinement layer injected once")
+          PY
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.57.0 >/dev/null 2>&1
+          npx playwright install chromium
+      - name: Browser QA desktop and mobile
+        run: |
+          python -m http.server 8000 >/tmp/hstu-server.log 2>&1 &
+          cat > /tmp/qa.mjs <<'JS'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const checks=[];
+          const assert=(ok,msg)=>{checks.push([!!ok,msg]); if(!ok) throw new Error(msg);};
+          async function run(viewport,name){
+            const page=await browser.newPage({viewport});
+            await page.goto('http://127.0.0.1:8000/',{waitUntil:'networkidle'});
+            await page.waitForTimeout(900);
+            const nav=await page.locator('.nav-btn[data-view]').allTextContents();
+            for(const x of ['Home','Research','Capacity Building','Reports','Data Audit and Utilization','Gallery','Resources','Find Services']){
+              assert(nav.some(t=>t.trim()===x),name+': nav '+x);
+            }
+            assert(await page.locator('#view-home .home-hero').getByText(/Explore Research/).count()>=1,name+': Explore Research');
+            assert(await page.locator('#view-home .home-hero').getByText(/Explore Capacity Building/).count()===0,name+': extra hero CTA removed');
+            assert(await page.locator('#home-thematic-areas .hstu-theme-card').count()===15,name+': 15 thematic links');
+            assert(await page.locator('#home-quick-access .hstu-quick-card').count()===7,name+': 7 Quick Access cards');
+            assert(await page.locator('#home-quick-access').getByText('Find Services',{exact:true}).count()===1,name+': Quick Access Find Services');
+            await page.locator('.nav-btn[data-view="gallery"]').click();
+            await page.waitForTimeout(200);
+            assert(await page.locator('#view-gallery h1,#view-gallery h2').filter({hasText:/^Gallery$/}).count()>=1,name+': Gallery title');
+            const gf=(await page.locator('#hstuGalleryFilters button').allTextContents()).map(x=>x.trim());
+            assert(JSON.stringify(gf)===JSON.stringify(['All','HIV','STI','TB','PrEP']),name+': Gallery filters '+JSON.stringify(gf));
+            assert(await page.locator('#hstuGalleryGrid img[src*="media/repository/"]').count()===51,name+': 51 Gallery images');
+            const gdrop=(await page.locator('.nav-btn[data-view="gallery"]').locator('xpath=..').locator('.hstu-nav-dropdown button').allTextContents()).map(x=>x.trim());
+            assert(JSON.stringify(gdrop)===JSON.stringify(['All','HIV','STI','TB','PrEP']),name+': Gallery dropdown');
+            await page.locator('.nav-btn[data-view="resources"]').click();
+            await page.waitForTimeout(250);
+            const rdrop=(await page.locator('.nav-btn[data-view="resources"]').locator('xpath=..').locator('.hstu-nav-dropdown button').allTextContents()).map(x=>x.trim());
+            assert(JSON.stringify(rdrop)===JSON.stringify(['Presentations','Posters','External Links','Learning']),name+': Resources dropdown '+JSON.stringify(rdrop));
+            for(const id of ['resources-presentations','resources-posters','resources-external','resources-learning']) assert(await page.locator('#'+id).count()===1,name+': '+id);
+            assert((await page.locator('#resources-learning').innerText()).toLowerCase().includes('c-tech')===false,name+': no C-Tech');
+            await page.locator('.nav-btn[data-view="research"]').click();
+            await page.waitForTimeout(200);
+            assert(await page.getByText('Research Agenda Priorities',{exact:true}).count()>=1,name+': Research Agenda Priorities');
+            assert(await page.getByText('Studies stored on the Research Repository',{exact:true}).count()>=1,name+': repository wording');
+            await page.locator('.nav-btn[data-view="home"]').click();
+            await page.locator('#home-thematic-areas .hstu-theme-card').first().click();
+            await page.waitForTimeout(350);
+            assert(await page.locator('#view-research.active').count()===1,name+': thematic link opens Research');
+            const selected=await page.locator('#refineResearchObjective').inputValue();
+            assert(selected!=='' && !/all/i.test(selected),name+': thematic link applies objective');
+            if(name==='mobile'){
+              const visible=await page.locator('.nav-btn[data-view="services"]').isVisible();
+              assert(visible,name+': Find Services visible');
+              const navScroller=page.locator('.hstu-primary-nav-scroll').first();
+              assert(await navScroller.count()===1,name+': mobile horizontal nav');
+              const ov=await navScroller.evaluate(el=>({sw:el.scrollWidth,cw:el.clientWidth,overflow:getComputedStyle(el).overflowX}));
+              assert(ov.overflow==='auto'||ov.overflow==='scroll',name+': nav scroll enabled');
+            }
+            await page.screenshot({path:'/tmp/'+name+'.png',fullPage:true});
+            await page.close();
+          }
+          await run({width:1440,height:1000},'desktop');
+          await run({width:390,height:844},'mobile');
+          console.log('BROWSER QA PASS',checks.length,'checks');
+          await browser.close();
+          JS
+          node /tmp/qa.mjs
+      - name: Link QA
+        run: |
+          cat > /tmp/links.mjs <<'JS'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const page=await browser.newPage();
+          await page.goto('http://127.0.0.1:8000/',{waitUntil:'networkidle'});
+          await page.waitForTimeout(900);
+          await page.locator('.nav-btn[data-view="resources"]').click();
+          await page.waitForTimeout(200);
+          const links=await page.locator('#resources-learning a[href],#resources-external a[href]').evaluateAll(as=>[...new Set(as.map(a=>a.href).filter(h=>/^https?:/i.test(h)))]);
+          let bad=[];
+          for(const url of links){
+            try{
+              const r=await fetch(url,{redirect:'follow',signal:AbortSignal.timeout(15000),headers:{'user-agent':'Mozilla/5.0'}});
+              console.log(r.status,url);
+              if(r.status===404||r.status===410) bad.push([r.status,url]);
+            }catch(e){console.log('UNVERIFIED',url,e.name);}
+          }
+          if(bad.length) throw new Error('Dead 404/410 links: '+JSON.stringify(bad));
+          console.log('LINK QA PASS:',links.length,'resource links checked; no 404/410');
+          await browser.close();
+          JS
+          node /tmp/links.mjs
+      - name: Upload QA screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: hstu-930-refinements-qa
+          path: |
+            /tmp/desktop.png
+            /tmp/mobile.png
+      - name: Commit production patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html service-worker.js
+          if git diff --cached --quiet; then
+            echo "No production patch changes"
+          else
+            git commit -m "Apply Shanille 9.30 repository refinements"
+            git pull --rebase origin main
+            git push origin main
+          fi
