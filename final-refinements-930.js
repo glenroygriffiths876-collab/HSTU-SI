@@ -138,7 +138,7 @@ function setMobileMenuOpen(open){
 }
 function toggleMobileItem(btn){
  const item=btn?.closest('.hstu-nav-item');
- const d=item?.querySelector(':scope > .hstu-nav-dropdown');
+ const d=item?.querySelector('.hstu-nav-dropdown');
  if(!item||!d){
    if(btn?.dataset?.view) openView(btn.dataset.view);
    setMobileMenuOpen(false);
@@ -148,8 +148,8 @@ function toggleMobileItem(btn){
  document.querySelectorAll('#mainNav .hstu-nav-item.mobile-open').forEach(other=>{
    if(other!==item){
      other.classList.remove('mobile-open');
-     other.querySelector(':scope > .nav-btn[data-view]')?.setAttribute('aria-expanded','false');
-     other.querySelector(':scope > .hstu-nav-dropdown')?.setAttribute('aria-hidden','true');
+     other.querySelector('.nav-btn[data-view]')?.setAttribute('aria-expanded','false');
+     other.querySelector('.hstu-nav-dropdown')?.setAttribute('aria-hidden','true');
    }
  });
  item.classList.toggle('mobile-open',willOpen);
@@ -716,7 +716,7 @@ function addFinalHotfixStyles(){
  '#mainNav .nav-btn[aria-haspopup="true"]::after{content:"⌄";font-size:18px;line-height:1;color:#86d56a;transition:transform .22s ease!important;margin-left:12px}'+
  '#mainNav .nav-btn[aria-expanded="true"]::after{transform:rotate(180deg)!important}'+
  '#mainNav .hstu-nav-dropdown,#mainNav .nav-btn.active+.hstu-nav-dropdown,#mainNav .hstu-nav-item:hover>.hstu-nav-dropdown,#mainNav .hstu-nav-item:focus-within>.hstu-nav-dropdown{display:none!important;position:static!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;transform:none!important;width:100%!important;min-width:0!important;max-width:100%!important;margin:0!important;padding:0 8px 8px 22px!important;background:transparent!important;border:0!important;box-shadow:none!important;flex-direction:column!important;align-items:stretch!important;gap:2px!important}'+
- '#mainNav .hstu-nav-item.mobile-open>.hstu-nav-dropdown{display:flex!important}'+
+ '#mainNav .hstu-nav-item.mobile-open .hstu-nav-dropdown{display:flex!important}'+
  '#mainNav .hstu-nav-dropdown button{display:block!important;width:100%!important;text-align:left!important;white-space:normal!important;border:0!important;border-left:2px solid rgba(107,207,69,.55)!important;border-radius:0 9px 9px 0!important;background:rgba(255,255,255,.035)!important;color:#dfeadd!important;padding:10px 12px!important;font-size:14px!important;font-weight:750!important}'+
  '#mainNav .hstu-nav-dropdown button:hover,#mainNav .hstu-nav-dropdown button:focus-visible{background:rgba(107,207,69,.1)!important;color:#fff!important}'+
  '.hstu-purpose-hero-930{padding-bottom:34px!important}'+
