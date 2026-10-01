@@ -446,6 +446,18 @@ const CAMPAIGN_CATEGORY={
  'campaign-29.webp':'HIV'
 };
 let galleryCategory='All';
+let galleryMasterCards=[];
+function captureGalleryMaster(grid){
+ if(!grid) return;
+ const cards=[...grid.children];
+ if(cards.length>galleryMasterCards.length && cards.length>=51) galleryMasterCards=cards;
+}
+function restoreGalleryMaster(grid){
+ if(!grid||galleryMasterCards.length<51) return;
+ if(grid.children.length!==galleryMasterCards.length || !galleryMasterCards.every((card,i)=>grid.children[i]===card)){
+   grid.replaceChildren(...galleryMasterCards);
+ }
+}
 function galleryCardCategory(card){
  const img=card.querySelector('img');
  const src=(img?.getAttribute('src')||'').split('?')[0].split('#')[0];
@@ -479,6 +491,8 @@ function setGalleryFilter(cat){
 }
 function applyGallery(){
  const grid=document.getElementById('hstuGalleryGrid'); if(!grid) return;
+ captureGalleryMaster(grid);
+ restoreGalleryMaster(grid);
  const q=(document.getElementById('hstuGallerySearch')?.value||'').trim().toLowerCase();
  let visible=0;
  [...grid.children].forEach(card=>{
@@ -528,9 +542,20 @@ function fixGallery(){
  });
  const grid=document.getElementById('hstuGalleryGrid');
  if(grid){
+   captureGalleryMaster(grid);
    [...grid.children].forEach(galleryCardCategory);
    if(!grid.dataset.hstuGalleryObserved){
-     new MutationObserver(()=>{[...grid.children].forEach(galleryCardCategory);applyGallery();}).observe(grid,{childList:true,subtree:false});
+     let scheduled=false;
+     new MutationObserver(()=>{
+       if(scheduled) return;
+       scheduled=true;
+       queueMicrotask(()=>{
+         scheduled=false;
+         restoreGalleryMaster(grid);
+         [...grid.children].forEach(galleryCardCategory);
+         applyGallery();
+       });
+     }).observe(grid,{childList:true,subtree:false});
      grid.dataset.hstuGalleryObserved='1';
    }
  }
