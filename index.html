@@ -2662,6 +2662,7 @@ document.addEventListener('click',e=>{
 
 
 
+
 <script id="hstu-final-refinements-930">
 (()=>{
 'use strict';
@@ -2736,7 +2737,10 @@ function fixHero(){
  const copyHost=heading?.closest('.hero-copy,.home-hero-copy,.hero-content,.home-hero-content,.hero-text')||heading?.parentElement||hero;
  const eye=copyHost.querySelector('.eyebrow,[class*="eyebrow"]');
  if(eye) eye.textContent='STRATEGIC INFORMATION · HSTU';
- if(heading) heading.textContent='About the Research Data Repository';
+ if(heading){
+   heading.textContent='About the Research Data Repository';
+   heading.classList.add('hstu-animated-title-930');
+ }
 
  let copy=copyHost.querySelector('.hstu-purpose-copy-930');
  if(!copy){
@@ -2746,7 +2750,9 @@ function fixHero(){
  }
  copy.innerHTML=
    '<p>The Research Data Repository was conceptualized in 2023 by the Strategic Information Component with the aim of systematically collecting and collating published and unpublished studies and reports.</p>'+
-   '<p>The repository supports navigation of HIV/STI/TB research from Jamaica and the wider Caribbean, alongside capacity-building tools, national-level reports and data-utilization SOPs/User Guides for DHIS2 and TSIS2.</p>';
+   '<p>The repository serves as a vital resource for navigating the expansive landscape of HIV/STI/TB research conducted in Jamaica and the wider Caribbean. As the repository continues to evolve, its scope has expanded beyond research studies and reports to incorporate additional resources, including capacity-building tools, national-level reports, and data utilization Standard Operating Procedures (SOPs)/User Guides for the DHIS2 and TSIS2 databases.</p>'+
+   '<p>The repository currently contains approximately 200 studies, systematically organized across 15 thematic areas, including 7 high-priority and 15 priority areas. The most recently added areas are Tuberculosis (TB) and Risk Communication, both designated as high-priority areas.</p>'+
+   '<p>The published studies recently added to the data repository will also be included in volume 2 of Unveiling Hope, the research booklet that compiles and highlights studies surrounding HIV, STIs, and TB. This expansion will further strengthen the booklet’s value as a consolidated resource, showcasing recent research findings, emerging trends, and key areas of focus within HIV/STI/TB research.</p>';
 
  [...copyHost.querySelectorAll('p')].forEach(p=>{if(!copy.contains(p)) p.style.display='none';});
  [...copyHost.querySelectorAll('a,button')].forEach(el=>{
@@ -2766,21 +2772,122 @@ function fixHero(){
    b.addEventListener('click',()=>openView(b.dataset.purposeView));
  });
 }
+function ensureMobileMenuToggle(navRoot){
+ let toggle=document.getElementById('menuToggle');
+ if(!toggle){
+   toggle=document.createElement('button');
+   toggle.id='menuToggle';
+   const host=navRoot?.parentElement||document.querySelector('header')||document.body;
+   host.insertBefore(toggle,navRoot||host.firstChild);
+ }
+ toggle.type='button';
+ toggle.classList.add('hstu-menu-toggle-930');
+ toggle.setAttribute('aria-label','Open navigation');
+ toggle.setAttribute('aria-controls','mainNav');
+ toggle.setAttribute('aria-expanded','false');
+ toggle.innerHTML='<span></span><span></span><span></span>';
+ return toggle;
+}
+function setMobileMenuOpen(open){
+ const menu=document.getElementById('hstuMobileMenu930');
+ const toggle=document.getElementById('menuToggle');
+ if(!menu||!toggle) return;
+ menu.classList.toggle('open',!!open);
+ menu.hidden=!open;
+ toggle.classList.toggle('is-open',!!open);
+ toggle.setAttribute('aria-expanded',open?'true':'false');
+ toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');
+ if(!open){
+   menu.querySelectorAll('.hstu-mobile-group-930.open').forEach(g=>g.classList.remove('open'));
+   menu.querySelectorAll('.hstu-mobile-parent-930').forEach(b=>b.setAttribute('aria-expanded','false'));
+   menu.querySelectorAll('.hstu-mobile-children-930').forEach(d=>d.hidden=true);
+ }
+}
+function buildMobileMenu930(navRoot,buttons){
+ document.getElementById('hstuMobileMenu930')?.remove();
+ const menu=document.createElement('nav');
+ menu.id='hstuMobileMenu930';
+ menu.className='hstu-mobile-menu-930';
+ menu.setAttribute('aria-label','Mobile navigation');
+ menu.hidden=true;
+
+ buttons.forEach(sourceBtn=>{
+   const view=sourceBtn.dataset.view;
+   const group=document.createElement('div');
+   group.className='hstu-mobile-group-930';
+
+   const parent=document.createElement('button');
+   parent.type='button';
+   parent.className='hstu-mobile-parent-930';
+   parent.textContent=tidy(sourceBtn.textContent);
+   parent.dataset.view=view;
+
+   const sourceDrop=dropdown(view);
+   const sourceItems=sourceDrop?[...sourceDrop.querySelectorAll('button')]:[];
+   if(sourceItems.length){
+     parent.setAttribute('aria-expanded','false');
+     const children=document.createElement('div');
+     children.className='hstu-mobile-children-930';
+     children.hidden=true;
+     sourceItems.forEach(src=>{
+       const child=document.createElement('button');
+       child.type='button';
+       child.className='hstu-mobile-child-930';
+       child.textContent=tidy(src.textContent);
+       if(src.dataset.hstuTarget) child.dataset.hstuTarget=src.dataset.hstuTarget;
+       if(src.dataset.galleryCategory) child.dataset.galleryCategory=src.dataset.galleryCategory;
+       child.addEventListener('click',e=>{
+         e.preventDefault(); e.stopPropagation();
+         if(child.dataset.galleryCategory) selectGalleryCategory(child.dataset.galleryCategory);
+         else openView(view,child.dataset.hstuTarget);
+         setMobileMenuOpen(false);
+       });
+       children.appendChild(child);
+     });
+     parent.addEventListener('click',e=>{
+       e.preventDefault(); e.stopPropagation();
+       const willOpen=!group.classList.contains('open');
+       menu.querySelectorAll('.hstu-mobile-group-930.open').forEach(other=>{
+         if(other!==group){
+           other.classList.remove('open');
+           other.querySelector('.hstu-mobile-parent-930')?.setAttribute('aria-expanded','false');
+           const oc=other.querySelector('.hstu-mobile-children-930'); if(oc) oc.hidden=true;
+         }
+       });
+       group.classList.toggle('open',willOpen);
+       parent.setAttribute('aria-expanded',willOpen?'true':'false');
+       children.hidden=!willOpen;
+     });
+     group.append(parent,children);
+   }else{
+     parent.addEventListener('click',e=>{
+       e.preventDefault(); e.stopPropagation();
+       openView(view);
+       setMobileMenuOpen(false);
+     });
+     group.appendChild(parent);
+   }
+   menu.appendChild(group);
+ });
+
+ const host=navRoot?.parentElement||document.querySelector('header')||document.body;
+ if(navRoot?.parentElement===host) navRoot.insertAdjacentElement('afterend',menu);
+ else host.appendChild(menu);
+ return menu;
+}
 function fixPrimaryNav(){
  const buttons=[...document.querySelectorAll('.nav-btn[data-view]')];
  if(!buttons.length) return;
  let p=buttons[0].parentElement;
  while(p && !buttons.every(b=>p.contains(b))) p=p.parentElement;
- if(p){
-   p.classList.add('hstu-primary-nav-scroll');
-   p.parentElement?.classList.add('hstu-header-fit-930');
-   if(!p.parentElement?.querySelector('.hstu-nav-swipe-hint')){
-     const hint=document.createElement('div');
-     hint.className='hstu-nav-swipe-hint';
-     hint.textContent='Swipe tabs →';
-     p.parentElement?.insertBefore(hint,p.nextSibling);
-   }
+ const navRoot=document.getElementById('mainNav')||p;
+ if(navRoot){
+   navRoot.classList.remove('hstu-primary-nav-scroll');
+   navRoot.classList.add('hstu-primary-nav-930');
+   navRoot.parentElement?.classList.add('hstu-header-fit-930');
  }
+ document.querySelectorAll('.hstu-nav-swipe-hint,#hstuMobileSubnav930').forEach(el=>el.remove());
+
  setDropdown('home',[{label:'Overview',target:'home-purpose-hero'},{label:'15 Thematic Research Areas',target:'home-thematic-areas'},{label:'Quick Access',target:'home-quick-access'}]);
  setDropdown('research',[{label:'Latest Studies',target:'research-results'},{label:'Strategic Objectives 1–15',target:'research-filters'},{label:'Research Agenda Priorities',target:'research-agenda-priorities'}]);
  setDropdown('capacity',[{label:'Manuals',target:'capacity-manuals'},{label:'Training Materials',target:'capacity-training'}]);
@@ -2801,102 +2908,22 @@ function fixPrimaryNav(){
  ]);
  setDropdown('services',[{label:'Treatment and PrEP',target:'services-directory'},{label:'Health Centres',target:'services-directory'}]);
 
- document.querySelectorAll('#mainNav .hstu-nav-dropdown').forEach(d=>{
-   d.setAttribute('aria-hidden','true');
- });
+ document.querySelectorAll('#mainNav .hstu-nav-dropdown').forEach(d=>d.setAttribute('aria-hidden','true'));
  buttons.forEach(b=>{
    const d=dropdown(b.dataset.view);
    if(d){
      b.parentElement?.classList.add('hstu-nav-item');
      b.setAttribute('aria-haspopup','true');
-     if(!b.hasAttribute('aria-expanded')) b.setAttribute('aria-expanded','false');
+     b.setAttribute('aria-expanded','false');
    }
    if(!b.dataset.hstuViewBound){
      b.dataset.hstuViewBound='1';
      b.addEventListener('click',()=>openView(b.dataset.view));
    }
  });
- setupMobileSubnav(buttons,p||document.getElementById('mainNav'));
-}
-function closeMobileSubnav930(){
- const rail=document.getElementById('hstuMobileSubnav930');
- if(rail){
-   rail.hidden=true;
-   rail.innerHTML='';
-   delete rail.dataset.view;
- }
- document.querySelectorAll('#mainNav .nav-btn[data-view]').forEach(x=>{
-   x.setAttribute('aria-expanded','false');
-   x.blur?.();
- });
- document.querySelectorAll('#mainNav .hstu-nav-dropdown').forEach(d=>{
-   d.setAttribute('aria-hidden','true');
-   d.classList.remove('open','show','active','visible');
-   if(window.innerWidth<=1000){
-     d.style.setProperty('display','none','important');
-     d.style.setProperty('visibility','hidden','important');
-     d.style.setProperty('opacity','0','important');
-     d.style.setProperty('pointer-events','none','important');
-   }else{
-     d.style.removeProperty('display');
-     d.style.removeProperty('visibility');
-     d.style.removeProperty('opacity');
-     d.style.removeProperty('pointer-events');
-   }
- });
-}
-function showMobileSubnav930(btn){
- if(window.innerWidth>1000||!btn) return;
- const rail=document.getElementById('hstuMobileSubnav930');
- if(!rail) return;
- const view=btn.dataset.view;
- const source=dropdown(view);
- if(!source||!source.children.length){closeMobileSubnav930();return;}
- if(!rail.hidden && rail.dataset.view===view){closeMobileSubnav930();return;}
- rail.innerHTML='';
- rail.dataset.view=view;
- rail.hidden=false;
- document.querySelectorAll('#mainNav .nav-btn[data-view]').forEach(x=>x.setAttribute('aria-expanded',x===btn?'true':'false'));
- [...source.querySelectorAll('button')].forEach(original=>{
-   const b=document.createElement('button');
-   b.type='button';
-   b.textContent=tidy(original.textContent);
-   b.className='hstu-mobile-subnav-pill-930';
-   b.dataset.hstuSubview=view;
-   if(original.dataset.hstuTarget) b.dataset.hstuTarget=original.dataset.hstuTarget;
-   if(original.dataset.galleryCategory) b.dataset.galleryCategory=original.dataset.galleryCategory;
-   b.addEventListener('click',e=>{
-     e.preventDefault(); e.stopPropagation();
-     if(b.dataset.galleryCategory) selectGalleryCategory(b.dataset.galleryCategory);
-     else openView(view,b.dataset.hstuTarget);
-     closeMobileSubnav930();
-   });
-   rail.appendChild(b);
- });
- rail.scrollLeft=0;
-}
-function setupMobileSubnav(buttons,navRoot){
- if(!navRoot) return;
- let rail=document.getElementById('hstuMobileSubnav930');
- if(!rail){
-   rail=document.createElement('nav');
-   rail.id='hstuMobileSubnav930';
-   rail.className='hstu-mobile-subnav-930';
-   rail.setAttribute('aria-label','Selected section navigation');
-   rail.hidden=true;
-   navRoot.insertAdjacentElement('afterend',rail);
- }
- if(!document.documentElement.dataset.hstuMobileSubnavGlobalBound){
-   document.documentElement.dataset.hstuMobileSubnavGlobalBound='1';
-   document.addEventListener('click',e=>{
-     const r=document.getElementById('hstuMobileSubnav930');
-     if(!r||r.hidden||window.innerWidth>1000) return;
-     if(r.contains(e.target)||e.target.closest?.('#mainNav .nav-btn[data-view]')) return;
-     closeMobileSubnav930();
-   });
-   document.addEventListener('keydown',e=>{if(e.key==='Escape') closeMobileSubnav930();});
-   window.addEventListener('resize',()=>{if(window.innerWidth>1000) closeMobileSubnav930();});
- }
+ ensureMobileMenuToggle(navRoot);
+ buildMobileMenu930(navRoot,buttons);
+ setMobileMenuOpen(false);
 }
 let gallerySelectionEpoch=0;
 function selectGalleryCategory(cat){
@@ -2911,20 +2938,22 @@ function selectGalleryCategory(cat){
 function installNavigationDelegation(){
  if(document.documentElement.dataset.hstuNavDelegation930) return;
  document.documentElement.dataset.hstuNavDelegation930='1';
- const delegated=e=>{
-   const top=e.target?.closest?.('#mainNav .nav-btn[data-view]');
-   if(top && e.type==='click'){
-     const view=top.dataset.view;
-     setTimeout(()=>{
-       openView(view);
-       if(window.innerWidth<=1000) showMobileSubnav930(top);
-     },0);
-     setTimeout(()=>openView(view),90);
+ document.addEventListener('click',e=>{
+   const mobile=window.innerWidth<=1000;
+   const toggle=e.target?.closest?.('#menuToggle');
+   if(toggle && mobile){
+     e.preventDefault();
+     e.stopImmediatePropagation();
+     setMobileMenuOpen(toggle.getAttribute('aria-expanded')!=='true');
+     return;
    }
-   const galleryItem=e.target?.closest?.('#mainNav .hstu-nav-dropdown [data-gallery-category],#hstuMobileSubnav930 [data-gallery-category]');
-   if(galleryItem && e.type==='click') selectGalleryCategory(galleryItem.dataset.galleryCategory);
- };
- window.addEventListener('click',delegated,true);
+   if(mobile && document.getElementById('hstuMobileMenu930')?.classList.contains('open') &&
+      !e.target?.closest?.('#hstuMobileMenu930') && !e.target?.closest?.('#menuToggle')){
+     setMobileMenuOpen(false);
+   }
+ },true);
+ document.addEventListener('keydown',e=>{if(e.key==='Escape') setMobileMenuOpen(false);});
+ window.addEventListener('resize',()=>{if(window.innerWidth>1000) setMobileMenuOpen(false);});
 }
 function buildThematicAreas(){
  const purpose=document.getElementById('repository-purpose');
@@ -2944,9 +2973,8 @@ function buildThematicAreas(){
    b.addEventListener('click',()=>openObjective(n));
    grid.appendChild(b);
  });
- const summary=document.getElementById('home-purpose-summary');
- if(summary) summary.insertAdjacentElement('afterend',sec);
- else home.querySelector('.home-hero')?.insertAdjacentElement('afterend',sec);
+ const hero=home.querySelector('.home-hero,.hero,[class*="home-hero"]');
+ if(hero) hero.insertAdjacentElement('afterend',sec); else home.prepend(sec);
 }
 function openObjective(n){
  openView('research','research-filters');
@@ -2962,49 +2990,64 @@ function openObjective(n){
 }
 function updatePurpose(){
  const home=document.getElementById('view-home');
- const hero=home?.querySelector('.home-hero');
  const purpose=document.getElementById('repository-purpose');
- if(!home||!hero) return;
  if(purpose){
    purpose.setAttribute('aria-hidden','true');
    purpose.style.display='none';
  }
- let box=document.getElementById('home-purpose-summary');
- if(!box){
-   box=document.createElement('section');
-   box.id='home-purpose-summary';
-   box.className='wrap hstu-purpose-summary-930';
-   hero.insertAdjacentElement('afterend',box);
- }
- box.innerHTML=
-   '<div class="hstu-purpose-highlights-930">'+
-   '<button type="button" data-summary-view="research"><b>Research Data Repository</b><span>Published and unpublished HIV/STI/TB evidence in one searchable repository.</span></button>'+
-   '<div><b>Jamaica + Wider Caribbean</b><span>Research spanning Jamaica and relevant Caribbean evidence.</span></div>'+
-   '<button type="button" data-summary-target="home-thematic-areas"><b>15 Thematic Research Areas</b><span>Browse research through the repository’s 15 Strategic Objectives.</span></button>'+
-   '<div><b>One Connected Evidence Environment</b><span>Research · Capacity Building · Reports · Data Audit &amp; Utilization · Gallery · Resources · Find Services.</span></div>'+
-   '</div>';
- box.querySelector('[data-summary-view]')?.addEventListener('click',e=>openView(e.currentTarget.dataset.summaryView));
- box.querySelector('[data-summary-target]')?.addEventListener('click',e=>document.getElementById(e.currentTarget.dataset.summaryTarget)?.scrollIntoView({behavior:'smooth',block:'start'}));
+ home?.querySelectorAll('#home-purpose-summary,.hstu-purpose-summary-930').forEach(el=>el.remove());
 }
 function rebuildQuickAccess(){
  const home=document.getElementById('view-home'); if(!home) return;
- const head=[...home.querySelectorAll('h1,h2,h3,h4')].find(x=>/Everything important/i.test(tidy(x.textContent)));
- const oldSection=head?.closest('section');
- if(oldSection && oldSection!==home) oldSection.style.display='none';
- else if(head){
-   const small=head.parentElement;
-   if(small && small!==home && tidy(small.textContent).length<1200) small.style.display='none';
+
+ // Remove every legacy Quick Access block before creating the one canonical section.
+ const duplicateTitles=['Research','Capacity Building','Reports','Data Audit & Utilization','Gallery','Resources','Find Services'];
+ [...home.querySelectorAll('h1,h2,h3,h4')].forEach(h=>{
+   if(tidy(h.textContent)!=='Everything important, easier to reach.') return;
+   if(h.closest('#home-quick-access')) return;
+   let node=h.parentElement, victim=null;
+   while(node && node!==home){
+     const t=tidy(node.textContent);
+     const hits=duplicateTitles.filter(x=>t.includes(x)).length;
+     if(hits>=5 && t.length<9000){victim=node;break;}
+     node=node.parentElement;
+   }
+   (victim||h.closest('section')||h.parentElement)?.remove();
+ });
+
+ // Remove legacy/duplicate Quick Access sections generated by earlier builds.
+ [...home.querySelectorAll('section')].forEach(s=>{
+   if(s.id==='home-quick-access'||s.classList.contains('hstu-quick-access-930')) return;
+   const t=tidy(s.textContent);
+   if(/Everything important, easier to reach/i.test(t)) s.remove();
+ });
+ const markers=[
+   'Studies across 15 thematic research areas.',
+   'Current manuals and training materials.',
+   'National and Special Reports.',
+   'Audit reports and DHIS2/TSIS2 user guides.'
+ ];
+ for(const marker of markers){
+   const exact=[...home.querySelectorAll('p,span,small')].find(el=>tidy(el.textContent)===marker);
+   const legacy=exact?.closest('section');
+   if(legacy && legacy.id!=='home-quick-access' && !legacy.querySelector('#home-purpose-hero') && !legacy.classList.contains('hstu-thematic-areas-930')){
+     legacy.remove();
+     break;
+   }
  }
+
  let sec=document.getElementById('home-quick-access');
- if(sec && sec===oldSection) sec=null;
+ const extras=[...home.querySelectorAll('.hstu-quick-access-930')].filter(x=>x!==sec);
+ extras.forEach(x=>x.remove());
  if(!sec){
    sec=document.createElement('section');
    sec.id='home-quick-access';
    sec.className='wrap hstu-quick-access-930';
-   const anchor=document.getElementById('home-thematic-areas')||document.getElementById('repository-purpose')||home.querySelector('.home-hero')||home.firstElementChild;
+   const anchor=document.getElementById('home-thematic-areas')||home.querySelector('.home-hero,.hero,[class*="home-hero"]')||home.firstElementChild;
    if(anchor) anchor.insertAdjacentElement('afterend',sec); else home.appendChild(sec);
  }
  sec.classList.add('hstu-quick-access-930');
+ sec.style.removeProperty('display');
  sec.innerHTML=
  '<div class="hstu-section-kicker">Quick access</div>'+
  '<div class="hstu-section-heading"><div><h2>Everything important, easier to reach.</h2><p>Jump directly to the main areas of the Research Data Repository.</p></div></div>'+
@@ -3020,6 +3063,17 @@ function rebuildQuickAccess(){
  ].map(x=>'<button type="button" class="hstu-quick-card" data-quick-view="'+x[2]+'" data-quick-target="'+x[3]+'"><b>'+x[0]+'</b><span>'+x[1]+'</span><em>Open →</em></button>').join('')+
  '</div>';
  sec.querySelectorAll('[data-quick-view]').forEach(b=>b.addEventListener('click',()=>openView(b.dataset.quickView,b.dataset.quickTarget)));
+
+ // No second Quick Access cluster is allowed to remain anywhere on Home.
+ const legacyPhrases=['Studies across 15 thematic research areas','Current manuals and training materials','Treatment, PrEP and health service locations'];
+ [...home.querySelectorAll('section,div')].forEach(el=>{
+   if(el===sec||sec.contains(el)||el.contains(sec)) return;
+   const t=tidy(el.textContent);
+   if(legacyPhrases.filter(p=>t.includes(p)).length>=2 && t.length<7000){
+     const victim=el.closest('section')||el;
+     if(victim!==sec && !victim.contains(sec)) victim.remove();
+   }
+ });
 }
 function fixResearchAgenda(){
  const research=document.getElementById('view-research'); if(!research) return;
@@ -3338,7 +3392,52 @@ function addFinalHotfixStyles(){
  '.hstu-purpose-copy-930{margin-top:16px!important}.hstu-purpose-copy-930 p{font-size:15px!important;line-height:1.52!important}'+
  '.hstu-purpose-cta-930{gap:8px!important;margin-top:18px!important}.hstu-purpose-cta-930 button{min-height:44px!important;padding:9px 13px!important;font-size:13px!important}'+
  '}'+
- '@media(max-width:560px){.hstu-purpose-highlights-930{grid-template-columns:1fr!important}.hstu-purpose-cta-930 button{flex:1 1 100%!important}.hstu-purpose-hero-930 h1{font-size:clamp(36px,11vw,50px)!important}}';
+ '@media(max-width:560px){.hstu-purpose-highlights-930{grid-template-columns:1fr!important}.hstu-purpose-cta-930 button{flex:1 1 100%!important}.hstu-purpose-hero-930 h1{font-size:clamp(36px,11vw,50px)!important}}'+
+ '@keyframes hstuTitleSweep930{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}'+
+ '.hstu-animated-title-930{background:linear-gradient(105deg,#ffffff 0%,#ffffff 24%,#6bcf45 36%,#ffffff 47%,#e32636 61%,#ffffff 74%,#ffffff 100%)!important;background-size:260% 100%!important;background-position:0% 50%;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;color:transparent!important;animation:hstuTitleSweep930 8.5s ease-in-out infinite!important;filter:drop-shadow(0 2px 14px rgba(255,255,255,.04))}'+
+ '.hstu-nav-swipe-hint,#hstuMobileSubnav930{display:none!important}'+
+ '@media(min-width:1001px){'+
+ '#menuToggle{display:none!important}'+
+ '#mainNav .hstu-nav-dropdown{flex-direction:column!important;align-items:stretch!important;gap:3px!important;padding:8px!important;width:max-content!important;min-width:230px!important}'+
+ '#mainNav .hstu-nav-dropdown button{display:block!important;width:100%!important;min-width:0!important;text-align:left!important;white-space:nowrap!important;padding:10px 12px!important;border-radius:10px!important}'+
+ '}'+
+ '@media(max-width:1000px){'+
+ '.hstu-header-fit-930{display:flex!important;flex-wrap:wrap!important;align-items:center!important;width:100%!important;max-width:100%!important}'+
+ '#menuToggle.hstu-menu-toggle-930{display:flex!important;margin-left:auto!important;width:48px!important;height:48px!important;flex:0 0 48px!important;align-items:center!important;justify-content:center!important;flex-direction:column!important;gap:5px!important;border:1px solid rgba(255,255,255,.15)!important;border-radius:14px!important;background:rgba(255,255,255,.06)!important;padding:0!important;position:relative!important;z-index:10002!important}'+
+ '#menuToggle.hstu-menu-toggle-930 span{display:block!important;width:23px!important;height:2px!important;border-radius:99px!important;background:#fff!important;transition:transform .25s ease,opacity .2s ease!important}'+
+ '#menuToggle.hstu-menu-toggle-930.is-open span:nth-child(1){transform:translateY(7px) rotate(45deg)!important}'+
+ '#menuToggle.hstu-menu-toggle-930.is-open span:nth-child(2){opacity:0!important}'+
+ '#menuToggle.hstu-menu-toggle-930.is-open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)!important}'+
+ '#mainNav,#mainNav.hstu-primary-nav-930{display:none!important;order:20!important;width:100%!important;max-width:100%!important;overflow:visible!important;background:#0b130d!important;border-top:1px solid rgba(255,255,255,.09)!important;padding:8px 10px 12px!important;margin-top:10px!important;box-shadow:0 16px 30px rgba(0,0,0,.22)!important}'+
+ '#mainNav.hstu-mobile-menu-open{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:2px!important}'+
+ '#mainNav .hstu-nav-item,#mainNav .nav-item,#mainNav .nav-group{display:block!important;width:100%!important;max-width:100%!important;position:relative!important}'+
+ '#mainNav .nav-btn{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important;min-width:0!important;max-width:100%!important;white-space:normal!important;text-align:left!important;border-radius:10px!important;padding:13px 12px!important;font-size:15px!important;color:#fff!important;background:transparent!important;border:0!important}'+
+ '#mainNav .nav-btn[aria-haspopup="true"]::after{content:"⌄";font-size:18px;line-height:1;color:#86d56a;transition:transform .22s ease!important;margin-left:12px}'+
+ '#mainNav .nav-btn[aria-expanded="true"]::after{transform:rotate(180deg)!important}'+
+ '#mainNav .hstu-nav-dropdown,#mainNav .nav-btn.active+.hstu-nav-dropdown,#mainNav .hstu-nav-item:hover>.hstu-nav-dropdown,#mainNav .hstu-nav-item:focus-within>.hstu-nav-dropdown{display:none!important;position:static!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;transform:none!important;width:100%!important;min-width:0!important;max-width:100%!important;margin:0!important;padding:0 8px 8px 22px!important;background:transparent!important;border:0!important;box-shadow:none!important;flex-direction:column!important;align-items:stretch!important;gap:2px!important}'+
+ '#mainNav .hstu-nav-dropdown.mobile-open,#mainNav .hstu-nav-item.mobile-open .hstu-nav-dropdown{display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}'+
+ '#mainNav .hstu-nav-dropdown button{display:block!important;width:100%!important;text-align:left!important;white-space:normal!important;border:0!important;border-left:2px solid rgba(107,207,69,.55)!important;border-radius:0 9px 9px 0!important;background:rgba(255,255,255,.035)!important;color:#dfeadd!important;padding:10px 12px!important;font-size:14px!important;font-weight:750!important}'+
+ '#mainNav .hstu-nav-dropdown button:hover,#mainNav .hstu-nav-dropdown button:focus-visible{background:rgba(107,207,69,.1)!important;color:#fff!important}'+
+ '.hstu-purpose-hero-930{padding-bottom:34px!important}'+
+ '.hstu-purpose-copy-930{max-width:900px!important}'+
+ '.hstu-purpose-copy-930 p{font-size:16px!important;line-height:1.62!important;margin-bottom:14px!important}'+
+ '}'+
+ '@media(max-width:560px){.hstu-purpose-copy-930 p{font-size:15.5px!important;line-height:1.58!important}.hstu-purpose-hero-930 h1{font-size:clamp(36px,10.8vw,50px)!important}}'+
+ '@media(prefers-reduced-motion:reduce){.hstu-animated-title-930{animation:none!important;background-position:48% 50%!important}}'+
+'@media(min-width:1001px){#hstuMobileMenu930{display:none!important}}'+
+'@media(max-width:1000px){'+
+'#mainNav{display:none!important}'+
+'#hstuMobileMenu930.hstu-mobile-menu-930{display:none!important;order:30!important;width:100%!important;max-width:100%!important;margin:10px 0 0!important;padding:8px 10px 12px!important;background:#0b130d!important;border-top:1px solid rgba(255,255,255,.09)!important;box-shadow:0 16px 30px rgba(0,0,0,.22)!important}'+
+'#hstuMobileMenu930.hstu-mobile-menu-930.open{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:2px!important}'+
+'.hstu-mobile-group-930{width:100%!important}'+
+'.hstu-mobile-parent-930{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important;border:0!important;border-radius:10px!important;background:transparent!important;color:#fff!important;padding:13px 12px!important;text-align:left!important;font-size:15px!important;font-weight:850!important}'+
+'.hstu-mobile-parent-930[aria-expanded]::after{content:"⌄";color:#86d56a;font-size:18px;line-height:1;transition:transform .22s ease!important;margin-left:12px}'+
+'.hstu-mobile-parent-930[aria-expanded="true"]::after{transform:rotate(180deg)!important}'+
+'.hstu-mobile-children-930{display:none!important;flex-direction:column!important;gap:2px!important;padding:0 8px 8px 22px!important}'+
+'.hstu-mobile-group-930.open>.hstu-mobile-children-930{display:flex!important}'+
+'.hstu-mobile-child-930{display:block!important;width:100%!important;border:0!important;border-left:2px solid rgba(107,207,69,.55)!important;border-radius:0 9px 9px 0!important;background:rgba(255,255,255,.035)!important;color:#dfeadd!important;padding:10px 12px!important;text-align:left!important;font-size:14px!important;font-weight:750!important}'+
+'.hstu-mobile-child-930:hover,.hstu-mobile-child-930:focus-visible{background:rgba(107,207,69,.1)!important;color:#fff!important}'+
+'}'
  document.head.appendChild(s);
 }
 function cleanPublicTerms(){
@@ -3349,12 +3448,10 @@ function cleanPublicTerms(){
 }
 function init(){
  document.documentElement.dataset.hstuRefinements930='ready';
- addStyles(); addFinalHotfixStyles(); fixHero(); fixPrimaryNav(); installNavigationDelegation(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess();
+ addStyles(); addFinalHotfixStyles(); fixHero(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); installNavigationDelegation();
  fixResearchAgenda(); fixCapacity(); splitResources(); fixGallery(); installResourceObserver(); cleanPublicTerms();
- closeMobileSubnav930();
- setTimeout(()=>{fixPrimaryNav(); splitResources(); scrubCtech(); fixGallery(); closeMobileSubnav930();},450);
- setTimeout(()=>{if(window.innerWidth<=1000) closeMobileSubnav930();},1200);
- window.addEventListener('pageshow',()=>{if(window.innerWidth<=1000) closeMobileSubnav930();},{once:true});
+ setTimeout(()=>{fixHero(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); splitResources(); scrubCtech(); fixGallery(); setMobileMenuOpen(false);},450);
+ window.addEventListener('pageshow',()=>{if(window.innerWidth<=1000) setMobileMenuOpen(false);},{once:true});
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(init,0),{once:true}); else setTimeout(init,0);
 })();
