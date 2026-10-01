@@ -1,4 +1,4 @@
-name: Apply Shanille 30 Sep refinements v8
+name: Apply Shanille 30 Sep refinements v9
 on:
   push:
     paths:
@@ -22,7 +22,7 @@ jobs:
           import re
           p=Path("service-worker.js")
           s=p.read_text(encoding="utf-8")
-          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20261001-shanille-0930-v5";', s, count=1)
+          s=re.sub(r'const CACHE_NAME="[^"]+";', 'const CACHE_NAME="hstu-resource-centre-v20261001-shanille-0930-v6";', s, count=1)
           p.write_text(s,encoding="utf-8")
           PY
       - name: Source QA
@@ -52,6 +52,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html service-worker.js
-          git commit -m "Harden thematic routing for Shanille refinements"
+          git commit -m "Use native HSTU routing for Shanille refinements"
           git pull --rebase origin main
           git push origin main
