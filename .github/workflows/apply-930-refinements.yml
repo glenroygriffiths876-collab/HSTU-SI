@@ -26,8 +26,9 @@ jobs:
           s=re.sub(r'<script id=["\']hstu-final-refinements-930["\']>.*?</script>','',s,flags=re.I|re.S)
           js=Path("final-refinements-930.js").read_text(encoding="utf-8")
           tag='<script id="hstu-final-refinements-930">\n'+js+'\n</script>'
-          if '</body>' not in s: raise SystemExit("No </body>")
-          s=s.replace('</body>',tag+'\n</body>',1)
+          idx=s.lower().rfind('</body>')
+          if idx<0: raise SystemExit("No </body>")
+          s=s[:idx]+tag+'\n'+s[idx:]
           p.write_text(s,encoding="utf-8")
           sw=Path("service-worker.js")
           w=sw.read_text(encoding="utf-8")
