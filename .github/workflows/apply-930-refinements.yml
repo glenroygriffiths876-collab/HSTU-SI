@@ -104,7 +104,9 @@ jobs:
               assert(await navScroller.count()===1,name+': mobile slider class');
               const ov=await navScroller.evaluate(el=>({sw:el.scrollWidth,cw:el.clientWidth,overflow:getComputedStyle(el).overflowX,dir:getComputedStyle(el).flexDirection}));
               assert((ov.overflow==='auto'||ov.overflow==='scroll') && ov.dir==='row',name+': horizontal nav configured '+JSON.stringify(ov));
-              assert(await page.locator('#mainNav .hstu-nav-dropdown:visible').count()===0,name+': no submenu open on initial load');
+              assert(await page.locator('#mainNav .hstu-nav-dropdown:visible').count()===0,name+': no desktop-style dropdown open on initial load');
+              assert(await page.locator('#hstuMobileSubnav930').count()===1,name+': deliberate mobile subnav exists');
+              assert(await page.locator('#hstuMobileSubnav930').isVisible()===false,name+': mobile subnav closed on initial load');
               assert(await page.locator('.nav-btn[data-view="services"]').isVisible(),name+': Find Services visible/reachable');
             } else {
               assert(await page.locator('.nav-btn[data-view="services"]').isVisible(),name+': desktop Find Services visible');
@@ -125,11 +127,22 @@ jobs:
               assert(await page.locator('#hstuGalleryFilters button.active').filter({hasText:new RegExp('^'+key+'$')}).count()===1,name+': Gallery '+key+' active');
             }
 
-            const tbDrop=page.locator('.nav-btn[data-view="gallery"]').locator('xpath=..').locator('.hstu-nav-dropdown button').filter({hasText:/^TB$/});
-            assert(await tbDrop.count()===1,name+': Gallery TB dropdown exists');
-            await tbDrop.click({force:true});
-            await page.waitForTimeout(220);
-            assert(await visibleGalleryCount(page)===1,name+': Gallery dropdown applies TB filter');
+            if(name==='mobile'){
+              await page.locator('.nav-btn[data-view="gallery"]').first().click();
+              await page.waitForTimeout(120);
+              assert(await page.locator('#hstuMobileSubnav930').isVisible(),name+': Gallery subnav opens only after deliberate tap');
+              const tbMobile=page.locator('#hstuMobileSubnav930 button').filter({hasText:/^TB$/});
+              assert(await tbMobile.count()===1,name+': mobile Gallery TB submenu exists');
+              await tbMobile.click();
+            } else {
+              const galleryTop=page.locator('.nav-btn[data-view="gallery"]').first();
+              await galleryTop.hover();
+              const tbDrop=galleryTop.locator('xpath=..').locator('.hstu-nav-dropdown button').filter({hasText:/^TB$/});
+              assert(await tbDrop.count()===1,name+': desktop Gallery TB dropdown exists');
+              await tbDrop.click();
+            }
+            await page.waitForTimeout(240);
+            assert(await visibleGalleryCount(page)===1,name+': Gallery submenu applies TB filter');
 
             await go(page,'home');
             for(const idx of [0,6,9,13,14]){
