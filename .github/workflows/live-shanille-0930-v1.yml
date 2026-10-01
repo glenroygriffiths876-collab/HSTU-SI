@@ -1,4 +1,4 @@
-name: Live Shanille 30 Sep QA v2
+name: Live Shanille 30 Sep QA v3
 on:
   push:
     paths:
@@ -139,6 +139,6 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: live-shanille-0930-qa
+          name: live-shanille-0930-qa-v3
           path: live-qa/
           if-no-files-found: error
