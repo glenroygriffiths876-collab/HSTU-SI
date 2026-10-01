@@ -12,6 +12,8 @@ body_start=start+len(marker)
 end=s.find("];",body_start)
 if end<0: raise SystemExit("TRAINING array terminator not found")
 training_body=s[body_start:end]
+# Heal literal backslash-n separators introduced by an earlier cleanup pass.
+training_body=training_body.replace("\\n","\n")
 rows=training_body.splitlines()
 kept=[];removed=0
 for row in rows:
@@ -19,7 +21,7 @@ for row in rows:
         removed+=1
     else:
         kept.append(row)
-s=s[:body_start]+"\\n".join(kept)+s[end:]
+s=s[:body_start]+"\n".join(kept)+s[end:]
 s=s.replace("C-TECH/MOHW Jamaica learning is prioritised.","Trusted local, regional and international learning resources are prioritised.")
 s=s.replace("Current C-TECH Jamaica learning plus carefully separated supplementary learning resources.","Verified local, regional and international learning resources.")
 # Exact wording/capitalization clean-up.
