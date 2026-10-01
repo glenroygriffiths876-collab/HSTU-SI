@@ -1,0 +1,223 @@
+name: Build local PDF library
+on:
+  push:
+    paths:
+      - '.github/workflows/pdf-library-upgrade.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Install PDF tooling
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y poppler-utils >/dev/null
+          python -m pip install --quiet requests pillow
+      - name: Inject latest refinement layer
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("index.html")
+          s=p.read_text(encoding="utf-8")
+          s=re.sub(r'<script[^>]+src=["\']final-refinements-930\.js[^"\']*["\'][^>]*></script>','',s,flags=re.I)
+          s=re.sub(r'<script id=["\']hstu-final-refinements-930["\']>.*?</script>','',s,flags=re.I|re.S)
+          js=Path("final-refinements-930.js").read_text(encoding="utf-8")
+          tag='<script id="hstu-final-refinements-930">\n'+js+'\n</script>'
+          idx=s.lower().rfind('</body>')
+          if idx<0: raise SystemExit("No </body>")
+          s=s[:idx]+tag+'\n'+s[idx:]
+          p.write_text(s,encoding="utf-8")
+          PY
+      - name: Download PDFs, generate first-page previews and manifest
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, hashlib, json, os, subprocess, tempfile
+          from urllib.parse import urlparse, unquote
+          import requests
+          from PIL import Image
+
+          ROOT=Path(".")
+          html=Path("index.html").read_text(encoding="utf-8",errors="ignore")
+          outdir=ROOT/"documents"/"pdf-library"
+          prevdir=ROOT/"media"/"pdf-previews"
+          outdir.mkdir(parents=True,exist_ok=True)
+          prevdir.mkdir(parents=True,exist_ok=True)
+
+          # Direct public PDF URLs represented in the interface.
+          urls=[]
+          for m in re.finditer(r'https?://[^"\'<>\s]+?\.pdf(?:\?[^"\'<>\s]*)?',html,re.I):
+              u=m.group(0).replace('&amp;','&')
+              if u not in urls: urls.append(u)
+
+          # Strongly prioritize the three official MOHW references.
+          priority=[
+            "https://www.moh.gov.jm/wp-content/uploads/2026/08/National-Surveillance-Manual-for-Jamaica-July-2026.pdf",
+            "https://www.moh.gov.jm/wp-content/uploads/2022/12/Management-of-Interpersonal-Violence-Procedures-for-Healthcare-Workers-2022.pdf",
+            "https://www.moh.gov.jm/wp-content/uploads/2026/02/PharmWatch-Drug-Monitoring-Form-Current-FRM-PMS-SRD-STRD-026-R1-1.pdf",
+          ]
+          urls=priority+[u for u in urls if u not in priority]
+
+          session=requests.Session()
+          session.headers.update({"User-Agent":"Mozilla/5.0 HSTU-Resource-Centre/1.0"})
+          manifest={"generated":"2026-10-01","by_url":{},"stats":{}}
+          failures=[]
+          total_bytes=0
+          MAX_FILE=95*1024*1024
+          MAX_TOTAL=650*1024*1024
+
+          def slug_for(url):
+              parsed=urlparse(url)
+              name=unquote(Path(parsed.path).stem)
+              name=re.sub(r'[^A-Za-z0-9]+','-',name).strip('-').lower()[:70] or 'document'
+              return f"{name}-{hashlib.sha1(url.encode()).hexdigest()[:8]}"
+
+          def valid_pdf(path):
+              try:
+                  return path.exists() and path.stat().st_size>1000 and path.read_bytes()[:5]==b'%PDF-'
+              except Exception:
+                  return False
+
+          for idx,url in enumerate(urls,1):
+              slug=slug_for(url)
+              pdf=outdir/f"{slug}.pdf"
+              preview=prevdir/f"{slug}.webp"
+              status="existing" if valid_pdf(pdf) else "pending"
+              try:
+                  if not valid_pdf(pdf):
+                      with session.get(url,stream=True,timeout=(15,60),allow_redirects=True) as r:
+                          r.raise_for_status()
+                          clen=int(r.headers.get("content-length") or 0)
+                          if clen and clen>MAX_FILE: raise RuntimeError(f"file too large: {clen}")
+                          if total_bytes+clen>MAX_TOTAL: raise RuntimeError("total download safety limit reached")
+                          tmp=pdf.with_suffix(".part")
+                          n=0
+                          with tmp.open("wb") as fh:
+                              for chunk in r.iter_content(1024*1024):
+                                  if not chunk: continue
+                                  n+=len(chunk)
+                                  if n>MAX_FILE: raise RuntimeError(f"file exceeded {MAX_FILE} bytes")
+                                  fh.write(chunk)
+                          if tmp.read_bytes()[:5]!=b'%PDF-':
+                              tmp.unlink(missing_ok=True)
+                              raise RuntimeError("response is not a PDF")
+                          tmp.replace(pdf)
+                          total_bytes+=n
+                          status="downloaded"
+                  if not preview.exists() and valid_pdf(pdf):
+                      with tempfile.TemporaryDirectory() as td:
+                          stem=Path(td)/"page"
+                          subprocess.run([
+                              "pdftoppm","-f","1","-singlefile","-jpeg",
+                              "-jpegopt","quality=86","-scale-to-x","900","-scale-to-y","-1",
+                              str(pdf),str(stem)
+                          ],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=60)
+                          jpg=stem.with_suffix(".jpg")
+                          with Image.open(jpg) as im:
+                              im=im.convert("RGB")
+                              im.save(preview,"WEBP",quality=82,method=6)
+                  if valid_pdf(pdf):
+                      item={
+                        "source":url,
+                        "local":pdf.as_posix(),
+                        "preview":preview.as_posix() if preview.exists() else None,
+                        "bytes":pdf.stat().st_size,
+                        "status":status,
+                      }
+                      manifest["by_url"][url]=item
+                      print(f"[{idx}/{len(urls)}] OK {url} -> {pdf} ({pdf.stat().st_size} bytes)")
+                  else:
+                      raise RuntimeError("local PDF validation failed")
+              except Exception as e:
+                  failures.append({"url":url,"error":str(e)[:300]})
+                  pdf.unlink(missing_ok=True)
+                  preview.unlink(missing_ok=True)
+                  manifest["by_url"][url]={"source":url,"local":None,"preview":None,"status":"external"}
+                  print(f"[{idx}/{len(urls)}] EXTERNAL {url}: {e}")
+
+          ok=[v for v in manifest["by_url"].values() if v.get("local")]
+          with_preview=[v for v in ok if v.get("preview")]
+          manifest["stats"]={
+            "pdf_urls_discovered":len(urls),
+            "localized":len(ok),
+            "external_remaining":len(urls)-len(ok),
+            "previews_generated":len(with_preview),
+            "failures":len(failures),
+            "localized_bytes":sum(v.get("bytes",0) for v in ok),
+          }
+          Path("pdf-library.json").write_text(json.dumps(manifest,indent=2),encoding="utf-8")
+
+          audit=[
+            "HSTU PDF LIBRARY AUDIT — 2026-10-01",
+            f"PDF URLs discovered: {len(urls)}",
+            f"Localized PDFs: {len(ok)}",
+            f"External PDFs remaining: {len(urls)-len(ok)}",
+            f"First-page previews available: {len(with_preview)}",
+            f"Localized bytes: {manifest['stats']['localized_bytes']}",
+            "",
+            "Official MOHW references:",
+          ]
+          for u in priority:
+              v=manifest["by_url"].get(u,{})
+              audit.append(f"- {u} -> {v.get('local') or 'EXTERNAL'} | preview={v.get('preview') or 'none'}")
+          audit+=["","Failures / external fallbacks:"]
+          audit += [f"- {x['url']} :: {x['error']}" for x in failures] or ["- None"]
+          Path("internal-audits/PDF_LIBRARY_AUDIT_2026-10-01.txt").write_text("\n".join(audit)+"\n",encoding="utf-8")
+          print(json.dumps(manifest["stats"],indent=2))
+          PY
+      - name: Refresh cache version
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("service-worker.js")
+          s=p.read_text(encoding="utf-8")
+          s=re.sub(r'hstu-resource-centre-v[^"\']+','hstu-resource-centre-v20261001-pdf-library',s,count=1)
+          p.write_text(s,encoding="utf-8")
+          PY
+      - name: Local PDF QA
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json, sys
+          m=json.loads(Path("pdf-library.json").read_text())
+          stats=m["stats"]
+          assert stats["localized"]>=3, stats
+          official=[
+            "https://www.moh.gov.jm/wp-content/uploads/2026/08/National-Surveillance-Manual-for-Jamaica-July-2026.pdf",
+            "https://www.moh.gov.jm/wp-content/uploads/2022/12/Management-of-Interpersonal-Violence-Procedures-for-Healthcare-Workers-2022.pdf",
+            "https://www.moh.gov.jm/wp-content/uploads/2026/02/PharmWatch-Drug-Monitoring-Form-Current-FRM-PMS-SRD-STRD-026-R1-1.pdf",
+          ]
+          for u in official:
+              v=m["by_url"].get(u,{})
+              assert v.get("local"), f"Official MOHW PDF not localized: {u}"
+              p=Path(v["local"])
+              assert p.exists() and p.read_bytes()[:5]==b'%PDF-'
+              assert v.get("preview") and Path(v["preview"]).exists()
+          s=Path("index.html").read_text(encoding="utf-8",errors="ignore")
+          assert "Why these are separate:" in s  # source remains; runtime removes it
+          j=Path("final-refinements-930.js").read_text(encoding="utf-8")
+          assert "expandOperationalResearch930" in j
+          assert "decoratePdfLinks930" in j
+          print("PDF LOCAL QA PASS",stats)
+          PY
+      - name: Commit library upgrade
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html final-refinements-930.js pdf-library.json service-worker.js documents/pdf-library media/pdf-previews internal-audits/PDF_LIBRARY_AUDIT_2026-10-01.txt
+          if git diff --cached --quiet; then
+            echo "No PDF library changes"
+          else
+            git commit -m "Build local PDF library with first-page previews"
+            git pull --rebase origin main
+            git push origin main
+          fi
