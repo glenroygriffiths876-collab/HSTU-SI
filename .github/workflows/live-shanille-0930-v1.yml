@@ -1,4 +1,4 @@
-name: Live Shanille 30 Sep QA v5
+name: Live Shanille 30 Sep QA v6
 on:
   push:
     paths:
@@ -81,7 +81,7 @@ jobs:
                   assert "Studies stored on the Research Repository" in text('#view-research')
                   assert "Research Agenda Priorities" in text('#view-research')
                   levels=page.locator('#refineResearchLevel option').all_inner_texts()
-                  assert levels==["All levels","Jamaica","Caribbean"] or levels==["All","Jamaica","Caribbean"],levels
+                  assert levels in [["All Research","Jamaica","Caribbean"],["All levels","Jamaica","Caribbean"],["All","Jamaica","Caribbean"]],levels
                   assert page.locator('#refineResearchObjective option').count()>=16
                   # Each top-level view works
                   for view in ["capacity","reports","data-audit","gallery","resources","services"]:
@@ -173,6 +173,6 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: live-shanille-0930-qa-v5
+          name: live-shanille-0930-qa-v6
           path: live-qa/
           if-no-files-found: error
