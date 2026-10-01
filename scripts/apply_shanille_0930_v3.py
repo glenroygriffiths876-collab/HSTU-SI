@@ -101,6 +101,20 @@ if(purpose){
   const sec=document.createElement('section');sec.className='wrap hstu-home-thematic';sec.id='home-thematic-areas';
   sec.innerHTML='<div class="hstu-section-kicker">Research pathways</div><div class="hstu-home-thematic-head"><div><h2>15 Thematic Research Areas</h2><p>Select an area to go directly to the research represented within that theme.</p></div><button type="button" class="hstu-theme-view-all" data-view="research">View all Research →</button></div><div class="hstu-theme-grid">'+areas.map((a,i)=>'<button class="hstu-theme-link" type="button" data-objective="'+(i+1)+'" data-objective-name="'+a.replace(/"/g,'&quot;')+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+a+'</b><i>→</i></button>').join('')+'</div>';
   const more=purpose.querySelector('.hstu-purpose-more');more?more.before(sec):purpose.append(sec);
+  sec.querySelectorAll('.hstu-theme-link').forEach(btn=>btn.addEventListener('click',ev=>{
+    ev.preventDefault();
+    const n=btn.dataset.objective,name=btn.dataset.objectiveName.toLowerCase();
+    const nav=[...document.querySelectorAll('#mainNav .nav-btn')].find(x=>x.dataset.view==='research');
+    if(nav) nav.click();
+    setTimeout(()=>{
+      const sel=document.getElementById('refineResearchObjective');
+      if(sel){
+        const o=[...sel.options].find(o=>o.value===n||o.textContent.trim().startsWith(n+'.')||o.textContent.toLowerCase().includes(name));
+        if(o){sel.value=o.value;sel.dispatchEvent(new Event('change',{bubbles:true}));sel.dispatchEvent(new Event('input',{bubbles:true}))}
+      }
+      document.getElementById('research-results')?.scrollIntoView({behavior:'smooth',block:'start'});
+    },160);
+  }));
 }
 
 // Quick Access = final top-level groupings.
