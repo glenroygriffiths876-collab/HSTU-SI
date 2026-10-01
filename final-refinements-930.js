@@ -20,6 +20,7 @@ const THEMES=[
 const tidy=s=>(s||'').replace(/\s+/g,' ').trim();
 function navBtn(view){return document.querySelector('.nav-btn[data-view="'+view+'"]');}
 function openView(view,target){
+ if(view!=='gallery' && typeof gallerySelectionEpoch!=='undefined') gallerySelectionEpoch++;
  try{
    if(typeof window.setView==='function') window.setView(view);
  }catch(_){}
@@ -229,9 +230,12 @@ function setupMobileSubnav(buttons,navRoot){
    });
  }
 }
+let gallerySelectionEpoch=0;
 function selectGalleryCategory(cat){
  const chosen=['All','HIV','STI','TB','PrEP'].find(x=>x.toLowerCase()===String(cat||'All').toLowerCase())||'All';
- [0,90,240,520,900].forEach(ms=>setTimeout(()=>{
+ const epoch=++gallerySelectionEpoch;
+ [0,100,260].forEach(ms=>setTimeout(()=>{
+   if(epoch!==gallerySelectionEpoch) return;
    openView('gallery','gallery-images');
    setGalleryFilter(chosen);
  },ms));
