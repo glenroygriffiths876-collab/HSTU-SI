@@ -66,6 +66,25 @@ jobs:
             ok(!/Why these are separate/i.test(bodyText),name+': technical Why these are separate message remains');
             ok(!/does not pretend an external server outage/i.test(bodyText),name+': technical outage copy remains');
 
+            const sectionByHeading=(pattern)=>page.locator('.hstu-parity-group,section').filter({
+              has:page.locator('h2,h3',{hasText:pattern})
+            }).first();
+
+            const surveys=sectionByHeading(/^National Surveys\s*&\s*Studies$/i);
+            ok(await surveys.count()===1,name+': National Surveys & Studies section missing');
+            ok(await surveys.locator('.hstu-parity-card,.hstu-refine-card').count()===9,name+': National Surveys & Studies does not show all 9');
+            ok(await surveys.locator('details').count()===0,name+': National Surveys & Studies details/dropdown remains');
+            ok(await surveys.getByText(/View all 9 national surveys\s*&\s*studies/i).count()===0,name+': National Surveys View all text remains');
+
+            const training=sectionByHeading(/^Programme Training\s*&\s*Technical Learning$/i);
+            ok(await training.count()===1,name+': Programme Training & Technical Learning section missing');
+            ok(await training.locator('.hstu-parity-card,.hstu-refine-card').count()===11,name+': Programme Training & Technical Learning does not show all 11');
+            ok(await training.locator('details').count()===0,name+': Programme Training & Technical Learning details/dropdown remains');
+            ok(await training.getByText(/View all 11 programme training\s*&\s*technical learning/i).count()===0,name+': Programme Training View all text remains');
+
+            const remainingResourceSummaries=(await page.locator('details summary').allTextContents()).map(x=>x.trim()).filter(x=>/^(View all|Show all|See all|Show more|View remaining)\b/i.test(x));
+            ok(remainingResourceSummaries.length===0,name+': resource collection accordions remain '+JSON.stringify(remainingResourceSummaries));
+
             await activate(page,'capacity');
             const refs=page.locator('.external-ref-grid .external-ref');
             ok(await refs.count()===3,name+': expected 3 official MOHW references');
