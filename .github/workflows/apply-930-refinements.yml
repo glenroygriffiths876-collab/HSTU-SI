@@ -146,8 +146,9 @@ jobs:
             await page.waitForTimeout(700);
             const submenuCount=await visibleGalleryCount(page);
             const activeGallery=(await page.locator('#hstuGalleryFilters button.active').allTextContents()).map(x=>x.trim());
-            console.log('GALLERY_SUBMENU_STATE',name,submenuCount,activeGallery);
-            assert(submenuCount===1 && activeGallery.includes('TB'),name+': Gallery submenu applies TB filter');
+            const viewState=await page.evaluate(()=>{const v=document.getElementById('view-gallery');return {activeView:document.querySelector('.view.active')?.id||null,galleryClass:v?.className||null,galleryHidden:v?.hidden??null,galleryDisplay:v?getComputedStyle(v).display:null,cardStates:[...document.querySelectorAll('#hstuGalleryGrid > *')].map(x=>({hidden:x.hidden,display:x.style.display,cat:x.dataset.galleryCategory})).filter(x=>!x.hidden&&x.display!=='none').slice(0,10)}});
+            console.log('GALLERY_SUBMENU_STATE',name,submenuCount,activeGallery,JSON.stringify(viewState));
+            assert(submenuCount===1 && activeGallery.includes('TB') && viewState.activeView==='view-gallery',name+': Gallery submenu applies TB filter');
 
             await go(page,'home');
             for(const idx of [0,6,9,13,14]){
