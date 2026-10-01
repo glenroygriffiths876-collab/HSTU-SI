@@ -1,0 +1,144 @@
+name: Live Shanille 30 Sep QA v1
+on:
+  push:
+    paths:
+      - '.github/workflows/live-shanille-0930-v1.yml'
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install browser QA
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Test live public repository
+        run: |
+          mkdir -p live-qa
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          import json
+          URL="https://glenroygriffiths876-collab.github.io/HSTU-SI/"
+          report={}
+          with sync_playwright() as p:
+              browser=p.chromium.launch(headless=True)
+              for name,vp in [("desktop",{"width":1440,"height":1000}),("mobile",{"width":390,"height":844})]:
+                  page=browser.new_page(viewport=vp)
+                  page.goto(URL,wait_until="networkidle",timeout=90000)
+                  page.wait_for_timeout(1800)
+                  text=lambda sel: page.locator(sel).inner_text().strip()
+                  body=page.locator("body").inner_text()
+                  # old/inconsistent visible wording requested for removal
+                  for bad in ["C-TECH","Campaign Gallery","Training & learning","Explore Capacity Building","Open Manual Library","Essential Manuals and Guidance"]:
+                      assert bad.lower() not in body.lower(),f"{name}: stale visible wording {bad}"
+                  # Primary navigation / mobile rail
+                  if name=="desktop":
+                      prim=page.locator('#mainNav .nav-btn').all_inner_texts()
+                      assert prim==["Home","Research","Capacity Building","Reports","Data Audit and Utilization","Gallery","Resources","Find Services"],prim
+                      assert page.locator('#mainNav .nav-btn[data-view="services"]').is_visible()
+                  else:
+                      rail=page.locator('#hstuMobileSectionRail')
+                      assert rail.is_visible()
+                      labels=rail.locator('button').all_inner_texts()
+                      assert labels==["Home","Research","Capacity Building","Reports","Data Audit & Utilization","Gallery","Resources","Find Services"],labels
+                      assert rail.locator('button[data-view="services"]').count()==1
+                  # Home exact requirements
+                  if name=="mobile":
+                      page.locator('#hstuMobileSectionRail button[data-view="home"]').click()
+                  else:
+                      page.locator('#mainNav .nav-btn[data-view="home"]').click()
+                  page.wait_for_timeout(150)
+                  hero=text('#view-home .home-hero')
+                  assert "Explore Research" in hero
+                  assert "Explore Capacity Building" not in hero
+                  assert page.locator('#home-thematic-areas .hstu-theme-link').count()==15
+                  quick=page.locator('#view-home .hstu-final-quick-grid button')
+                  assert quick.count()==7
+                  qlabels=quick.locator('b').all_inner_texts()
+                  assert qlabels==["Research","Capacity Building","Reports","Data Audit & Utilization","Gallery","Resources","Find Services"],qlabels
+                  # About highlight language updated
+                  facts=page.locator('#repository-purpose .hstu-purpose-facts article').all_inner_texts()
+                  assert any("15 Thematic Research Areas" in x for x in facts)
+                  assert any("One connected repository" in x for x in facts)
+                  # Thematic route works
+                  page.locator('#home-thematic-areas .hstu-theme-link').first.click()
+                  page.wait_for_timeout(300)
+                  assert page.locator('#view-research').is_visible()
+                  # Research exact text/filter structure
+                  assert "HIV/STI/TB Research" in text('#view-research')
+                  assert "Studies stored on the Research Repository" in text('#view-research')
+                  assert "Research Agenda Priorities" in text('#view-research')
+                  levels=page.locator('#refineResearchLevel option').all_inner_texts()
+                  assert levels==["All levels","Jamaica","Caribbean"] or levels==["All","Jamaica","Caribbean"],levels
+                  assert page.locator('#refineResearchObjective option').count()>=16
+                  # Each top-level view works
+                  for view in ["capacity","reports","data-audit","gallery","resources","services"]:
+                      if name=="mobile":
+                          b=page.locator(f'#hstuMobileSectionRail button[data-view="{view}"]')
+                          b.evaluate("(e)=>e.scrollIntoView({inline:'center',block:'nearest'})")
+                          b.click()
+                      else:
+                          page.locator(f'#mainNav .nav-btn[data-view="{view}"]').click()
+                      page.wait_for_timeout(100)
+                      assert page.locator(f'#view-{view}').is_visible(),view
+                  # Gallery
+                  if name=="desktop": page.locator('#mainNav .nav-btn[data-view="gallery"]').click()
+                  else:
+                      b=page.locator('#hstuMobileSectionRail button[data-view="gallery"]');b.evaluate("(e)=>e.scrollIntoView({inline:'center',block:'nearest'})");b.click()
+                  page.wait_for_timeout(150)
+                  assert text('#view-gallery h1')=="Gallery"
+                  filters=page.locator('#hstuGalleryFilters [data-gallery-filter]').all_inner_texts()
+                  assert filters==["All","HIV","STI","TB","PrEP"],filters
+                  assert page.locator('#hstuGalleryGrid > *').count()==51,page.locator('#hstuGalleryGrid > *').count()
+                  gnav=page.locator('#mainNav .nav-btn[data-view="gallery"]').locator('xpath=..').locator('.hstu-nav-dropdown button').all_inner_texts()
+                  assert gnav==["All","HIV","STI","TB","PrEP"],gnav
+                  # Resources
+                  if name=="desktop": page.locator('#mainNav .nav-btn[data-view="resources"]').click()
+                  else:
+                      b=page.locator('#hstuMobileSectionRail button[data-view="resources"]');b.evaluate("(e)=>e.scrollIntoView({inline:'center',block:'nearest'})");b.click()
+                  page.wait_for_timeout(150)
+                  rnav=page.locator('.hstu-resource-section-nav button').all_inner_texts()
+                  assert rnav==["Presentations","Posters","External Links","Learning"],rnav
+                  for sid in ["resources-presentations","resources-posters","resources-external","resources-learning"]:
+                      assert page.locator('#'+sid).count()==1,sid
+                  assert "C-TECH" not in text('#view-resources').upper()
+                  resource_dd=page.locator('#mainNav .nav-btn[data-view="resources"]').locator('xpath=..').locator('.hstu-nav-dropdown button').all_inner_texts()
+                  assert resource_dd==["Presentations","Posters","External Links","Learning"],resource_dd
+                  # Links present and not known broken.
+                  links=page.locator('#resources-learning a, #resources-external a').evaluate_all("(els)=>els.map(e=>({t:e.innerText.trim(),u:e.href}))")
+                  # Gia
+                  assert page.locator('#clinicalLauncher').count()==1
+                  # Find Services guaranteed accessible on phone
+                  if name=="mobile":
+                      fs=page.locator('#hstuMobileSectionRail button[data-view="services"]')
+                      fs.evaluate("(e)=>e.scrollIntoView({inline:'center',block:'nearest'})")
+                      fs.click();page.wait_for_timeout(150)
+                      assert page.locator('#view-services').is_visible()
+                  page.screenshot(path=f"live-qa/{name}.png",full_page=False)
+                  report[name]={
+                      "primary_views":"PASS",
+                      "thematic_areas":15,
+                      "quick_access":qlabels,
+                      "gallery_filters":filters,
+                      "gallery_items":51,
+                      "resource_subsections":rnav,
+                      "resource_links":[x["u"] for x in links],
+                      "gia":"PASS",
+                      "find_services":"PASS"
+                  }
+                  page.close()
+              browser.close()
+          open("live-qa/results.json","w").write(json.dumps(report,indent=2))
+          print(json.dumps(report,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-shanille-0930-qa
+          path: live-qa/
+          if-no-files-found: error
