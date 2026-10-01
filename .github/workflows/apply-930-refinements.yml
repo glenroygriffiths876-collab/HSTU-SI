@@ -56,7 +56,7 @@ jobs:
       - name: Browser QA desktop and mobile
         run: |
           python -m http.server 8000 >/tmp/hstu-server.log 2>&1 &
-          cat > /tmp/qa.mjs <<'JS'
+          cat > qa.mjs <<'JS'
           import { chromium } from 'playwright';
           const browser=await chromium.launch({headless:true});
           const checks=[];
@@ -114,10 +114,10 @@ jobs:
           console.log('BROWSER QA PASS',checks.length,'checks');
           await browser.close();
           JS
-          node /tmp/qa.mjs
+          node qa.mjs
       - name: Link QA
         run: |
-          cat > /tmp/links.mjs <<'JS'
+          cat > links.mjs <<'JS'
           import { chromium } from 'playwright';
           const browser=await chromium.launch({headless:true});
           const page=await browser.newPage();
@@ -138,7 +138,7 @@ jobs:
           console.log('LINK QA PASS:',links.length,'resource links checked; no 404/410');
           await browser.close();
           JS
-          node /tmp/links.mjs
+          node links.mjs
       - name: Upload QA screenshots
         uses: actions/upload-artifact@v4
         with:
