@@ -992,6 +992,25 @@ function fixUnveilingHope930(){
  });
 }
 
+
+function restoreLegacyYellow930(){
+ if(document.getElementById('hstu-legacy-yellow-930')) return;
+ const s=document.createElement('style');
+ s.id='hstu-legacy-yellow-930';
+ s.textContent=
+ ':root{--gold:#f2b714!important}'+
+ '.topline{background:linear-gradient(90deg,#169447 0 38%,#f2b714 38% 62%,#d71920 62%)!important}'+
+ '.proposal-banner{background:linear-gradient(100deg,#f6ba16 0%,#ffd95a 45%,#f6ba16 100%)!important;color:#161307!important}'+
+ '.footer-note strong{color:#f6ba16!important}'+
+ '.clinical-fab::before{border-color:rgba(246,186,22,.7)!important}'+
+ '.hst-gallery-cta:focus-visible{outline-color:#f6ba16!important}'+
+ '.hst-gallery-cta-icon{background:linear-gradient(145deg,#0a8f4d,#f6ba16)!important}'+
+ '.hstu-pwa-btn:focus-visible{outline-color:#f6ba16!important}'+
+ '.hstu-arcade-copy h2 span,.arcade-top span{color:#f4c542!important}'+
+ '.hstu-arcade-play{background:#f4c542!important;color:#102117!important}';
+ document.head.appendChild(s);
+}
+
 function cleanPublicTerms(){
  const g=document.getElementById('view-gallery');
  if(g){
@@ -1000,9 +1019,9 @@ function cleanPublicTerms(){
 }
 function init(){
  document.documentElement.dataset.hstuRefinements930='ready';
- addStyles(); addFinalHotfixStyles(); addPdfLibraryStyles930(); fixHero(); fixUnveilingHope930(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); installNavigationDelegation(); cleanTechnicalCopy930(); expandResourceCollections930(); relabelManualUi930(); enhancePdfLibrary930();
+ addStyles(); addFinalHotfixStyles(); addPdfLibraryStyles930(); restoreLegacyYellow930(); fixHero(); fixUnveilingHope930(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); installNavigationDelegation(); cleanTechnicalCopy930(); expandResourceCollections930(); relabelManualUi930(); enhancePdfLibrary930();
  fixResearchAgenda(); fixCapacity(); splitResources(); fixGallery(); installResourceObserver(); cleanPublicTerms();
- setTimeout(()=>{fixHero(); fixUnveilingHope930(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); splitResources(); scrubCtech(); fixGallery(); cleanTechnicalCopy930(); expandResourceCollections930(); relabelManualUi930(); if(pdfManifest930) decoratePdfLinks930(pdfManifest930); setMobileMenuOpen(false);},450);
+ setTimeout(()=>{restoreLegacyYellow930(); fixHero(); fixUnveilingHope930(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); splitResources(); scrubCtech(); fixGallery(); cleanTechnicalCopy930(); expandResourceCollections930(); relabelManualUi930(); if(pdfManifest930) decoratePdfLinks930(pdfManifest930); setMobileMenuOpen(false);},450);
  window.addEventListener('pageshow',()=>{if(window.innerWidth<=1000) setMobileMenuOpen(false);},{once:true});
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(init,0),{once:true}); else setTimeout(init,0);
