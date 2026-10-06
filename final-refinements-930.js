@@ -775,6 +775,23 @@ function addFinalHotfixStyles(){
  document.head.appendChild(s);
 }
 
+
+function addRestoredYellowAccents930(){
+ if(document.getElementById('hstu-restored-yellow-930')) return;
+ const s=document.createElement('style');
+ s.id='hstu-restored-yellow-930';
+ s.textContent=
+ /* Restore ONLY the original yellow/gold accents documented in the pre-refresh UI. */
+ '.topline{background:linear-gradient(90deg,var(--green) 0 38%,var(--gold) 38% 62%,var(--red) 62%)!important}'+
+ '.proposal-banner{background:linear-gradient(100deg,#f6ba16 0%,#ffd95a 45%,#f6ba16 100%)!important;color:#161307!important;text-shadow:none!important}'+
+ '.proposal-banner strong,.proposal-banner b,.proposal-banner a{color:#161307!important;text-shadow:none!important}'+
+ '.hst-gallery-cta-icon{background:linear-gradient(145deg,#0a8f4d,#f6ba16)!important}'+
+ '.hst-gallery-cta-icon svg{color:#fff!important}'+
+ '.hstu-arcade-play{background:#f4c542!important;color:#102117!important;border-color:transparent!important;text-shadow:none!important;box-shadow:0 10px 28px rgba(244,197,66,.18)!important}'+
+ '.hstu-arcade-play:hover{background:#f4c542!important;color:#102117!important}';
+ document.head.appendChild(s);
+}
+
 function addPdfLibraryStyles930(){
  if(document.getElementById('hstu-pdf-library-styles-930')) return;
  const s=document.createElement('style');
