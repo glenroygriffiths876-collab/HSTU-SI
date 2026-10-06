@@ -780,6 +780,11 @@ function addPdfLibraryStyles930(){
  const s=document.createElement('style');
  s.id='hstu-pdf-library-styles-930';
  s.textContent=
+ '.hstu-unveiling-hope-930{background:linear-gradient(135deg,#ffffff 0%,#f7fbf5 60%,#fff7f7 100%)!important;border:1px solid #d8e7d7!important;box-shadow:0 16px 38px rgba(20,55,27,.09)!important}'+
+ '.hstu-unveiling-hope-930,.hstu-unveiling-hope-930 *{opacity:1!important}'+
+ '.hstu-unveiling-hope-title-930{color:#17271b!important;-webkit-text-fill-color:#17271b!important;text-shadow:none!important}'+
+ '.hstu-unveiling-hope-copy-930{color:#405447!important;-webkit-text-fill-color:#405447!important;opacity:1!important;filter:none!important}'+
+ '.hstu-unveiling-hope-kicker-930{color:#139447!important;-webkit-text-fill-color:#139447!important;font-weight:900!important;letter-spacing:.12em!important}'+
  '.hstu-pdf-card-930{overflow:hidden!important}'+
  '.hstu-pdf-preview-930{display:block;width:100%;margin:0 0 14px;text-decoration:none!important}'+
  '.hstu-pdf-preview-930 img,.external-ref .hstu-pdf-preview-image-930{display:block;width:100%;height:240px;object-fit:contain;background:#eef3ed;border:1px solid #dce6da;border-radius:14px;box-shadow:0 10px 24px rgba(18,42,24,.09)}'+
@@ -955,6 +960,7 @@ async function enhancePdfLibrary930(){
        clearTimeout(pdfDecorateTimer930);
        pdfDecorateTimer930=setTimeout(()=>{
          cleanTechnicalCopy930();
+         fixUnveilingHope930();
          expandResourceCollections930();
          relabelManualUi930();
          decoratePdfLinks930(pdfManifest930);
@@ -965,6 +971,27 @@ async function enhancePdfLibrary930(){
  }catch(_){}
 }
 
+
+function fixUnveilingHope930(){
+ const headings=[...document.querySelectorAll('h1,h2,h3,h4')];
+ const heading=headings.find(h=>/^Unveiling Hope$/i.test(tidy(h.textContent)));
+ if(!heading) return;
+ let card=heading.parentElement;
+ while(card && card!==document.body){
+   const t=tidy(card.textContent);
+   if(/RESEARCH PUBLICATION/i.test(t) && /Recently added published research/i.test(t) && t.length<1800) break;
+   card=card.parentElement;
+ }
+ if(!card||card===document.body) card=heading.parentElement;
+ card.classList.add('hstu-unveiling-hope-930');
+ heading.classList.add('hstu-unveiling-hope-title-930');
+ [...card.querySelectorAll('p,span,div')].forEach(el=>{
+   const t=tidy(el.textContent);
+   if(/Recently added published research/i.test(t) && t.length<1200) el.classList.add('hstu-unveiling-hope-copy-930');
+   if(/^RESEARCH PUBLICATION$/i.test(t)) el.classList.add('hstu-unveiling-hope-kicker-930');
+ });
+}
+
 function cleanPublicTerms(){
  const g=document.getElementById('view-gallery');
  if(g){
@@ -973,9 +1000,9 @@ function cleanPublicTerms(){
 }
 function init(){
  document.documentElement.dataset.hstuRefinements930='ready';
- addStyles(); addFinalHotfixStyles(); addPdfLibraryStyles930(); fixHero(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); installNavigationDelegation(); cleanTechnicalCopy930(); expandResourceCollections930(); relabelManualUi930(); enhancePdfLibrary930();
+ addStyles(); addFinalHotfixStyles(); addPdfLibraryStyles930(); fixHero(); fixUnveilingHope930(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); installNavigationDelegation(); cleanTechnicalCopy930(); expandResourceCollections930(); relabelManualUi930(); enhancePdfLibrary930();
  fixResearchAgenda(); fixCapacity(); splitResources(); fixGallery(); installResourceObserver(); cleanPublicTerms();
- setTimeout(()=>{fixHero(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); splitResources(); scrubCtech(); fixGallery(); cleanTechnicalCopy930(); expandResourceCollections930(); relabelManualUi930(); if(pdfManifest930) decoratePdfLinks930(pdfManifest930); setMobileMenuOpen(false);},450);
+ setTimeout(()=>{fixHero(); fixUnveilingHope930(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); splitResources(); scrubCtech(); fixGallery(); cleanTechnicalCopy930(); expandResourceCollections930(); relabelManualUi930(); if(pdfManifest930) decoratePdfLinks930(pdfManifest930); setMobileMenuOpen(false);},450);
  window.addEventListener('pageshow',()=>{if(window.innerWidth<=1000) setMobileMenuOpen(false);},{once:true});
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(init,0),{once:true}); else setTimeout(init,0);
