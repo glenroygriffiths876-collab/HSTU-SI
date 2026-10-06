@@ -1,0 +1,69 @@
+name: Live yellow accent QA
+on:
+  push:
+    paths:
+      - '.github/workflows/live-yellow-qa.yml'
+      - 'final-refinements-930.js'
+      - 'index.html'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.57.0 >/dev/null 2>&1
+          npx playwright install chromium >/dev/null
+      - name: Verify restored yellow accents live
+        run: |
+          cat > yellow-qa.mjs <<'JS'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const BASE='https://glenroygriffiths876-collab.github.io/HSTU-SI/';
+          const ok=(v,m)=>{if(!v) throw new Error(m);};
+          for (const viewport of [{width:1440,height:900},{width:390,height:844}]){
+            let page,context,last='';
+            for(let attempt=1;attempt<=18;attempt++){
+              context=await browser.newContext({viewport,serviceWorkers:'block'});
+              page=await context.newPage();
+              try{
+                await page.goto(BASE+'?yellowqa='+Date.now()+'#home',{waitUntil:'networkidle',timeout:60000});
+                await page.waitForTimeout(900);
+                const marker=await page.locator('html').getAttribute('data-hstu-refinements930');
+                const styleCount=await page.locator('#hstu-legacy-yellow-930').count();
+                if(marker==='ready' && styleCount===1) break;
+                last='marker='+marker+' style='+styleCount;
+              }catch(e){last=String(e);}
+              await context.close(); page=null;
+              if(attempt<18) await new Promise(r=>setTimeout(r,10000));
+            }
+            ok(page,'latest yellow deployment not visible: '+last);
+            const gold=await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--gold').trim());
+            ok(gold.toLowerCase()==='#f2b714','gold variable '+gold);
+            const top=page.locator('.topline').first();
+            ok(await top.count()===1,'topline missing');
+            const bg=await top.evaluate(el=>getComputedStyle(el).backgroundImage);
+            ok(/242,\s*183,\s*20/.test(bg) || /f2b714/i.test(bg),'topline yellow missing: '+bg);
+            const dims=await page.evaluate(()=>({doc:document.documentElement.scrollWidth,body:document.body.scrollWidth,win:innerWidth}));
+            ok(dims.doc<=dims.win+3 && dims.body<=dims.win+3,'overflow '+JSON.stringify(dims));
+            const galleryIcon=page.locator('.hst-gallery-cta-icon').first();
+            if(await galleryIcon.count()){
+              const gbg=await galleryIcon.evaluate(el=>getComputedStyle(el).backgroundImage);
+              ok(/246,\s*186,\s*22/.test(gbg) || /f6ba16/i.test(gbg),'gallery yellow missing: '+gbg);
+            }
+            const fab=page.locator('.clinical-fab').first();
+            if(await fab.count()){
+              const border=await fab.evaluate(el=>getComputedStyle(el,'::before').borderTopColor);
+              ok(/246,\s*186,\s*22/.test(border),'Gia yellow pulse missing: '+border);
+            }
+            console.log('YELLOW QA PASS',viewport.width,bg);
+            await context.close();
+          }
+          await browser.close();
+          JS
+          node yellow-qa.mjs
