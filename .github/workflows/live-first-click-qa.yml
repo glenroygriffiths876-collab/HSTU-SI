@@ -42,7 +42,8 @@ jobs:
                 const swResp=await page.request.get(BASE+'service-worker.js?entryqa='+Date.now());
                 const swText=swResp.ok()?await swResp.text():'';
                 const htmlText=await resp?.text().catch(()=> '');
-                const latest=swText.includes('v20261011-first-click-v1') && htmlText.includes('stabilizeEntry930');
+                const optimized=htmlText.includes('media/embedded-assets/') && htmlText.length<2600000;
+                const latest=swText.includes('v20261011-first-click-v1') && htmlText.includes('stabilizeEntry930') && optimized;
                 if(resp?.ok() && ready==='ready' && body.includes('About the Research Data Repository') && latest){
                   await context.close(); return;
                 }
@@ -72,6 +73,32 @@ jobs:
               console.log('FRESH FIRST OPEN PASS',viewport.width,i,Date.now()-t0+'ms');
               await context.close();
             }
+          }
+
+          // 1b) Cold phone entry over a deliberately constrained mobile connection.
+          // This models the real failure mode more closely than a fast CI connection.
+          {
+            const context=await browser.newContext({serviceWorkers:'block',viewport:{width:390,height:844}});
+            const page=await context.newPage();
+            const client=await context.newCDPSession(page);
+            await client.send('Network.enable');
+            await client.send('Network.setCacheDisabled',{cacheDisabled:true});
+            await client.send('Network.emulateNetworkConditions',{
+              offline:false,
+              latency:180,
+              downloadThroughput:125000,
+              uploadThroughput:62500,
+              connectionType:'cellular3g'
+            });
+            const t0=Date.now();
+            const resp=await page.goto(BASE+'?slowcold='+Date.now()+'#home',{waitUntil:'domcontentloaded',timeout:20000});
+            await page.getByText('About the Research Data Repository',{exact:true}).waitFor({state:'visible',timeout:5000});
+            const elapsed=Date.now()-t0;
+            ok(resp?.ok(),'throttled cold first navigation HTTP failure');
+            ok(await page.locator('#view-home.active').count()===1,'throttled cold first navigation did not show Home');
+            ok(elapsed<18000,'throttled cold first open took too long: '+elapsed+'ms');
+            console.log('THROTTLED COLD FIRST OPEN PASS',elapsed+'ms');
+            await context.close();
           }
 
           // 2) Direct hash entry must land correctly on the FIRST navigation.
