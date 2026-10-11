@@ -32,6 +32,11 @@ jobs:
               "chars":len(body),
               "sig":re.sub(r'\s+',' ',body.strip())[:180]
             }))
+          for m in re.finditer(r'<script([^>]*)>(.*?)</script>',s,re.I|re.S):
+            body=m.group(2)
+            if len(body)>1000000:
+              print("LARGE_SCRIPT_HEAD",re.sub(r'\s+',' ',body[:5000]))
+              print("LARGE_SCRIPT_TAIL",re.sub(r'\s+',' ',body[-7000:]))
           vh=re.search(r'<[^>]+id=["\']view-home["\'][^>]*>',s,re.I)
           print("VIEW_HOME_TAG",vh.group(0) if vh else "NOT FOUND")
           print(json.dumps({
