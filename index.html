@@ -2023,14 +2023,21 @@ function scoreRecord(r,q){
  else if(nt.includes(nq))score+=500;
  else if(nq.length>=3&&nt.startsWith(nq))score+=420;
  score+=fieldScore(qt,r.title,2.8);
+ score+=fieldScore(qt,r.authors,4.6);
  score+=fieldScore(qt,r.keywords,1.55);
  score+=fieldScore(qt,r.description,1.15);
  score+=fieldScore(qt,(r.category||'')+' '+(r.section||''),1.35);
+ const na=norm(r.authors);
+ if(na){
+   if(na===nq)score+=760;
+   else if(na.includes(nq))score+=430;
+   else if(words(r.authors).some(a=>a===nq))score+=360;
+ }
  // Require at least one meaningful match to the unexpanded user tokens.
  const original=words(q);
  let hard=0;
  for(const q0 of original){
-   const corpus=words([r.title,r.keywords,r.description,r.category,r.section].join(' '));
+   const corpus=words([r.title,r.authors,r.keywords,r.description,r.category,r.section].join(' '));
    let best=0;for(const t of corpus)best=Math.max(best,tokenScore(q0,t));
    if(best>=40)hard++;
  }
@@ -2057,12 +2064,14 @@ function add(rec,map){
  if(rec.title.length<2)return;
  rec.view=rec.view||'home';
  rec.section=rec.section||VIEW_NAMES[rec.view]||rec.view;
- rec.keywords=[rec.keywords,SECTION_TERMS[rec.view]||'',rec.category||'',rec.section||''].filter(Boolean).join(' ');
+ rec.authors=String(rec.authors||rec.author||'').replace(/\s+/g,' ').trim();
+ rec.keywords=[rec.keywords,rec.authors,SECTION_TERMS[rec.view]||'',rec.category||'',rec.section||''].filter(Boolean).join(' ');
  const key=[norm(rec.title),rec.href||'',rec.view].join('|');
  const prior=map.get(key);
  if(prior){
   prior.keywords+=' '+rec.keywords;
   if(!prior.description&&rec.description)prior.description=rec.description;
+  if(!prior.authors&&rec.authors)prior.authors=rec.authors;
   return;
  }
  map.set(key,rec);
@@ -2084,7 +2093,8 @@ function domRecords(map){
    if(!title)continue;
    const desc=(el.textContent||'').replace(/\s+/g,' ').trim().slice(0,700);
    const id='gia-target-'+(++seq);if(!el.id)el.dataset.giaTarget=id;
-   add({title,description:desc,href:link?.href||'',view,section:VIEW_NAMES[view],target:el.id||id,category:'Hub content'},map);
+   const authors=el.getAttribute('data-authors')||el.getAttribute('data-author')||'';
+   add({title,authors,description:desc,href:link?.href||'',view,section:VIEW_NAMES[view],target:el.id||id,category:'Hub content'},map);
  }
  // Index meaningful links that are not already represented by a card.
  for(const a of document.querySelectorAll('main a[href],footer a[href]')){
@@ -2109,10 +2119,11 @@ function flattenRepository(obj,map,path=[]){
  if(!obj||typeof obj!=='object')return;
  if(obj.title){
    const group=obj.group||path[path.length-1]||obj.type||'Resource';
+   const authors=obj.authors||obj.author||obj.creator||obj.preparedBy||obj.prepared_by||obj.investigator||'';
    add({
-    title:obj.title,href:obj.url||'',view:viewForGroup(group),section:group,
-    category:obj.type||group,description:[obj.year,obj.group,obj.type].filter(Boolean).join(' · '),
-    keywords:[obj.group,obj.type,obj.year].filter(Boolean).join(' ')
+    title:obj.title,authors,href:obj.url||'',view:viewForGroup(group),section:group,
+    category:obj.type||group,description:[authors,obj.year,obj.group,obj.type].filter(Boolean).join(' · '),
+    keywords:[authors,obj.group,obj.type,obj.year].filter(Boolean).join(' ')
    },map);
  }
  for(const [k,v] of Object.entries(obj))if(k!=='title'&&k!=='url')flattenRepository(v,map,[...path,k]);
@@ -2128,7 +2139,7 @@ async function buildIndex(){
   ]);
   for(const r of research.records||[]){
     add({
-      title:r.title||r.citation||'Research study',href:r.url||'',view:'research',section:'Research',
+      title:r.title||r.citation||'Research study',authors:r.authors||'',href:r.url||'',view:'research',section:'Research',
       category:(r.categories||[]).join(' · ')||'Research Literature',
       description:[r.authors,r.year,r.geography,r.citation].filter(Boolean).join(' · '),
       keywords:[r.authors,r.year,r.geography,(r.categories||[]).join(' '),r.citation].filter(Boolean).join(' ')
@@ -2174,7 +2185,7 @@ async function search(q){
  const ranked=records.map(r=>({r,s:scoreRecord(r,q)})).filter(x=>x.s>=45).sort((a,b)=>b.s-a.s||a.r.title.localeCompare(b.r.title));
  const top=ranked.slice(0,30);
  if(!top.length){
-   node.innerHTML='<div class="gia-hub-empty"><h3>No strong match yet</h3><p>Keep typing, try a shorter part of the word, or search by topic, author, report, service, parish or programme. Gia accepts misspellings and partial words.</p><div class="gia-hub-hint">Examples: “syph”, “adolesent HIV”, “DHIS”, “Hanov”, “viral lod”, “TB”.</div></div>';
+   node.innerHTML='<div class="gia-hub-empty"><h3>No strong match yet</h3><p>Keep typing, try a shorter part of the word, or search by topic, author, report, service, parish or programme. Gia accepts misspellings and partial words.</p><div class="gia-hub-hint">Examples: “syphilis”, “adolescent HIV”, “DHIS2”, “Hanover”, “viral load”, “TB”.</div></div>';
    return;
  }
  const userNorm=norm(q);
@@ -2182,8 +2193,9 @@ async function search(q){
  const summary='<div class="gia-hub-summary"><div><b>'+top.length+(ranked.length>top.length?'+':'')+' matches for “'+esc(q)+'”</b><span>'+(exactish?'Results from across the HSTU Resource Centre.':'Gia used partial/fuzzy matching, so close spellings are included.')+'</span></div></div>';
  node.innerHTML=summary+top.map(({r,s})=>{
    const desc=esc((r.description||'').replace(/\s+/g,' ').slice(0,360));
+   const authorLine=r.authors?'<p class="gia-hub-authors"><b>Author'+(String(r.authors).includes(',')?'s':'')+':</b> '+esc(r.authors)+'</p>':'';
    const openLabel=r.href?'Open resource':'Go to '+esc(r.section||VIEW_NAMES[r.view]||'section');
-   return '<article class="gia-hub-result"><div class="gia-hub-result-top"><span class="gia-hub-badge">'+esc(r.category||'Resource')+'</span><span class="gia-hub-badge secondary">'+esc(r.section||VIEW_NAMES[r.view]||'HSTU')+'</span></div><h3>'+esc(r.title)+'</h3>'+(desc?'<p>'+desc+'</p>':'')+'<div class="gia-hub-actions"><button type="button" data-gia-open="1" data-view="'+esc(r.view)+'" data-href="'+esc(r.href||'')+'" data-target="'+esc(r.target||'')+'">'+openLabel+'</button></div></article>';
+   return '<article class="gia-hub-result"><div class="gia-hub-result-top"><span class="gia-hub-badge">'+esc(r.category||'Resource')+'</span><span class="gia-hub-badge secondary">'+esc(r.section||VIEW_NAMES[r.view]||'HSTU')+'</span></div><h3>'+esc(r.title)+'</h3>'+authorLine+(desc?'<p>'+desc+'</p>':'')+'<div class="gia-hub-actions"><button type="button" data-gia-open="1" data-view="'+esc(r.view)+'" data-href="'+esc(r.href||'')+'" data-target="'+esc(r.target||'')+'">'+openLabel+'</button></div></article>';
  }).join('');
 }
 function inputNode(){return document.querySelector('.clinical-search input');}
@@ -2193,7 +2205,7 @@ function runFromInput(){const i=inputNode();search(i?.value||'');}
 document.addEventListener('DOMContentLoaded',()=>{
  // Prime the comprehensive index shortly after initial render.
  setTimeout(()=>buildIndex(),350);
- const i=inputNode();if(i){i.placeholder='Try “syphlis”, “DHIS”, “adolesent HIV”, “Hanov” or any partial title…';}
+ const i=inputNode();if(i){i.placeholder='Try “syphilis”, “DHIS2”, “adolescent HIV”, “Hanover” or any title…';}
 }, {once:true});
 
 // Capture search before older Gia handlers can apply narrower matching.
