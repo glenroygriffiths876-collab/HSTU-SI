@@ -1,0 +1,36 @@
+name: First click diagnostic
+on:
+  push:
+    paths:
+      - '.github/workflows/first-click-diagnostic.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect first-load and click routing
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path("index.html").read_text(encoding="utf-8",errors="ignore")
+          clean=re.sub(r'data:(?:image|application)/[^;]+;base64,[A-Za-z0-9+/=]+','[DATA_URI_REMOVED]',s)
+          pats=[
+            "navigator.serviceWorker","serviceWorker.register","function setView","window.setView",
+            "hashchange","location.hash","DOMContentLoaded","addEventListener('load'","addEventListener(\"load\"",
+            "preventDefault","stopImmediatePropagation","pointerup","touchstart"
+          ]
+          for pat in pats:
+            print("\n====",pat,"====")
+            start=0; hits=0
+            while True:
+              i=clean.lower().find(pat.lower(),start)
+              if i<0 or hits>=6: break
+              print(clean[max(0,i-1600):i+4500])
+              print("\n---")
+              start=i+len(pat); hits+=1
+            if hits==0: print("NOT FOUND")
+          PY
