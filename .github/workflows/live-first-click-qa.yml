@@ -42,7 +42,7 @@ jobs:
                 const swResp=await page.request.get(BASE+'service-worker.js?entryqa='+Date.now());
                 const swText=swResp.ok()?await swResp.text():'';
                 const htmlText=await resp?.text().catch(()=> '');
-                const optimized=htmlText.includes('media/embedded-assets/') && htmlText.length<2600000;
+                const optimized=htmlText.includes('media/embedded-assets/') && htmlText.includes('hstu-clinical-reference-loader') && htmlText.length<500000;
                 const latest=swText.includes('v20261011-first-click-v2') && htmlText.includes('stabilizeEntry930') && optimized;
                 if(resp?.ok() && ready==='ready' && body.includes('About the Research Data Repository') && latest){
                   await context.close(); return;
