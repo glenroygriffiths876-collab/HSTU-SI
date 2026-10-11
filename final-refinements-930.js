@@ -1019,12 +1019,35 @@ function cleanPublicTerms(){
    [...g.querySelectorAll('h1,h2,h3,.eyebrow')].forEach(el=>{if(/campaign gallery/i.test(tidy(el.textContent))) el.textContent=tidy(el.textContent).replace(/Campaign Gallery/ig,'Gallery');});
  }
 }
+function stabilizeEntry930(){
+ if(!('serviceWorker' in navigator) || location.protocol==='file:') return;
+ navigator.serviceWorker
+   .register('./service-worker.js',{updateViaCache:'none'})
+   .then(reg=>reg.update().catch(()=>{}))
+   .catch(()=>{});
+}
+function syncEntryRoute930(){
+ const hash=(location.hash||'').replace(/^#/,'').trim();
+ const view=hash && document.getElementById('view-'+hash) ? hash : null;
+ if(!view) return;
+ const panel=document.getElementById('view-'+view);
+ if(panel?.classList.contains('active')) return;
+ try{
+   if(typeof window.setView==='function') window.setView(view,{push:false});
+   else{
+     document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v===panel));
+     document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+   }
+ }catch(_){}
+}
 function init(){
  document.documentElement.dataset.hstuRefinements930='ready';
+ stabilizeEntry930();
  addStyles(); addFinalHotfixStyles(); addPdfLibraryStyles930(); restoreLegacyYellow930(); fixHero(); fixUnveilingHope930(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); installNavigationDelegation(); cleanTechnicalCopy930(); expandResourceCollections930(); relabelManualUi930(); enhancePdfLibrary930();
  fixResearchAgenda(); fixCapacity(); splitResources(); fixGallery(); installResourceObserver(); cleanPublicTerms();
  setTimeout(()=>{restoreLegacyYellow930(); fixHero(); fixUnveilingHope930(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); splitResources(); scrubCtech(); fixGallery(); cleanTechnicalCopy930(); expandResourceCollections930(); relabelManualUi930(); if(pdfManifest930) decoratePdfLinks930(pdfManifest930); setMobileMenuOpen(false);},450);
- window.addEventListener('pageshow',()=>{if(window.innerWidth<=1000) setMobileMenuOpen(false);},{once:true});
+ window.addEventListener('pageshow',()=>{syncEntryRoute930(); if(window.innerWidth<=1000) setMobileMenuOpen(false);});
+ setTimeout(syncEntryRoute930,80);
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(init,0),{once:true}); else setTimeout(init,0);
 })();
