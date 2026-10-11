@@ -20,6 +20,20 @@ jobs:
           s=Path("index.html").read_text(encoding="utf-8",errors="ignore")
           scripts=re.findall(r'<script([^>]*)>(.*?)</script>',s,re.I|re.S)
           styles=re.findall(r'<style([^>]*)>(.*?)</style>',s,re.I|re.S)
+          print("\nSCRIPT MAP")
+          for m in re.finditer(r'<script([^>]*)>(.*?)</script>',s,re.I|re.S):
+            attrs,body=m.group(1),m.group(2)
+            mid=re.search(r'id=["\']([^"\']+)["\']',attrs,re.I)
+            src=re.search(r'src=["\']([^"\']+)["\']',attrs,re.I)
+            print(json.dumps({
+              "pos":m.start(),
+              "id":mid.group(1) if mid else None,
+              "src":src.group(1) if src else None,
+              "chars":len(body),
+              "sig":re.sub(r'\s+',' ',body.strip())[:180]
+            }))
+          vh=re.search(r'<[^>]+id=["\']view-home["\'][^>]*>',s,re.I)
+          print("VIEW_HOME_TAG",vh.group(0) if vh else "NOT FOUND")
           print(json.dumps({
             "bytes":len(s.encode("utf-8")),
             "body_pos":s.lower().find("<body"),
