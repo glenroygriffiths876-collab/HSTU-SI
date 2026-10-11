@@ -1099,6 +1099,93 @@ button[data-service-mode].active:hover,
 </style>
 </head>
 <body>
+<!-- HSTU_FIRST_ENTRY_BOOTSTRAP_START -->
+<style id="hstu-entry-bootstrap-style">
+#hstu-entry-bootstrap{
+  position:fixed;inset:0;z-index:2147483646;
+  display:flex;align-items:center;justify-content:center;
+  background:#f7faf7;color:#17311f;
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  transition:opacity .18s ease,visibility .18s ease;
+}
+#hstu-entry-bootstrap.hstu-entry-ready{opacity:0;visibility:hidden;pointer-events:none}
+#hstu-entry-bootstrap .hstu-entry-card{
+  width:min(88vw,380px);padding:28px 24px;text-align:center;
+  background:#fff;border:1px solid #dfe8df;border-radius:24px;
+  box-shadow:0 18px 55px rgba(19,54,28,.12)
+}
+#hstu-entry-bootstrap .hstu-entry-mark{
+  width:54px;height:54px;border-radius:50%;margin:0 auto 14px;
+  border:5px solid #dcebdc;border-top-color:#169447;border-right-color:#f2b714;
+  animation:hstuEntrySpin .85s linear infinite
+}
+#hstu-entry-bootstrap b{display:block;font-size:19px;line-height:1.15}
+#hstu-entry-bootstrap span{display:block;margin-top:8px;color:#66736a;font-size:14px}
+#hstu-entry-bootstrap button{
+  display:none;margin:16px auto 0;border:0;border-radius:12px;padding:10px 15px;
+  background:#169447;color:#fff;font-weight:850;font-size:14px
+}
+#hstu-entry-bootstrap.hstu-entry-slow button{display:inline-flex}
+@keyframes hstuEntrySpin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){#hstu-entry-bootstrap .hstu-entry-mark{animation:none}}
+</style>
+<div id="hstu-entry-bootstrap" role="status" aria-live="polite">
+  <div class="hstu-entry-card">
+    <div class="hstu-entry-mark" aria-hidden="true"></div>
+    <b>Opening the Research Repository</b>
+    <span id="hstu-entry-bootstrap-copy">Loading the latest repository…</span>
+    <button id="hstu-entry-bootstrap-retry" type="button">Retry now</button>
+  </div>
+</div>
+<script id="hstu-entry-bootstrap-script">
+(function(){
+  var root=document.getElementById('hstu-entry-bootstrap');
+  var copy=document.getElementById('hstu-entry-bootstrap-copy');
+  var retry=document.getElementById('hstu-entry-bootstrap-retry');
+  var retryKey='hstu-entry-auto-retry-v2';
+
+  function clearRetryFlag(){try{sessionStorage.removeItem(retryKey)}catch(_){}}
+  function finish(){
+    clearTimeout(window.__hstuEntryWatchdog);
+    clearRetryFlag();
+    if(!root)return;
+    root.classList.add('hstu-entry-ready');
+    setTimeout(function(){root&&root.remove()},240);
+  }
+  function retryOnce(){
+    try{
+      if(sessionStorage.getItem(retryKey)==='1') return false;
+      sessionStorage.setItem(retryKey,'1');
+    }catch(_){}
+    var u=new URL(location.href);
+    u.searchParams.set('_entry_retry',String(Date.now()));
+    location.replace(u.href);
+    return true;
+  }
+
+  window.__hstuEntryReady=finish;
+  retry&&retry.addEventListener('click',function(){
+    try{sessionStorage.removeItem(retryKey)}catch(_){}
+    location.reload();
+  });
+
+  // If the application is already ready (bfcache / instant cache), remove this immediately.
+  if(document.documentElement.dataset.hstuRefinements930==='ready'){
+    finish();return;
+  }
+
+  // Self-heal one genuinely stalled entry without requiring the user to tap the link twice.
+  window.__hstuEntryWatchdog=setTimeout(function(){
+    if(document.documentElement.dataset.hstuRefinements930==='ready'){finish();return}
+    if(retryOnce()) return;
+    if(root) root.classList.add('hstu-entry-slow');
+    if(copy) copy.textContent='The connection is taking longer than expected.';
+  },9000);
+})();
+</script>
+<!-- HSTU_FIRST_ENTRY_BOOTSTRAP_END -->
+
+
 <div class="topline"></div>
 <header>
 <div class="navbar">
