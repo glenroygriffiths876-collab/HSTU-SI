@@ -11,6 +11,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+# Cold-load regression checkpoint
 jobs:
   live-pdf-qa:
     runs-on: ubuntu-latest
