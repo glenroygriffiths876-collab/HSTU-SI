@@ -1,0 +1,123 @@
+name: Extract clinical bundle from entry
+on:
+  push:
+    paths:
+      - '.github/workflows/extract-clinical-bundle.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Move heavy clinical bundle out of initial HTML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, hashlib, json
+
+          p=Path("index.html")
+          s=p.read_text(encoding="utf-8",errors="strict")
+          before=len(s.encode("utf-8"))
+
+          pat=re.compile(r'<script([^>]*)>(.*?)</script>',re.I|re.S)
+          matches=list(pat.finditer(s))
+          target=None
+          for m in matches:
+            body=m.group(2)
+            if "CLINICAL_REFERENCE_DATA" in body and len(body)>1000000:
+              target=m
+              break
+          if target is None:
+            raise SystemExit("Large clinical reference script not found")
+
+          body=target.group(2).strip()+"\n"
+          outdir=Path("scripts")
+          outdir.mkdir(parents=True,exist_ok=True)
+          bundle=outdir/"clinical-reference-bundle.js"
+          bundle.write_text(body,encoding="utf-8")
+
+          loader=r'''<script id="hstu-clinical-reference-loader">
+          (()=>{
+            'use strict';
+            let loading=false,ready=false,pendingTarget=null;
+            const load=()=>{
+              if(ready||loading)return;
+              loading=true;
+              const s=document.createElement('script');
+              s.src='./scripts/clinical-reference-bundle.js';
+              s.async=true;
+              s.dataset.hstuClinicalBundle='1';
+              s.onload=()=>{
+                ready=true;loading=false;
+                document.documentElement.dataset.hstuClinicalReady='1';
+                document.dispatchEvent(new CustomEvent('hstu:clinical-ready'));
+                if(pendingTarget&&document.body.contains(pendingTarget)){
+                  const t=pendingTarget;pendingTarget=null;
+                  setTimeout(()=>t.click(),0);
+                }
+              };
+              s.onerror=()=>{loading=false};
+              document.body.appendChild(s);
+            };
+            document.addEventListener('click',e=>{
+              const t=e.target?.closest?.('.clinical-fab,#clinicalFab,[data-clinical-open]');
+              if(!t||ready)return;
+              e.preventDefault();
+              e.stopImmediatePropagation();
+              pendingTarget=t;
+              load();
+            },true);
+            if(document.readyState==='loading'){
+              document.addEventListener('DOMContentLoaded',()=>setTimeout(load,0),{once:true});
+            }else{
+              setTimeout(load,0);
+            }
+            window.hstuLoadClinicalBundle=load;
+          })();
+          </script>'''
+
+          s2=s[:target.start()]+loader+s[target.end():]
+          p.write_text(s2,encoding="utf-8")
+          after=p.stat().st_size
+
+          report={
+            "before_bytes":before,
+            "after_bytes":after,
+            "saved_bytes":before-after,
+            "clinical_bundle_bytes":bundle.stat().st_size,
+            "loader_chars":len(loader),
+          }
+          Path("internal-audits/CLINICAL_BUNDLE_EXTRACTION_2026-10-11.json").write_text(json.dumps(report,indent=2),encoding="utf-8")
+          print(json.dumps(report,indent=2))
+
+          assert after < 650000, report
+          assert bundle.stat().st_size > 1500000
+          assert "CLINICAL_REFERENCE_DATA" not in s2
+          assert "hstu-clinical-reference-loader" in s2
+          assert "hstu-final-refinements-930" in s2
+          assert "About the Research Data Repository" in s2
+          PY
+      - name: Verify source references
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path("index.html").read_text(encoding="utf-8")
+          b=Path("scripts/clinical-reference-bundle.js").read_text(encoding="utf-8")
+          assert "./scripts/clinical-reference-bundle.js" in s
+          assert "CLINICAL_REFERENCE_DATA" in b
+          assert len(b)>1500000
+          print("ENTRY_BYTES",Path("index.html").stat().st_size)
+          print("CLINICAL_BUNDLE_BYTES",Path("scripts/clinical-reference-bundle.js").stat().st_size)
+          PY
+      - name: Commit cold-load optimization
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html scripts/clinical-reference-bundle.js internal-audits/CLINICAL_BUNDLE_EXTRACTION_2026-10-11.json
+          git commit -m "Move heavy clinical data off the initial page load"
+          git pull --rebase origin main
+          git push origin main
