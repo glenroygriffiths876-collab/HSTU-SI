@@ -6,6 +6,7 @@ on:
       - 'index.html'
       - 'service-worker.js'
       - 'research-catalogue.json'
+      - 'repository-content.json'
       - 'scripts/clinical-reference-bundle.js'
   workflow_dispatch:
 permissions:
@@ -76,6 +77,9 @@ jobs:
             await expectAuthor('Nascimento','Sources of information on HIV/AIDS','Nascimento Gomes Brito');
             await expectAuthor('Brito','Sources of information on HIV/AIDS','Nascimento Gomes Brito');
             await expectAuthor('Torres','Drug-Resistant Tuberculosis in Prisons','Torres A');
+            await expectAuthor('Wilson','Pharmacology and Pharmacotherapy of ARVs 2025','Haneef Wilson');
+            await expectAuthor('Wilson','Preped and Ready to Go','Haneef Wilson');
+            await expectAuthor('Aldean','HIV Testing Presentation','Aldean A. Williams');
 
             const dims=await page.evaluate(()=>({doc:document.documentElement.scrollWidth,body:document.body.scrollWidth,win:innerWidth}));
             ok(dims.doc<=dims.win+3 && dims.body<=dims.win+3,label+': horizontal overflow '+JSON.stringify(dims));
