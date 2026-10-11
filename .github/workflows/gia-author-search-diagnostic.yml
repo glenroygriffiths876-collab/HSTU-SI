@@ -1,0 +1,54 @@
+name: Gia author search diagnostic
+on:
+  push:
+    paths:
+      - '.github/workflows/gia-author-search-diagnostic.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect Gia search internals and author metadata
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, json
+          p=Path("scripts/clinical-reference-bundle.js")
+          s=p.read_text(encoding="utf-8",errors="ignore")
+          print("BUNDLE_LEN",len(s))
+          terms=[
+            "clinicalSearch","clinicalSearchBtn","guide-source-card","query-correction",
+            "source-results-head","render","search","fuzzy","normaliz","levenshtein",
+            "repository-content","research-catalogue","fetch("
+          ]
+          for term in terms:
+            print("\n==== TERM",term,"====")
+            start=0; hits=0
+            while True:
+              i=s.lower().find(term.lower(),start)
+              if i<0 or hits>=8: break
+              print("\n-- hit",hits+1,"@",i,"--")
+              print(s[max(0,i-1800):i+5200])
+              start=i+len(term); hits+=1
+            if hits==0: print("NOT FOUND")
+
+          rc=json.loads(Path("research-catalogue.json").read_text(encoding="utf-8"))
+          records=rc.get("records",[])
+          print("\nRESEARCH_RECORDS",len(records))
+          print("WITH_AUTHORS",sum(bool((r.get("authors") or "").strip()) for r in records))
+          print("SAMPLE_AUTHORS")
+          for r in records[:15]:
+            print(json.dumps({"title":r.get("title"),"authors":r.get("authors"),"citation":r.get("citation"),"url":r.get("url")},ensure_ascii=False))
+
+          content=json.loads(Path("repository-content.json").read_text(encoding="utf-8"))
+          print("\nCONTENT_TOP_KEYS",list(content.keys()))
+          for key,val in content.items():
+            if isinstance(val,list) and val:
+              keys=set()
+              for x in val[:20]:
+                if isinstance(x,dict): keys.update(x.keys())
+              print("GROUP",key,"COUNT",len(val),"FIELDS",sorted(keys))
+          PY
