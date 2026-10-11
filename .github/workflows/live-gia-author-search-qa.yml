@@ -1,0 +1,91 @@
+name: Live Gia author search QA
+on:
+  push:
+    paths:
+      - '.github/workflows/live-gia-author-search-qa.yml'
+      - 'index.html'
+      - 'service-worker.js'
+      - 'research-catalogue.json'
+      - 'scripts/clinical-reference-bundle.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.57.0 >/dev/null 2>&1
+          npx playwright install chromium >/dev/null
+      - name: Verify live author-name search
+        run: |
+          cat > gia-author-qa.mjs <<'JS'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const BASE='https://glenroygriffiths876-collab.github.io/HSTU-SI/';
+          const ok=(v,m)=>{if(!v) throw new Error(m);};
+          const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+          async function latestPage(viewport){
+            let last='';
+            for(let attempt=1;attempt<=20;attempt++){
+              const context=await browser.newContext({viewport,serviceWorkers:'block'});
+              const page=await context.newPage();
+              try{
+                const resp=await page.goto(BASE+'?giaauthorqa='+Date.now()+'#home',{waitUntil:'domcontentloaded',timeout:45000});
+                await page.waitForTimeout(700);
+                const html=await resp?.text().catch(()=> '');
+                const latest=html.includes("score+=fieldScore(qt,r.authors,4.6)") &&
+                             html.includes("authors:r.authors||''") &&
+                             html.includes('Try “syphilis”, “DHIS2”, “adolescent HIV”, “Hanover” or any title…');
+                if(resp?.ok() && latest) return {context,page};
+                last='http='+(resp?.status()??'none')+' latest='+latest;
+              }catch(e){last=String(e);}
+              await context.close();
+              if(attempt<20) await sleep(10000);
+            }
+            throw new Error('Latest author-search deployment not visible: '+last);
+          }
+
+          async function run(viewport,label){
+            const {context,page}=await latestPage(viewport);
+            await page.locator('#clinicalFab').click();
+            await page.waitForFunction(()=>document.documentElement.dataset.hstuClinicalReady==='1',{timeout:30000});
+            await page.locator('#clinicalDrawer.open').waitFor({state:'visible',timeout:10000});
+
+            const input=page.locator('#clinicalSearch');
+            const ph=await input.getAttribute('placeholder');
+            ok(ph?.includes('syphilis') && ph?.includes('adolescent HIV') && ph?.includes('Hanover'),label+': polished placeholder missing');
+            ok(!/syphlis|adolesent|Hanov(?:”|\s|,)/i.test(ph||''),label+': old misspelled example remains: '+ph);
+
+            async function expectAuthor(query,titlePart,authorPart){
+              await input.fill(query);
+              await page.waitForTimeout(700);
+              const result=page.locator('.gia-hub-result').filter({hasText:titlePart}).first();
+              await result.waitFor({state:'visible',timeout:10000});
+              const txt=await result.innerText();
+              ok(txt.toLowerCase().includes(authorPart.toLowerCase()),label+': '+query+' result does not show '+authorPart+' :: '+txt);
+              console.log('AUTHOR SEARCH PASS',label,query,'=>',titlePart);
+            }
+
+            await expectAuthor('Logie','Disclosure, stigma, and HIV care','Logie CH');
+            await expectAuthor('Nascimento','Sources of information on HIV/AIDS','Nascimento Gomes Brito');
+            await expectAuthor('Brito','Sources of information on HIV/AIDS','Nascimento Gomes Brito');
+            await expectAuthor('Torres','Drug-Resistant Tuberculosis in Prisons','Torres A');
+
+            const dims=await page.evaluate(()=>({doc:document.documentElement.scrollWidth,body:document.body.scrollWidth,win:innerWidth}));
+            ok(dims.doc<=dims.win+3 && dims.body<=dims.win+3,label+': horizontal overflow '+JSON.stringify(dims));
+
+            await context.close();
+          }
+
+          await run({width:390,height:844},'mobile');
+          await run({width:1440,height:900},'desktop');
+          await browser.close();
+          console.log('LIVE GIA AUTHOR SEARCH QA PASS');
+          JS
+          node gia-author-qa.mjs
