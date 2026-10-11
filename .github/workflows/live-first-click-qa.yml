@@ -1,0 +1,129 @@
+name: Live first-click reliability QA
+on:
+  push:
+    paths:
+      - '.github/workflows/live-first-click-qa.yml'
+      - 'service-worker.js'
+      - 'final-refinements-930.js'
+      - 'index.html'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.57.0 >/dev/null 2>&1
+          npx playwright install chromium >/dev/null
+      - name: Verify first-open and one-click behavior
+        run: |
+          cat > first-click-qa.mjs <<'JS'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const BASE='https://glenroygriffiths876-collab.github.io/HSTU-SI/';
+          const ok=(v,m)=>{if(!v) throw new Error(m);};
+          const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+          async function waitForLatest(){
+            let last='';
+            for(let attempt=1;attempt<=20;attempt++){
+              const context=await browser.newContext({serviceWorkers:'block',viewport:{width:390,height:844}});
+              const page=await context.newPage();
+              try{
+                const resp=await page.goto(BASE+'?entryqa='+Date.now()+'#home',{waitUntil:'domcontentloaded',timeout:45000});
+                await page.waitForTimeout(1000);
+                const ready=await page.locator('html').getAttribute('data-hstu-refinements930');
+                const body=await page.locator('body').innerText();
+                if(resp?.ok() && ready==='ready' && body.includes('About the Research Data Repository')){
+                  await context.close(); return;
+                }
+                last='http='+(resp?.status()??'none')+' ready='+ready;
+              }catch(e){last=String(e);}
+              await context.close();
+              if(attempt<20) await sleep(10000);
+            }
+            throw new Error('Latest deployment not visible: '+last);
+          }
+          await waitForLatest();
+
+          // 1) Fresh external entry must work on the FIRST navigation, no reload/retry.
+          for(const viewport of [{width:390,height:844},{width:1440,height:900}]){
+            for(let i=0;i<5;i++){
+              const context=await browser.newContext({serviceWorkers:'block',viewport});
+              const page=await context.newPage();
+              const errors=[];
+              page.on('pageerror',e=>errors.push(e.message));
+              const t0=Date.now();
+              const resp=await page.goto(BASE+'?fresh='+viewport.width+'-'+i+'-'+Date.now()+'#home',{waitUntil:'domcontentloaded',timeout:45000});
+              await page.waitForTimeout(700);
+              ok(resp?.ok(),'fresh first navigation HTTP failure '+viewport.width+' run '+i);
+              ok(await page.locator('#view-home.active').count()===1,'fresh first navigation did not show Home '+viewport.width+' run '+i);
+              ok(await page.getByText('About the Research Data Repository',{exact:true}).count()>=1,'fresh Home content missing '+viewport.width+' run '+i);
+              ok(errors.length===0,'fresh browser errors '+viewport.width+' '+errors.join(' | '));
+              console.log('FRESH FIRST OPEN PASS',viewport.width,i,Date.now()-t0+'ms');
+              await context.close();
+            }
+          }
+
+          // 2) Direct hash entry must land correctly on the FIRST navigation.
+          {
+            const context=await browser.newContext({serviceWorkers:'block',viewport:{width:390,height:844}});
+            const page=await context.newPage();
+            const resp=await page.goto(BASE+'?hashqa='+Date.now()+'#research',{waitUntil:'domcontentloaded',timeout:45000});
+            await page.waitForTimeout(900);
+            ok(resp?.ok(),'hash entry HTTP failure');
+            ok(await page.locator('#view-research.active').count()===1,'#research did not open Research first time');
+            console.log('DIRECT HASH FIRST OPEN PASS');
+            await context.close();
+          }
+
+          // 3) Representative interface navigation must respond to ONE click.
+          {
+            const context=await browser.newContext({serviceWorkers:'block',viewport:{width:1440,height:900}});
+            const page=await context.newPage();
+            await page.goto(BASE+'?clickqa='+Date.now()+'#home',{waitUntil:'networkidle',timeout:60000});
+            await page.waitForTimeout(500);
+            await page.locator('.nav-btn[data-view="research"]').first().click();
+            await page.waitForTimeout(200);
+            ok(await page.locator('#view-research.active').count()===1,'desktop Research required more than one click');
+            await page.evaluate(()=>window.setView?.('home',{push:false}));
+            await page.waitForTimeout(100);
+            await page.locator('#home-quick-access [data-quick-view="reports"]').click();
+            await page.waitForTimeout(200);
+            ok(await page.locator('#view-reports.active').count()===1,'Quick Access Reports required more than one click');
+            console.log('DESKTOP ONE-CLICK ROUTING PASS');
+            await context.close();
+          }
+
+          // 4) Returning visitor with an active service worker must still open first time offline.
+          {
+            const context=await browser.newContext({viewport:{width:390,height:844}});
+            let page=await context.newPage();
+            await page.goto(BASE+'?warm='+Date.now()+'#home',{waitUntil:'networkidle',timeout:60000});
+            await page.evaluate(async()=>{
+              if('serviceWorker' in navigator){
+                await navigator.serviceWorker.ready;
+              }
+            });
+            // Reload once only to ensure the installed SW controls subsequent NEW entries.
+            await page.reload({waitUntil:'networkidle',timeout:60000});
+            await page.close();
+            await context.setOffline(true);
+            page=await context.newPage();
+            const resp=await page.goto(BASE+'#home',{waitUntil:'domcontentloaded',timeout:15000}).catch(()=>null);
+            await page.waitForTimeout(500);
+            ok(resp && resp.ok(),'cached offline first navigation failed');
+            ok(await page.locator('#view-home.active').count()===1,'cached offline first navigation did not render Home');
+            console.log('SERVICE WORKER FIRST OPEN OFFLINE PASS');
+            await context.close();
+          }
+
+          await browser.close();
+          console.log('LIVE FIRST-CLICK RELIABILITY QA PASS');
+          JS
+          node first-click-qa.mjs
