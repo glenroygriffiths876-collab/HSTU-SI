@@ -1,0 +1,113 @@
+name: Optimize first load
+on:
+  push:
+    paths:
+      - '.github/workflows/optimize-first-load.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Externalize embedded image data URIs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, base64, hashlib, json
+
+          p=Path("index.html")
+          s=p.read_text(encoding="utf-8",errors="strict")
+          before=len(s.encode("utf-8"))
+          out=Path("media/embedded-assets")
+          out.mkdir(parents=True,exist_ok=True)
+
+          extmap={
+            "image/png":"png",
+            "image/jpeg":"jpg",
+            "image/jpg":"jpg",
+            "image/webp":"webp",
+            "image/gif":"gif",
+            "image/svg+xml":"svg",
+            "image/x-icon":"ico",
+            "image/vnd.microsoft.icon":"ico",
+          }
+          pat=re.compile(r'data:(image/[A-Za-z0-9.+-]+);base64,([A-Za-z0-9+/=]+)')
+          found=list(pat.finditer(s))
+          print("Embedded image data URI occurrences:",len(found))
+          total_encoded=sum(len(m.group(0)) for m in found)
+          print("Embedded encoded characters:",total_encoded)
+
+          written={}
+          failures=[]
+          def repl(m):
+            mime=m.group(1).lower()
+            b64=m.group(2)
+            try:
+              raw=base64.b64decode(b64,validate=True)
+            except Exception as e:
+              failures.append((mime,str(e)))
+              return m.group(0)
+            ext=extmap.get(mime)
+            if not ext:
+              failures.append((mime,"unsupported mime"))
+              return m.group(0)
+            h=hashlib.sha256(raw).hexdigest()[:20]
+            file=out/f"{h}.{ext}"
+            if not file.exists():
+              file.write_bytes(raw)
+            written[file.as_posix()]=len(raw)
+            return "./"+file.as_posix()
+
+          s2=pat.sub(repl,s)
+          p.write_text(s2,encoding="utf-8")
+          after=p.stat().st_size
+
+          report={
+            "before_bytes":before,
+            "after_bytes":after,
+            "saved_bytes":before-after,
+            "saved_percent":round((before-after)*100/before,2) if before else 0,
+            "data_uri_occurrences":len(found),
+            "unique_assets":len(written),
+            "decoded_asset_bytes":sum(written.values()),
+            "failures":failures,
+          }
+          Path("internal-audits/FIRST_LOAD_OPTIMIZATION_2026-10-11.json").write_text(json.dumps(report,indent=2),encoding="utf-8")
+          print(json.dumps(report,indent=2))
+
+          # Safety: do not accept an accidental expansion/corruption.
+          assert after < before, "index.html did not shrink"
+          assert "<!DOCTYPE html" in s2[:500].lower() or "<!doctype html" in s2[:500].lower()
+          assert "hstu-final-refinements-930" in s2
+          assert "About the Research Data Repository" in s2
+          PY
+      - name: Static integrity checks
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, json
+          s=Path("index.html").read_text(encoding="utf-8")
+          report=json.loads(Path("internal-audits/FIRST_LOAD_OPTIMIZATION_2026-10-11.json").read_text())
+          refs=set(re.findall(r'["\'](\./media/embedded-assets/[^"\']+)["\']',s))
+          missing=[r for r in refs if not Path(r[2:]).exists()]
+          print("Referenced extracted assets:",len(refs))
+          print("Missing:",missing)
+          assert not missing
+          assert report["after_bytes"] < 2500000, report
+          PY
+      - name: Commit optimized entry document
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html media/embedded-assets internal-audits/FIRST_LOAD_OPTIMIZATION_2026-10-11.json
+          if git diff --cached --quiet; then
+            echo "No optimization changes"
+          else
+            git commit -m "Optimize cold mobile first load without changing UI"
+            git pull --rebase origin main
+            git push origin main
+          fi
