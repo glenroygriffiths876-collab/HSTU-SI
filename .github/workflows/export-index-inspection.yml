@@ -12,6 +12,27 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
+      - name: Inspect entry structure
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, json
+          s=Path("index.html").read_text(encoding="utf-8",errors="ignore")
+          scripts=re.findall(r'<script([^>]*)>(.*?)</script>',s,re.I|re.S)
+          styles=re.findall(r'<style([^>]*)>(.*?)</style>',s,re.I|re.S)
+          print(json.dumps({
+            "bytes":len(s.encode("utf-8")),
+            "body_pos":s.lower().find("<body"),
+            "main_pos":s.lower().find("<main"),
+            "home_heading_pos":s.find("About the Research Data Repository"),
+            "script_count":len(scripts),
+            "script_chars_total":sum(len(x[1]) for x in scripts),
+            "largest_scripts":sorted([len(x[1]) for x in scripts],reverse=True)[:10],
+            "style_count":len(styles),
+            "style_chars_total":sum(len(x[1]) for x in styles),
+            "largest_styles":sorted([len(x[1]) for x in styles],reverse=True)[:10]
+          },indent=2))
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: hstu-index-inspection
