@@ -1,4 +1,4 @@
-const CACHE_NAME="hstu-resource-centre-v20261011-first-click-v1";
+const CACHE_NAME="hstu-resource-centre-v20261011-first-click-v2";
 const APP_SHELL=[
   "./index.html",
   "./health-snake.html",
@@ -10,11 +10,15 @@ const APP_SHELL=[
 ];
 
 self.addEventListener("install",event=>{
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache=>Promise.allSettled(APP_SHELL.map(item=>cache.add(item))))
-  );
-  self.skipWaiting();
+  event.waitUntil((async()=>{
+    const cache=await caches.open(CACHE_NAME);
+    /* Never activate a navigation worker without a known-good app shell. */
+    await cache.add(new Request("./index.html",{cache:"reload"}));
+    await Promise.allSettled(
+      APP_SHELL.filter(item=>item!=="./index.html").map(item=>cache.add(item))
+    );
+    self.skipWaiting();
+  })());
 });
 
 self.addEventListener("activate",event=>{
@@ -58,39 +62,33 @@ self.addEventListener("fetch",event=>{
 
   /*
     Main Resource Centre navigation:
-    - Prefer a fresh network document when it arrives promptly.
-    - If the browser/network stalls, show the cached shell after 1.2s instead of
-      leaving the user looking at a blank page and needing to tap the link again.
-    - Refresh the cache in the background, so the next entry remains current.
-    - On a first-ever visit (no cache yet), wait for the network normally.
+    Returning visitors get the last known-good shell IMMEDIATELY on the first tap.
+    A fresh copy is fetched in the background for the next navigation.
+    First-ever visitors use the network because no service-worker cache exists yet.
   */
   if(event.request.mode==="navigate"){
     event.respondWith((async()=>{
       const cache=await caches.open(CACHE_NAME);
       const cached=await cache.match("./index.html");
 
-      const network=(async()=>{
+      const refresh=(async()=>{
         try{
           const preload=await event.preloadResponse;
           const response=preload || await fetch(event.request,{cache:"no-store"});
           if(response&&response.ok) await cache.put("./index.html",response.clone());
           return response;
-        }catch(e){
-          if(cached) return cached.clone();
-          throw e;
+        }catch(_){
+          return null;
         }
       })();
 
-      if(!cached){
-        try{return await network;}
-        catch(_){return Response.error();}
+      if(cached){
+        event.waitUntil(refresh);
+        return cached.clone();
       }
 
-      event.waitUntil(network.catch(()=>{}));
-      return Promise.race([
-        network,
-        sleep(1200).then(()=>cached.clone())
-      ]);
+      const network=await refresh;
+      return network || Response.error();
     })());
     return;
   }
