@@ -1042,6 +1042,7 @@ function syncEntryRoute930(){
 }
 function init(){
  document.documentElement.dataset.hstuRefinements930='ready';
+ try{window.__hstuEntryReady?.();}catch(_){}
  stabilizeEntry930();
  addStyles(); addFinalHotfixStyles(); addPdfLibraryStyles930(); restoreLegacyYellow930(); fixHero(); fixUnveilingHope930(); updatePurpose(); buildThematicAreas(); rebuildQuickAccess(); fixPrimaryNav(); installNavigationDelegation(); cleanTechnicalCopy930(); expandResourceCollections930(); relabelManualUi930(); enhancePdfLibrary930();
  fixResearchAgenda(); fixCapacity(); splitResources(); fixGallery(); installResourceObserver(); cleanPublicTerms();
