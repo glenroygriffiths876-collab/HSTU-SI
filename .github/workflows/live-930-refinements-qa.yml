@@ -58,6 +58,8 @@ jobs:
             const {page,context,errors}=await openFresh(viewport,name);
             const dims=await page.evaluate(()=>({doc:document.documentElement.scrollWidth,body:document.body.scrollWidth,win:innerWidth}));
             ok(dims.doc<=dims.win+3 && dims.body<=dims.win+3,name+': horizontal overflow '+JSON.stringify(dims));
+            await page.waitForFunction(()=>document.documentElement.dataset.hstuClinicalReady==='1',{timeout:15000});
+            ok(await page.evaluate(()=>typeof window.hstuLoadClinicalBundle==='function'),name+': clinical bundle loader missing');
 
             const hero=page.locator('#home-purpose-hero');
             const ht=await hero.innerText();
