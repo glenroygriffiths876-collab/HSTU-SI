@@ -33,7 +33,7 @@ jobs:
           p.write_text(s,encoding="utf-8")
           sw=Path("service-worker.js")
           w=sw.read_text(encoding="utf-8")
-          w=re.sub(r'hstu-resource-centre-v[^"\']+','hstu-resource-centre-v20261011-first-click-v1',w,count=1)
+          w=re.sub(r'hstu-resource-centre-v[^"\']+','hstu-resource-centre-v20261011-first-click-v2',w,count=1)
           sw.write_text(w,encoding="utf-8")
           PY
       - name: Static QA
