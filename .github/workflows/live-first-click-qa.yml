@@ -92,7 +92,7 @@ jobs:
             });
             const t0=Date.now();
             const resp=await page.goto(BASE+'?slowcold='+Date.now()+'#home',{waitUntil:'domcontentloaded',timeout:20000});
-            await page.getByText('About the Research Data Repository',{exact:true}).waitFor({state:'visible',timeout:5000});
+            await page.getByText('About the Research Data Repository',{exact:true}).first().waitFor({state:'visible',timeout:5000});
             const elapsed=Date.now()-t0;
             ok(resp?.ok(),'throttled cold first navigation HTTP failure');
             ok(await page.locator('#view-home.active').count()===1,'throttled cold first navigation did not show Home');
