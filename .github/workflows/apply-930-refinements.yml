@@ -23,18 +23,22 @@ jobs:
           import re
           p=Path("index.html")
           s=p.read_text(encoding="utf-8")
+          # Replace the existing inline runtime IN PLACE; never append
+          # stray newlines or alter the service worker for visual edits.
           s=re.sub(r'<script[^>]+src=["\']final-refinements-930\.js[^"\']*["\'][^>]*></script>','',s,flags=re.I)
-          s=re.sub(r'<script id=["\']hstu-final-refinements-930["\']>.*?</script>','',s,flags=re.I|re.S)
           js=Path("final-refinements-930.js").read_text(encoding="utf-8")
           tag='<script id="hstu-final-refinements-930">\n'+js+'\n</script>'
-          idx=s.lower().rfind('</body>')
-          if idx<0: raise SystemExit("No </body>")
-          s=s[:idx]+tag+'\n'+s[idx:]
-          p.write_text(s,encoding="utf-8")
-          sw=Path("service-worker.js")
-          w=sw.read_text(encoding="utf-8")
-          w=re.sub(r'hstu-resource-centre-v[^"\']+','hstu-resource-centre-v20261011-gia-author-v4',w,count=1)
-          sw.write_text(w,encoding="utf-8")
+          pattern=r'<script id=["\']hstu-final-refinements-930["\']>.*?</script>'
+          s,count=re.subn(pattern,lambda _:tag,s,flags=re.I|re.S)
+          if count>1: raise SystemExit("Duplicate refinement runtimes: "+str(count))
+          if count==0:
+            idx=s.lower().rfind('</body>')
+            if idx<0: raise SystemExit("No </body>")
+            s=s[:idx]+tag+'\n'+s[idx:]
+          if s!=p.read_text(encoding="utf-8"):
+            p.write_text(s,encoding="utf-8")
+          # NEVER rewrite service-worker.js in this styling/refinement workflow.
+          # Cache releases require a separate tested reliability change.
           PY
       - name: Static QA
         run: |
@@ -43,6 +47,11 @@ jobs:
           s=Path("index.html").read_text(encoding="utf-8")
           j=Path("final-refinements-930.js").read_text(encoding="utf-8")
           assert s.count('id="hstu-final-refinements-930"')==1
+          import re
+          m=re.search(r'<script id="hstu-final-refinements-930">\s*(.*?)\s*</script>',s,re.S)
+          assert m and m.group(1).strip()==j.strip(), "Inline runtime differs from source file"
+          assert "button[data-purpose-view=" in j, "Missing approved homepage button theme"
+          assert ".hstu-purpose-cta-930 button:focus-visible" in j
           assert len(list(Path("media/repository").glob("*.webp")))==51
           for phrase in [
             "15 Thematic Research Areas","Research Agenda Priorities","Presentations","Posters",
@@ -98,6 +107,30 @@ jobs:
             ok(quickHeadCount===1,name+': Quick Access heading duplicated '+quickHeadCount);
             const anim=await page.locator('.hstu-animated-title-930').evaluate(el=>getComputedStyle(el).animationName);
             ok(anim && anim!=='none',name+': title animation missing');
+            // Approved HSTU brand palette; check computed colours on each device.
+            const cta=page.locator('#home-purpose-hero .hstu-purpose-cta-930 button');
+            ok(await cta.count()===3,name+': exactly three hero actions');
+            const expectedButtons=[
+              ['research','rgb(22, 148, 71)','rgb(255, 255, 255)'],
+              ['reports','rgb(215, 25, 32)','rgb(255, 255, 255)'],
+              ['data-audit','rgb(242, 183, 20)','rgb(22, 19, 7)']
+            ];
+            for(const [route,bg,fg] of expectedButtons){
+              const button=page.locator('#home-purpose-hero .hstu-purpose-cta-930 button[data-purpose-view="'+route+'"]');
+              ok(await button.count()===1,name+': '+route+' button missing');
+              const style=await button.evaluate(el=>{
+                const cs=getComputedStyle(el);
+                return {background:cs.backgroundColor,color:cs.color,backgroundImage:cs.backgroundImage};
+              });
+              ok(style.background===bg && style.color===fg && style.backgroundImage==='none',
+                name+': '+route+' colour regression '+JSON.stringify(style));
+            }
+            for(const [route] of expectedButtons){
+              await page.locator('#home-purpose-hero .hstu-purpose-cta-930 button[data-purpose-view="'+route+'"]').click();
+              await page.waitForTimeout(120);
+              ok(await page.locator('#view-'+route+'.active').count()===1,name+': '+route+' first-tap navigation');
+              await activate(page,'home');
+            }
 
             if(name==='desktop'){
               const service=await page.locator('.nav-btn[data-view="services"]').boundingBox();
@@ -214,7 +247,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html service-worker.js
+          git add index.html
           if git diff --cached --quiet; then
             echo "No production patch changes"
           else
