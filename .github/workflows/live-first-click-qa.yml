@@ -25,8 +25,11 @@ jobs:
         run: |
           cat > first-click-qa.mjs <<'JS'
           import { chromium } from 'playwright';
+          import { readFileSync } from 'node:fs';
           const browser=await chromium.launch({headless:true});
           const BASE='https://glenroygriffiths876-collab.github.io/HSTU-SI/';
+          const expectedCacheVersion=readFileSync('service-worker.js','utf8').match(/const CACHE_NAME\s*=\s*["']([^"']+)["']/)?.[1];
+          if(!expectedCacheVersion) throw new Error('Cannot read the expected SW version from source');
           const ok=(v,m)=>{if(!v) throw new Error(m);};
           const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
@@ -44,7 +47,7 @@ jobs:
                 const swText=swResp.ok()?await swResp.text():'';
                 const htmlText=await resp?.text().catch(()=> '');
                 const optimized=htmlText.includes('media/embedded-assets/') && htmlText.includes('hstu-clinical-reference-loader') && htmlText.length<500000;
-                const latest=swText.includes('v20261011-first-click-v2') && htmlText.includes('stabilizeEntry930') && optimized;
+                const latest=swText.includes(expectedCacheVersion) && htmlText.includes('stabilizeEntry930') && optimized;
                 if(resp?.ok() && ready==='ready' && body.includes('About the Research Data Repository') && latest){
                   await context.close(); return;
                 }
