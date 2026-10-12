@@ -692,7 +692,11 @@ function addFinalHotfixStyles(){
  '.hstu-purpose-copy-930 p{display:block!important;margin:0 0 10px!important;max-width:760px!important;font-size:clamp(15px,1.15vw,18px)!important;line-height:1.58!important;color:rgba(255,255,255,.78)!important}'+
  '.hstu-purpose-cta-930{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}'+
  '.hstu-purpose-cta-930 button{min-height:48px;border-radius:16px;padding:11px 17px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);color:#fff;font-weight:900;cursor:pointer;backdrop-filter:blur(8px)}'+
- '.hstu-purpose-cta-930 .hstu-purpose-primary-930{background:linear-gradient(135deg,#2d8138,#54ad3d 48%,#c91f2b);border-color:transparent;box-shadow:0 10px 24px rgba(0,0,0,.18)}'+
+ /* Approved HSTU brand actions: green Research, red Reports, gold Audit. Scope ONLY to Home CTA. */
+ '.hstu-purpose-cta-930 button[data-purpose-view="research"]{background:var(--green,#169447)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 10px 24px rgba(22,148,71,.22)}'+
+ '.hstu-purpose-cta-930 button[data-purpose-view="reports"]{background:var(--red,#d71920)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 10px 24px rgba(215,25,32,.20)}'+
+ '.hstu-purpose-cta-930 button[data-purpose-view="data-audit"]{background:var(--gold,#f2b714)!important;color:#161307!important;border-color:transparent!important;box-shadow:0 10px 24px rgba(242,183,20,.20)}'+
+ '.hstu-purpose-cta-930 button:focus-visible{outline:3px solid #f2b714!important;outline-offset:3px!important}'+
  '.hstu-purpose-summary-930{padding-top:24px!important;padding-bottom:14px!important}'+
  '.hstu-purpose-summary-930 .hstu-purpose-highlights-930{margin-top:0!important}'+
  '.hstu-purpose-highlights-930 button{font:inherit;text-align:left;border:0;cursor:pointer}'+
