@@ -1,0 +1,62 @@
+name: HSTU Document Identity Preflight
+on:
+  push:
+    paths:
+      - 'scripts/hstu-pdf-identity.py'
+      - '.github/workflows/hstu-pdf-identity.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  document-identity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Inspect PDF integrity and title similarity
+        id: identity
+        continue-on-error: true
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          python3 scripts/hstu-pdf-identity.py
+      - name: Publish inspectable source identity findings
+        if: always()
+        env:
+          IDENTITY_OUTCOME: ${{ steps.identity.outcome }}
+          RUN_ID: ${{ github.run_id }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,os
+          p=pathlib.Path('docs/hstu-pdf-identity-audit.json')
+          if p.exists():
+            j=json.loads(p.read_text(encoding='utf-8'))
+          else:
+            j={'result':'FAILED','error':'No identity report generated'}
+          j['workflow_run_id']=os.environ['RUN_ID']
+          j['source_sha']=os.environ['SOURCE_SHA']
+          j['workflow_step_outcome']=os.environ['IDENTITY_OUTCOME']
+          p.parent.mkdir(exist_ok=True)
+          p.write_text(json.dumps(j,indent=2)+'\n',encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/hstu-pdf-identity-audit.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Record document identity inspection findings"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Enforce document structural safety
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          j=json.load(open('docs/hstu-pdf-identity-audit.json'))
+          assert j.get('total_hosted_pdfs')==75, 'Wrong number of hosted PDFs'
+          assert j.get('structural_failures')==0, 'PDF integrity failures'
+          print('PDF STRUCTURAL INTEGRITY VERIFIED (separate title review if candidates exist)')
+          PY
