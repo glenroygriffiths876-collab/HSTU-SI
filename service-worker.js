@@ -66,7 +66,16 @@ self.addEventListener("fetch",event=>{
     A fresh copy is fetched in the background for the next navigation.
     First-ever visitors use the network because no service-worker cache exists yet.
   */
-  if(event.request.mode==="navigate"){
+  // Only the app's actual Home/SPA entry may receive the cached HTML shell.
+  // PDF/manual/resource navigations MUST be served by the browser as their own
+  // files. Returning index.html for them caused broken-image "PDF" tabs.
+  const appRoot=new URL("./",self.registration.scope);
+  const appIndex=new URL("index.html",self.registration.scope);
+  const isAppEntry=url.origin===appRoot.origin &&
+    (url.pathname===appRoot.pathname || url.pathname===appIndex.pathname);
+  if(event.request.mode==="navigate" && !isAppEntry) return;
+
+  if(event.request.mode==="navigate" && isAppEntry){
     event.respondWith((async()=>{
       const cache=await caches.open(CACHE_NAME);
       const cached=await cache.match("./index.html");
