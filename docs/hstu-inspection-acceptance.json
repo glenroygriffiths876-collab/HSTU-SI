@@ -1,13 +1,13 @@
 {
   "title": "HSTU-SI inspection acceptance",
-  "timestamp": "2026-10-13T23:28:46.431Z",
+  "timestamp": "2026-10-13T23:30:44.647Z",
   "target": "https://glenroygriffiths876-collab.github.io/HSTU-SI/",
   "deployedVersion": "PDF fix + restricted manual label confirmed",
   "checks": [
     {
       "name": "Production deployment corresponds to fixed PDF code",
       "status": "PASS",
-      "duration_ms": 172,
+      "duration_ms": 189,
       "detail": "Fixed HTML and service worker served by GitHub Pages"
     },
     {
@@ -19,13 +19,13 @@
     {
       "name": "Every localized PDF and image preview is hosted as correct media",
       "status": "PASS",
-      "duration_ms": 2389,
+      "duration_ms": 3741,
       "detail": "150/150 hosted paths return correct content type"
     },
     {
       "name": "Local PDF contains actual PDF bytes",
       "status": "PASS",
-      "duration_ms": 873,
+      "duration_ms": 594,
       "detail": "4 independent documents have PDF magic header"
     },
     {
@@ -37,49 +37,49 @@
     {
       "name": "phone: cold first-entry renders without blank page",
       "status": "PASS",
-      "duration_ms": 2229,
+      "duration_ms": 1868,
       "detail": "Page ready, full Home text and responsive width"
     },
     {
       "name": "phone: eight sections show the proper view",
       "status": "PASS",
-      "duration_ms": 819,
+      "duration_ms": 806,
       "detail": "home, research, capacity, reports, data-audit, gallery, resources, services"
     },
     {
       "name": "phone: homepage buttons, branding and core collections",
       "status": "PASS",
-      "duration_ms": 10210,
+      "duration_ms": 10182,
       "detail": "Green/red/gold buttons and first clicks; 15 themes; 7 Quick Access"
     },
     {
       "name": "phone: all five Gallery filters work",
       "status": "PASS",
-      "duration_ms": 3357,
+      "duration_ms": 3046,
       "detail": "All 51 | HIV 21 | STI 5 | TB 1 | PrEP 2; all Gallery image URLs valid"
     },
     {
       "name": "phone: 18 Capacity Building manual cards point to real sources",
       "status": "PASS",
-      "duration_ms": 13,
+      "duration_ms": 10,
       "detail": "18/18 correct source links, none point at nonexistent root PDFs"
     },
     {
       "name": "phone: actual PDF click opens document instead of homepage",
       "status": "FAIL",
-      "duration_ms": 10021,
-      "reason": "PDF tap produced no new tab/download: {\"pageUrl\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934130918#data-audit\",\"target\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"linkState\":{\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"rawHref\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"target\":\"_blank\",\"outerHTML\":\"<a class=\\\"external-ref hstu-pdf-card-930\\\" href=\\\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\\\" rel=\\\"noopener noreferrer\\\" target=\\\"_blank\\\" data-original-pdf-url=\\\"https://www.moh.gov.jm/wp-content/uploads/2026/08/National-Surveillance-Manual-for-Jamaica-July-2026.pdf\\\"><img class=\\\"hstu-pdf-preview-image-930\\\" src=\\\"media/pdf-previews/national-surveillance-manual-for-jamaica-july-2026-be6954d6.webp\\\" loading=\\\"lazy\\\" alt=\\\"First page of National Surveillance Manual f\",\"defaultView\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934130918#data-audit\",\"connected\":true,\"active\":\"view-capacity\"},\"debug\":{\"captured\":[{\"phase\":\"capture\",\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"defaultPrevented\""
+      "duration_ms": 10017,
+      "reason": "PDF tap produced no new tab/download: {\"pageUrl\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934250078#data-audit\",\"target\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"linkState\":{\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"rawHref\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"target\":\"_blank\",\"outerHTML\":\"<a class=\\\"external-ref hstu-pdf-card-930\\\" href=\\\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\\\" rel=\\\"noopener noreferrer\\\" target=\\\"_blank\\\" data-original-pdf-url=\\\"https://www.moh.gov.jm/wp-content/uploads/2026/08/National-Surveillance-Manual-for-Jamaica-July-2026.pdf\\\"><img class=\\\"hstu-pdf-preview-image-930\\\" src=\\\"media/pdf-previews/national-surveillance-manual-for-jamaica-july-2026-be6954d6.webp\\\" loading=\\\"lazy\\\" alt=\\\"First page of National Surveillance Manual f\",\"defaultView\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934250078#data-audit\",\"connected\":true,\"active\":\"view-capacity\"},\"debug\":{\"captured\":[{\"phase\":\"capture\",\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"defaultPrevented\":false,\"tag\":\"IMG\"},{\"phase\":\"bubble\",\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"defaultPrevented\":false,\"tag\":\"IMG\"}],\"prevented\":[]}}"
     },
     {
       "name": "phone: Gia, Gallery and PWA controls remain present",
       "status": "PASS",
-      "duration_ms": 458,
+      "duration_ms": 427,
       "detail": "Gia opens, Gallery exists, PWA actions remain"
     },
     {
       "name": "phone: phone/desktop menu is operable",
       "status": "PASS",
-      "duration_ms": 604,
+      "duration_ms": 580,
       "detail": "Navigation menu + section selection succeeded"
     },
     {
@@ -91,66 +91,66 @@
     {
       "name": "desktop: cold first-entry renders without blank page",
       "status": "PASS",
-      "duration_ms": 2759,
+      "duration_ms": 2187,
       "detail": "Page ready, full Home text and responsive width"
     },
     {
       "name": "desktop: eight sections show the proper view",
       "status": "PASS",
-      "duration_ms": 843,
+      "duration_ms": 853,
       "detail": "home, research, capacity, reports, data-audit, gallery, resources, services"
     },
     {
       "name": "desktop: homepage buttons, branding and core collections",
       "status": "PASS",
-      "duration_ms": 2719,
+      "duration_ms": 3718,
       "detail": "Green/red/gold buttons and first clicks; 15 themes; 7 Quick Access"
     },
     {
       "name": "desktop: all five Gallery filters work",
       "status": "PASS",
-      "duration_ms": 3152,
+      "duration_ms": 3239,
       "detail": "All 51 | HIV 21 | STI 5 | TB 1 | PrEP 2; all Gallery image URLs valid"
     },
     {
       "name": "desktop: 18 Capacity Building manual cards point to real sources",
       "status": "PASS",
-      "duration_ms": 16,
+      "duration_ms": 11,
       "detail": "18/18 correct source links, none point at nonexistent root PDFs"
     },
     {
       "name": "desktop: actual PDF click opens document instead of homepage",
       "status": "FAIL",
-      "duration_ms": 10017,
-      "reason": "PDF tap produced no new tab/download: {\"pageUrl\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934158857#data-audit\",\"target\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"linkState\":{\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"rawHref\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"target\":\"_blank\",\"outerHTML\":\"<a class=\\\"external-ref hstu-pdf-card-930\\\" href=\\\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\\\" rel=\\\"noopener noreferrer\\\" target=\\\"_blank\\\" data-original-pdf-url=\\\"https://www.moh.gov.jm/wp-content/uploads/2026/08/National-Surveillance-Manual-for-Jamaica-July-2026.pdf\\\"><img class=\\\"hstu-pdf-preview-image-930\\\" src=\\\"media/pdf-previews/national-surveillance-manual-for-jamaica-july-2026-be6954d6.webp\\\" loading=\\\"lazy\\\" alt=\\\"First page of National Surveillance Manual f\",\"defaultView\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934158857#data-audit\",\"connected\":true,\"active\":\"view-capacity\"},\"debug\":{\"captured\":[{\"phase\":\"capture\",\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"defaultPrevented\""
+      "duration_ms": 10022,
+      "reason": "PDF tap produced no new tab/download: {\"pageUrl\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934277033#data-audit\",\"target\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"linkState\":{\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"rawHref\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"target\":\"_blank\",\"outerHTML\":\"<a class=\\\"external-ref hstu-pdf-card-930\\\" href=\\\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\\\" rel=\\\"noopener noreferrer\\\" target=\\\"_blank\\\" data-original-pdf-url=\\\"https://www.moh.gov.jm/wp-content/uploads/2026/08/National-Surveillance-Manual-for-Jamaica-July-2026.pdf\\\"><img class=\\\"hstu-pdf-preview-image-930\\\" src=\\\"media/pdf-previews/national-surveillance-manual-for-jamaica-july-2026-be6954d6.webp\\\" loading=\\\"lazy\\\" alt=\\\"First page of National Surveillance Manual f\",\"defaultView\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934277033#data-audit\",\"connected\":true,\"active\":\"view-capacity\"},\"debug\":{\"captured\":[{\"phase\":\"capture\",\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"defaultPrevented\":false,\"tag\":\"IMG\"},{\"phase\":\"bubble\",\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"defaultPrevented\":false,\"tag\":\"IMG\"}],\"prevented\":[]}}"
     },
     {
       "name": "desktop: Gia, Gallery and PWA controls remain present",
       "status": "PASS",
-      "duration_ms": 503,
+      "duration_ms": 427,
       "detail": "Gia opens, Gallery exists, PWA actions remain"
     },
     {
       "name": "desktop: phone/desktop menu is operable",
       "status": "PASS",
-      "duration_ms": 117,
+      "duration_ms": 102,
       "detail": "Navigation menu + section selection succeeded"
     },
     {
       "name": "desktop: JavaScript and layout regression scan",
       "status": "PASS",
-      "duration_ms": 2,
+      "duration_ms": 3,
       "detail": "Zero uncaught JavaScript exceptions; no horizontal overflow"
     }
   ],
   "failures": [
     {
       "name": "phone: actual PDF click opens document instead of homepage",
-      "reason": "PDF tap produced no new tab/download: {\"pageUrl\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934130918#data-audit\",\"target\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"linkState\":{\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"rawHref\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"target\":\"_blank\",\"outerHTML\":\"<a class=\\\"external-ref hstu-pdf-card-930\\\" href=\\\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\\\" rel=\\\"noopener noreferrer\\\" target=\\\"_blank\\\" data-original-pdf-url=\\\"https://www.moh.gov.jm/wp-content/uploads/2026/08/National-Surveillance-Manual-for-Jamaica-July-2026.pdf\\\"><img class=\\\"hstu-pdf-preview-image-930\\\" src=\\\"media/pdf-previews/national-surveillance-manual-for-jamaica-july-2026-be6954d6.webp\\\" loading=\\\"lazy\\\" alt=\\\"First page of National Surveillance Manual f\",\"defaultView\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934130918#data-audit\",\"connected\":true,\"active\":\"view-capacity\"},\"debug\":{\"captured\":[{\"phase\":\"capture\",\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"defaultPrevented\""
+      "reason": "PDF tap produced no new tab/download: {\"pageUrl\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934250078#data-audit\",\"target\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"linkState\":{\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"rawHref\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"target\":\"_blank\",\"outerHTML\":\"<a class=\\\"external-ref hstu-pdf-card-930\\\" href=\\\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\\\" rel=\\\"noopener noreferrer\\\" target=\\\"_blank\\\" data-original-pdf-url=\\\"https://www.moh.gov.jm/wp-content/uploads/2026/08/National-Surveillance-Manual-for-Jamaica-July-2026.pdf\\\"><img class=\\\"hstu-pdf-preview-image-930\\\" src=\\\"media/pdf-previews/national-surveillance-manual-for-jamaica-july-2026-be6954d6.webp\\\" loading=\\\"lazy\\\" alt=\\\"First page of National Surveillance Manual f\",\"defaultView\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934250078#data-audit\",\"connected\":true,\"active\":\"view-capacity\"},\"debug\":{\"captured\":[{\"phase\":\"capture\",\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"defaultPrevented\":false,\"tag\":\"IMG\"},{\"phase\":\"bubble\",\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"defaultPrevented\":false,\"tag\":\"IMG\"}],\"prevented\":[]}}"
     },
     {
       "name": "desktop: actual PDF click opens document instead of homepage",
-      "reason": "PDF tap produced no new tab/download: {\"pageUrl\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934158857#data-audit\",\"target\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"linkState\":{\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"rawHref\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"target\":\"_blank\",\"outerHTML\":\"<a class=\\\"external-ref hstu-pdf-card-930\\\" href=\\\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\\\" rel=\\\"noopener noreferrer\\\" target=\\\"_blank\\\" data-original-pdf-url=\\\"https://www.moh.gov.jm/wp-content/uploads/2026/08/National-Surveillance-Manual-for-Jamaica-July-2026.pdf\\\"><img class=\\\"hstu-pdf-preview-image-930\\\" src=\\\"media/pdf-previews/national-surveillance-manual-for-jamaica-july-2026-be6954d6.webp\\\" loading=\\\"lazy\\\" alt=\\\"First page of National Surveillance Manual f\",\"defaultView\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934158857#data-audit\",\"connected\":true,\"active\":\"view-capacity\"},\"debug\":{\"captured\":[{\"phase\":\"capture\",\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"defaultPrevented\""
+      "reason": "PDF tap produced no new tab/download: {\"pageUrl\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934277033#data-audit\",\"target\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"linkState\":{\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"rawHref\":\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"target\":\"_blank\",\"outerHTML\":\"<a class=\\\"external-ref hstu-pdf-card-930\\\" href=\\\"documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\\\" rel=\\\"noopener noreferrer\\\" target=\\\"_blank\\\" data-original-pdf-url=\\\"https://www.moh.gov.jm/wp-content/uploads/2026/08/National-Surveillance-Manual-for-Jamaica-July-2026.pdf\\\"><img class=\\\"hstu-pdf-preview-image-930\\\" src=\\\"media/pdf-previews/national-surveillance-manual-for-jamaica-july-2026-be6954d6.webp\\\" loading=\\\"lazy\\\" alt=\\\"First page of National Surveillance Manual f\",\"defaultView\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/?preflight=1791934277033#data-audit\",\"connected\":true,\"active\":\"view-capacity\"},\"debug\":{\"captured\":[{\"phase\":\"capture\",\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"defaultPrevented\":false,\"tag\":\"IMG\"},{\"phase\":\"bubble\",\"href\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf\",\"defaultPrevented\":false,\"tag\":\"IMG\"}],\"prevented\":[]}}"
     }
   ],
   "warnings": [],
@@ -162,9 +162,9 @@
     "failed": 2
   },
   "result": "FAIL",
-  "github_run_id": "38484414063",
-  "source_sha": "55769a98bc6bd9ebe97aa29607cc9f4262896a43",
-  "github_run_url": "https://github.com/glenroygriffiths876-collab/HSTU-SI/actions/runs/38484414063",
+  "github_run_id": "38484632726",
+  "source_sha": "f88e1314e68d5354ceb097c7efa4d5bec7e59fca",
+  "github_run_url": "https://github.com/glenroygriffiths876-collab/HSTU-SI/actions/runs/38484632726",
   "qa_step_outcome": "failure",
-  "recorded_utc": "2026-10-13T23:29:38.875019+00:00"
+  "recorded_utc": "2026-10-13T23:31:37.707338+00:00"
 }
