@@ -1431,8 +1431,37 @@ $$('[data-view]').forEach(el=>el.addEventListener('click',e=>{const v=el.dataset
 $('#menuToggle').addEventListener('click',()=>$('#mainNav').classList.toggle('open'));
 window.addEventListener('popstate',()=>setView(location.hash.slice(1)||'home',{push:false}));
 
+// These official/curated source URLs replace the legacy root-level PDF
+// filenames, which are not present in this deployment. Do not point cards
+// back at missing local files or silently substitute an unrelated document.
+const MANUAL_FALLBACKS={
+  "sti-handbook-2026":"https://drive.google.com/file/d/15Ag_YV7T-DOsLUFvDov90_NM-fLmTn3J/preview",
+  "hiv-clinical-2020":"https://drive.google.com/file/d/1bpsDUxsDYgkVaXrBtuc68CU6yCgA1rdv/preview",
+  "sti-manual-2020":"https://drive.google.com/file/d/18R3GFXNIYtUDguGPGmVekRMY18sbjx5g/preview",
+  "tb-2021":"https://drive.google.com/file/d/1Smuz3Bqm09I7udxvlE-osIZKixiCBYxb/preview",
+  "pmtct-2020":"https://drive.google.com/file/d/1lDjJNU1zdmptgdXuhDYdKzT_kNCsY5Xv/preview",
+  "paediatric-2021":"https://drive.google.com/file/d/1yt-9Za2EZLeBBWT_h80wjFUZnBJ64fBo/preview",
+  "prep-implementation-2025":"https://drive.google.com/file/d/1maP4824o5bv75_N7mKHVr7uRkSeJZbAT/preview",
+  "prep-handbook-2023":"https://hstu.moh.gov.jm/wp-content/uploads/2024/02/Prep-Handbook-Complete_final_October-9-2023-1.pdf",
+  "ci-field-2025":"https://drive.google.com/file/d/1SqBmSquvVqqE6fwPCouiCpjxHVS1hgNQ/preview",
+  "disclosure-2021":"https://drive.google.com/file/d/1ohTn_SmKE3ZUkDYS9OhOwfLmvSJpkWPp/preview",
+  "linkage-retention":"https://drive.google.com/file/d/1U6kRcpG984hZyz536bz6hzQL1b_cBw6R/preview",
+  "pitc":"https://drive.google.com/file/d/1EwlhYB-ZCTkJ_luhV9sOo0jeqrvbR9E6/preview",
+  "pitc-facilitator":"https://drive.google.com/file/d/1E_fegx-U9ITn61lpJxmN3Zn24se_Dycv/preview",
+  "dhis2-2026":"https://drive.google.com/file/d/1WM0-K1qkvgO-5Z1n1rCg5eP8T-vGOLNx/preview",
+  "tsis2-2026":"https://drive.google.com/file/d/1yy7IGq4eiauZ6HoYvUO9fNNuLHJOU5BK/preview",
+  "nsp-2023-2030":"https://drive.google.com/file/d/14i6aH8agpCZSncBY3RWDKHuPkTu4LXui/preview",
+  "patient-transfer-2016":"https://moh.gov.jm/wp-content/uploads/2016/11/Revised-MOH-Policy-and-Procedure-Manual-for-the-Referral-and-Transfer-of-Patients-22.09.16.pdf",
+  "staff-orders":"https://www.moh.gov.jm/wp-content/uploads/2015/06/StaffOrders1.pdf"
+};
+function manualSourceUrl(m){
+  if(!m) return '';
+  const u=String(m.url||'').trim();
+  if(/^https:\/\//i.test(u)) return u;
+  return MANUAL_FALLBACKS[m.id]||'';
+}
 function thumbFor(m){return m.coverImage||(m.driveId?`https://drive.google.com/thumbnail?id=${m.driveId}&sz=w700`:'')}
-function manualHref(m){return m.file||m.url||'#'}
+function manualHref(m){return manualSourceUrl(m)||'#'}
 function miniCover(m){const thumb=thumbFor(m);const href=manualHref(m);return `<a class="mini-cover" href="${href}" target="_blank" rel="noopener noreferrer" data-open-manual="${m.id}" style="--accent:${m.accent};--cover:${m.cover}"><div class="mini-book">${thumb?`<img class="mini-cover-thumb" src="${thumb}" alt="" loading="lazy" onerror="this.style.display='none'">`:''}<div class="mini-cover-fallback"><small>${esc(m.category)} · ${esc(m.year||'MOHW')}</small><b>${esc(m.title)}</b><em>Ministry of Health & Wellness · Jamaica</em></div></div><span>${esc(m.title)}</span></a>`}
 $('#homeManuals').innerHTML=MANUALS.filter(m=>m.featured).slice(0,6).map(miniCover).join('');
 
@@ -1470,46 +1499,29 @@ function manualCard(m){const thumb=thumbFor(m);const href=manualHref(m);return `
 function renderManuals(){const q=$('#manualSearch').value.trim();const def=MANUAL_FILTERS.find(f=>f.key===manualFilter)||MANUAL_FILTERS[0];let arr=MANUALS.map(m=>[manualSearchScore(m,q),m]).filter(x=>(!def.cats||def.cats.includes(x[1].category))&&(!q||x[0]>0)).sort((a,b)=>b[0]-a[0]).map(x=>x[1]);$('#manualCount').textContent=`${arr.length} bundled PDF${arr.length===1?'':'s'} shown · searches titles and indexed manual content`;$('#manualGrid').innerHTML=arr.length?arr.map((m,i)=>`<div class="${i===0&&q?'top-match':''}">${manualCard(m)}</div>`).join(''):`<div class="empty">No matching PDF. Try a shorter term or another spelling.</div>`;bindManualOpen();observeReveals()}
 $('#manualSearch').addEventListener('input',renderManuals);try{renderManualFilters();renderManuals()}catch(e){console.error('Manual library init',e)}
 
-function pdfInfo(m){if(!m)return null;const href=manualHref(m);if(m.file)return{preview:href,external:href,local:true};const url=m.url;if(!url)return null;const drive=url.match(/drive\.google\.com\/file\/d\/([^/]+)/);if(drive)return{preview:`https://drive.google.com/file/d/${drive[1]}/preview`,external:url,local:false};if(/\.pdf(?:$|\?)/i.test(url))return{preview:url,external:url,local:false};return{preview:url,external:url,local:false}}
+function pdfInfo(m){if(!m)return null;const href=manualHref(m);const url=href;if(!url||url==='#')return null;const drive=url.match(/drive\.google\.com\/file\/d\/([^/]+)/);if(drive)return{preview:`https://drive.google.com/file/d/${drive[1]}/preview`,external:url,local:false};if(/\.pdf(?:$|\?)/i.test(url))return{preview:url,external:url,local:false};return{preview:url,external:url,local:false}}
 function openManual(id){const m=MANUALS.find(x=>x.id===id);if(m)window.open(manualHref(m),'_blank','noopener');}
-const MANUAL_FALLBACKS={
-  "sti-handbook-2026":"https://drive.google.com/file/d/15Ag_YV7T-DOsLUFvDov90_NM-fLmTn3J/preview",
-  "hiv-clinical-2020":"https://drive.google.com/file/d/1bpsDUxsDYgkVaXrBtuc68CU6yCgA1rdv/preview",
-  "sti-manual-2020":"https://drive.google.com/file/d/18R3GFXNIYtUDguGPGmVekRMY18sbjx5g/preview",
-  "tb-2021":"https://drive.google.com/file/d/1Smuz3Bqm09I7udxvlE-osIZKixiCBYxb/preview",
-  "pmtct-2020":"https://drive.google.com/file/d/1lDjJNU1zdmptgdXuhDYdKzT_kNCsY5Xv/preview",
-  "paediatric-2021":"https://drive.google.com/file/d/1yt-9Za2EZLeBBWT_h80wjFUZnBJ64fBo/preview",
-  "prep-implementation-2025":"https://drive.google.com/file/d/1maP4824o5bv75_N7mKHVr7uRkSeJZbAT/preview",
-  "prep-handbook-2023":"https://hstu.moh.gov.jm/wp-content/uploads/2024/02/Prep-Handbook-Complete_final_October-9-2023-1.pdf",
-  "ci-field-2025":"https://drive.google.com/file/d/1SqBmSquvVqqE6fwPCouiCpjxHVS1hgNQ/preview",
-  "disclosure-2021":"https://drive.google.com/file/d/1ohTn_SmKE3ZUkDYS9OhOwfLmvSJpkWPp/preview",
-  "linkage-retention":"https://drive.google.com/file/d/1U6kRcpG984hZyz536bz6hzQL1b_cBw6R/preview",
-  "pitc":"https://drive.google.com/file/d/1EwlhYB-ZCTkJ_luhV9sOo0jeqrvbR9E6/preview",
-  "pitc-facilitator":"https://drive.google.com/file/d/1E_fegx-U9ITn61lpJxmN3Zn24se_Dycv/preview",
-  "dhis2-2026":"https://drive.google.com/file/d/1WM0-K1qkvgO-5Z1n1rCg5eP8T-vGOLNx/preview",
-  "tsis2-2026":"https://drive.google.com/file/d/1yy7IGq4eiauZ6HoYvUO9fNNuLHJOU5BK/preview",
-  "nsp-2023-2030":"https://drive.google.com/file/d/14i6aH8agpCZSncBY3RWDKHuPkTu4LXui/preview",
-  "patient-transfer-2016":"https://moh.gov.jm/wp-content/uploads/2016/11/Revised-MOH-Policy-and-Procedure-Manual-for-the-Referral-and-Transfer-of-Patients-22.09.16.pdf"
-};
+
 function bindManualOpen(){
-  document.addEventListener('click',async e=>{
-    const a=e.target.closest('[data-open-manual]');
+  // One delegated listener for dynamic filter/search rerenders.
+  // Let the browser open the actual original document directly in a new tab;
+  // no blank tab, HEAD race, or per-render interceptors.
+  if(document.documentElement.dataset.hstuManualOpenReady==='1') return;
+  document.documentElement.dataset.hstuManualOpenReady='1';
+  document.addEventListener('click',e=>{
+    const a=e.target.closest('a[data-open-manual]');
     if(!a)return;
-    const id=a.getAttribute('data-open-manual');
-    const m=MANUALS.find(x=>x.id===id);
+    const m=MANUALS.find(x=>x.id===a.dataset.openManual);
     if(!m)return;
-    const local=m.file||'';
-    if(!local || /^https?:\/\//i.test(local))return;
-    e.preventDefault();
-    const tab=window.open('about:blank','_blank');
-    try{
-      const r=await fetch(local,{method:'HEAD',cache:'no-store'});
-      const target=r.ok?local:(MANUAL_FALLBACKS[id]||m.url||local);
-      if(tab)tab.location.href=target; else window.location.href=target;
-    }catch(err){
-      const target=MANUAL_FALLBACKS[id]||m.url||local;
-      if(tab)tab.location.href=target; else window.location.href=target;
+    const href=manualHref(m);
+    if(!href||href==='#'){
+      e.preventDefault();
+      console.warn('Manual source unavailable:',m.id);
+      return;
     }
+    a.setAttribute('href',href);
+    a.setAttribute('target','_blank');
+    a.setAttribute('rel','noopener noreferrer');
   },true);
 }
 bindManualOpen();
