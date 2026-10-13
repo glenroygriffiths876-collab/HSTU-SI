@@ -205,7 +205,16 @@ try {
       await target.click();
       const [tab,download]=await Promise.all([popupPromise,downloadPromise]);
       let raw=tab?.page?.url()||download?.url||'';
-      assert(tab||download,'PDF tap neither opened a new tab nor initiated download ('+href+')');
+      if(!tab&&!download){
+        const linkState=await target.evaluate(el=>({
+          href:el.href,rawHref:el.getAttribute('href'),target:el.target,
+          outerHTML:el.outerHTML.slice(0,500),
+          defaultView:location.href,connected:el.isConnected,
+          active:document.querySelector('.view.active')?.id
+        })).catch(e=>({error:String(e)}));
+        const topState={pageUrl:page.url(),target:href,linkState};
+        throw Error('PDF tap produced no new tab/download: '+JSON.stringify(topState));
+      }
       assert(/\.pdf(?:$|[?#])/.test(raw),'PDF click opened wrong kind of URL: '+raw);
       const checkResponse=await get(raw,{method:'HEAD'});
       assert(checkResponse.ok&&/application\/pdf/i.test(checkResponse.headers.get('content-type')||''),
