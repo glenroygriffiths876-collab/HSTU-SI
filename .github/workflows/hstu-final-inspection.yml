@@ -1,0 +1,87 @@
+name: HSTU Final Inspection Acceptance
+
+on:
+  push:
+    paths:
+      - 'scripts/hstu-inspection-acceptance.mjs'
+      - '.github/workflows/hstu-final-inspection.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Chromium
+        run: |
+          npm install --no-save playwright@1.57.0
+          npx playwright install --with-deps chromium
+      - name: Run comprehensive live acceptance suite
+        id: acceptance
+        continue-on-error: true
+        run: node scripts/hstu-inspection-acceptance.mjs
+      - name: Save structured inspection result to repository
+        if: always()
+        env:
+          RUN_ID: ${{ github.run_id }}
+          SOURCE_SHA: ${{ github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          QA_OUTCOME: ${{ steps.acceptance.outcome }}
+        run: |
+          python - <<'PY'
+          import json,os,datetime,pathlib
+          p=pathlib.Path('docs/hstu-inspection-acceptance.json')
+          if p.exists():
+            try: report=json.loads(p.read_text(encoding='utf-8'))
+            except Exception as exc: report={'result':'FAIL','failures':[{'name':'Invalid report','reason':str(exc)}]}
+          else:
+            report={'result':'FAIL','failures':[{'name':'No report','reason':'Acceptance script did not create a report'}]}
+          report['github_run_id']=os.environ['RUN_ID']
+          report['source_sha']=os.environ['SOURCE_SHA']
+          report['github_run_url']=os.environ['RUN_URL']
+          report['qa_step_outcome']=os.environ['QA_OUTCOME']
+          report['recorded_utc']=datetime.datetime.now(datetime.timezone.utc).isoformat()
+          p.parent.mkdir(exist_ok=True)
+          p.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+          print('FINAL HSTU INSPECTION RESULT',report.get('result'))
+          for failure in report.get('failures',[]):print('INSPECTION FAILURE',failure)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/hstu-inspection-acceptance.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Record final inspection acceptance result"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Preserve mobile and desktop screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hstu-final-acceptance-screenshots
+          path: |
+            /tmp/hstu-inspection-phone-home.png
+            /tmp/hstu-inspection-desktop-home.png
+          if-no-files-found: ignore
+      - name: Fail job if acceptance checks failed
+        if: always()
+        run: |
+          python - <<'PY'
+          import json,pathlib,sys
+          p=pathlib.Path('docs/hstu-inspection-acceptance.json')
+          if not p.exists():sys.exit('No acceptance report')
+          r=json.loads(p.read_text(encoding='utf-8'))
+          if r.get('result')!='PASS':sys.exit('Inspection NOT certified: '+str(r.get('failures')))
+          print('INSPECTION LIVE ACCEPTANCE PASS')
+          PY
