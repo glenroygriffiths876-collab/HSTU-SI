@@ -35,7 +35,10 @@ function openView(view,target){
    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
  };
  ensure();
- setTimeout(ensure,90);
+ // A late callback must never reopen a section the visitor has already left.
+ setTimeout(()=>{
+   if(document.getElementById('view-'+view)?.classList.contains('active')) ensure();
+ },90);
 }
 function dropdown(view){
  const b=navBtn(view); if(!b) return null;
