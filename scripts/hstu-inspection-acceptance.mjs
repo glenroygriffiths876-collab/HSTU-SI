@@ -14,7 +14,7 @@ async function check(name,fn){
     report.checks.push({name,status:'PASS',duration_ms:Date.now()-started,detail:detail||null});
     console.log('PASS',name,detail||'');
   }catch(e){
-    const reason=String(e.message||e).slice(0,1400);
+    const reason=String(e.message||e).slice(0,7000);
     report.checks.push({name,status:'FAIL',duration_ms:Date.now()-started,reason});
     report.failures.push({name,reason});
     console.error('FAIL',name,reason);
