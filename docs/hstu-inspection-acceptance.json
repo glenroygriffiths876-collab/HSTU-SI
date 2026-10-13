@@ -1,13 +1,13 @@
 {
   "title": "HSTU-SI inspection acceptance",
-  "timestamp": "2026-10-13T23:18:44.427Z",
+  "timestamp": "2026-10-13T23:23:20.019Z",
   "target": "https://glenroygriffiths876-collab.github.io/HSTU-SI/",
   "deployedVersion": "PDF fix + restricted manual label confirmed",
   "checks": [
     {
       "name": "Production deployment corresponds to fixed PDF code",
       "status": "PASS",
-      "duration_ms": 172,
+      "duration_ms": 196,
       "detail": "Fixed HTML and service worker served by GitHub Pages"
     },
     {
@@ -19,20 +19,14 @@
     {
       "name": "Every localized PDF and image preview is hosted as correct media",
       "status": "PASS",
-      "duration_ms": 1920,
+      "duration_ms": 2539,
       "detail": "150/150 hosted paths return correct content type"
     },
     {
       "name": "Local PDF contains actual PDF bytes",
       "status": "PASS",
-      "duration_ms": 478,
+      "duration_ms": 734,
       "detail": "4 independent documents have PDF magic header"
-    },
-    {
-      "name": "All 51 original Gallery image paths are available",
-      "status": "PASS",
-      "duration_ms": 0,
-      "detail": "Gallery image response checks included in browser rendering checks"
     },
     {
       "name": "Research catalogue and repository content parse correctly",
@@ -43,50 +37,50 @@
     {
       "name": "phone: cold first-entry renders without blank page",
       "status": "PASS",
-      "duration_ms": 1987,
+      "duration_ms": 2030,
       "detail": "Page ready, full Home text and responsive width"
     },
     {
       "name": "phone: eight sections show the proper view",
       "status": "PASS",
-      "duration_ms": 829,
+      "duration_ms": 858,
       "detail": "home, research, capacity, reports, data-audit, gallery, resources, services"
     },
     {
       "name": "phone: homepage buttons, branding and core collections",
-      "status": "FAIL",
-      "duration_ms": 31514,
-      "reason": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#home-purpose-hero button[data-purpose-view=\"reports\"]')\n    - locator resolved to <button type=\"button\" data-purpose-view=\"reports\">View Reports</button>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not stable\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    56 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      "status": "PASS",
+      "duration_ms": 10207,
+      "detail": "Green/red/gold buttons and first clicks; 15 themes; 7 Quick Access"
     },
     {
       "name": "phone: all five Gallery filters work",
       "status": "PASS",
-      "duration_ms": 1231,
-      "detail": "All 51 | HIV 21 | STI 5 | TB 1 | PrEP 2"
+      "duration_ms": 3656,
+      "detail": "All 51 | HIV 21 | STI 5 | TB 1 | PrEP 2; all Gallery image URLs valid"
     },
     {
       "name": "phone: 18 Capacity Building manual cards point to real sources",
       "status": "PASS",
-      "duration_ms": 22,
+      "duration_ms": 23,
       "detail": "18/18 correct source links, none point at nonexistent root PDFs"
     },
     {
       "name": "phone: actual PDF click opens document instead of homepage",
       "status": "FAIL",
-      "duration_ms": 16008,
-      "reason": "browserContext.waitForEvent: Timeout 16000ms exceeded while waiting for event \"page\""
+      "duration_ms": 10009,
+      "reason": "PDF tap neither opened a new tab nor initiated download (documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf)"
     },
     {
       "name": "phone: Gia, Gallery and PWA controls remain present",
       "status": "PASS",
-      "duration_ms": 448,
+      "duration_ms": 464,
       "detail": "Gia opens, Gallery exists, PWA actions remain"
     },
     {
       "name": "phone: phone/desktop menu is operable",
-      "status": "FAIL",
-      "duration_ms": 136,
-      "reason": "Gallery submenu not navigated"
+      "status": "PASS",
+      "duration_ms": 594,
+      "detail": "Navigation menu + section selection succeeded"
     },
     {
       "name": "phone: JavaScript and layout regression scan",
@@ -97,49 +91,49 @@
     {
       "name": "desktop: cold first-entry renders without blank page",
       "status": "PASS",
-      "duration_ms": 2503,
+      "duration_ms": 2387,
       "detail": "Page ready, full Home text and responsive width"
     },
     {
       "name": "desktop: eight sections show the proper view",
       "status": "PASS",
-      "duration_ms": 834,
+      "duration_ms": 857,
       "detail": "home, research, capacity, reports, data-audit, gallery, resources, services"
     },
     {
       "name": "desktop: homepage buttons, branding and core collections",
-      "status": "FAIL",
-      "duration_ms": 655,
-      "reason": "reports failed first click"
+      "status": "PASS",
+      "duration_ms": 2819,
+      "detail": "Green/red/gold buttons and first clicks; 15 themes; 7 Quick Access"
     },
     {
       "name": "desktop: all five Gallery filters work",
-      "status": "FAIL",
-      "duration_ms": 30014,
-      "reason": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#hstuGalleryFilters button').filter({ hasText: /^All$/ })\n    - locator resolved to <button type=\"button\" aria-pressed=\"true\" aria-selected=\"true\" data-gallery-filter=\"All\" class=\"hstu-gallery-filter-930 active\">All</button>\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n    - element is not stable\n  - retrying click action\n    - waiting for element to be visible, enabled and stable\n    - element is not visible\n  - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    56 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      "status": "PASS",
+      "duration_ms": 3270,
+      "detail": "All 51 | HIV 21 | STI 5 | TB 1 | PrEP 2; all Gallery image URLs valid"
     },
     {
       "name": "desktop: 18 Capacity Building manual cards point to real sources",
       "status": "PASS",
-      "duration_ms": 21,
+      "duration_ms": 18,
       "detail": "18/18 correct source links, none point at nonexistent root PDFs"
     },
     {
       "name": "desktop: actual PDF click opens document instead of homepage",
       "status": "FAIL",
-      "duration_ms": 16012,
-      "reason": "browserContext.waitForEvent: Timeout 16000ms exceeded while waiting for event \"page\""
+      "duration_ms": 10009,
+      "reason": "PDF tap neither opened a new tab nor initiated download (documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf)"
     },
     {
       "name": "desktop: Gia, Gallery and PWA controls remain present",
       "status": "PASS",
-      "duration_ms": 502,
+      "duration_ms": 443,
       "detail": "Gia opens, Gallery exists, PWA actions remain"
     },
     {
       "name": "desktop: phone/desktop menu is operable",
       "status": "PASS",
-      "duration_ms": 116,
+      "duration_ms": 186,
       "detail": "Navigation menu + section selection succeeded"
     },
     {
@@ -151,42 +145,26 @@
   ],
   "failures": [
     {
-      "name": "phone: homepage buttons, branding and core collections",
-      "reason": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#home-purpose-hero button[data-purpose-view=\"reports\"]')\n    - locator resolved to <button type=\"button\" data-purpose-view=\"reports\">View Reports</button>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not stable\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    56 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
-    },
-    {
       "name": "phone: actual PDF click opens document instead of homepage",
-      "reason": "browserContext.waitForEvent: Timeout 16000ms exceeded while waiting for event \"page\""
-    },
-    {
-      "name": "phone: phone/desktop menu is operable",
-      "reason": "Gallery submenu not navigated"
-    },
-    {
-      "name": "desktop: homepage buttons, branding and core collections",
-      "reason": "reports failed first click"
-    },
-    {
-      "name": "desktop: all five Gallery filters work",
-      "reason": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#hstuGalleryFilters button').filter({ hasText: /^All$/ })\n    - locator resolved to <button type=\"button\" aria-pressed=\"true\" aria-selected=\"true\" data-gallery-filter=\"All\" class=\"hstu-gallery-filter-930 active\">All</button>\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n    - element is not stable\n  - retrying click action\n    - waiting for element to be visible, enabled and stable\n    - element is not visible\n  - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    56 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      "reason": "PDF tap neither opened a new tab nor initiated download (documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf)"
     },
     {
       "name": "desktop: actual PDF click opens document instead of homepage",
-      "reason": "browserContext.waitForEvent: Timeout 16000ms exceeded while waiting for event \"page\""
+      "reason": "PDF tap neither opened a new tab nor initiated download (documents/pdf-library/national-surveillance-manual-for-jamaica-july-2026-be6954d6.pdf)"
     }
   ],
   "warnings": [],
   "measurements": {
     "hostedPdfFiles": 75,
     "hostedPreviewFiles": 75,
-    "checks": 24,
-    "passed": 18,
-    "failed": 6
+    "checks": 23,
+    "passed": 21,
+    "failed": 2
   },
   "result": "FAIL",
-  "github_run_id": "38483403642",
-  "source_sha": "3446b593e806eaa7f154efdbe0e0f5568e9bfb49",
-  "github_run_url": "https://github.com/glenroygriffiths876-collab/HSTU-SI/actions/runs/38483403642",
+  "github_run_id": "38483877651",
+  "source_sha": "766e98a9ecf6a42f1efc95c19c2fd7f80e71be1e",
+  "github_run_url": "https://github.com/glenroygriffiths876-collab/HSTU-SI/actions/runs/38483877651",
   "qa_step_outcome": "failure",
-  "recorded_utc": "2026-10-13T23:20:30.196865+00:00"
+  "recorded_utc": "2026-10-13T23:24:11.671851+00:00"
 }
