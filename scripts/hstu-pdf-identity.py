@@ -63,7 +63,7 @@ for url,item in manifest.get('by_url',{}).items():
 duplicate_bytes=[]
 for sha,items in sha_map.items():
     if len(items)>1:
-        duplicate_bytes.append({'sha':sha,'records':[{'local':x['local'],'titles':x['titles']} for x in items]})
+        duplicate_bytes.append({'sha':sha,'records':[{'local':x['local'],'titles':x['titles'],'cover_excerpt':x.get('first_text_excerpt'),'title_word_score':x['title_word_score']} for x in items]})
 
 strong=[x for x in results if x['title_word_score'] is not None and x['title_word_score']<0.25
         and len(important(' '.join(x['titles'])))>=3]
