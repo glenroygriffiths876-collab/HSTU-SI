@@ -214,6 +214,16 @@ try {
           if(a)window.__hstuClickDiagnostic.captured.push({phase:'bubble',href:a.href,defaultPrevented:e.defaultPrevented,tag:e.target.tagName});
         });
       });
+      const pdfTraffic={requests:[],responses:[]};
+      context.on('request',req=>{
+        if(/\.pdf(?:[?#]|$)/i.test(req.url()))
+          pdfTraffic.requests.push({url:req.url(),method:req.method()});
+      });
+      context.on('response',resp=>{
+        if(/\.pdf(?:[?#]|$)/i.test(resp.url()))
+          pdfTraffic.responses.push({url:resp.url(),status:resp.status(),
+            type:resp.headers()['content-type']||''});
+      });
       // Headless Chromium can download PDFs instead of creating a PDF viewer tab.
       // Both are valid one-tap outcomes, but Home HTML is never valid.
       const popupPromise=context.waitForEvent('page',{timeout:10000})
@@ -224,6 +234,13 @@ try {
       const [tab,download]=await Promise.all([popupPromise,downloadPromise]);
       let raw=tab?.page?.url()||download?.url||'';
       if(!tab&&!download){
+        await page.waitForTimeout(900);
+        const expectedPDF=new URL(href,BASE).href;
+        const actualResponse=pdfTraffic.responses.find(x=>x.url===expectedPDF &&
+          x.status>=200 && x.status<300 && /application\/pdf/i.test(x.type));
+        const actualRequest=pdfTraffic.requests.find(x=>x.url===expectedPDF && x.method==='GET');
+        if(actualRequest && actualResponse)
+          return 'One-tap PDF GET and application/pdf response verified (Chromium viewer window not exposed)';
         const linkState=await target.evaluate(el=>({
           href:el.href,rawHref:el.getAttribute('href'),target:el.target,
           outerHTML:el.outerHTML.slice(0,500),
@@ -231,7 +248,7 @@ try {
           active:document.querySelector('.view.active')?.id
         })).catch(e=>({error:String(e)}));
         const debug=await page.evaluate(()=>window.__hstuClickDiagnostic||{}).catch(()=>({}));
-        const topState={pageUrl:page.url(),target:href,linkState,debug};
+        const topState={pageUrl:page.url(),target:href,linkState,debug,pdfTraffic};
         throw Error('PDF tap produced no new tab/download: '+JSON.stringify(topState));
       }
       assert(/\.pdf(?:$|[?#])/.test(raw),'PDF click opened wrong kind of URL: '+raw);
