@@ -1,0 +1,85 @@
+{
+  "result": "REVIEW_REQUIRED",
+  "generated": "2026-10-13T23:21:13.757416+00:00",
+  "total_hosted_pdfs": 75,
+  "structural_failures": 0,
+  "low_title_similarity": 4,
+  "no_meaningful_extractable_text": 3,
+  "duplicate_content_groups": 1,
+  "strong_mismatch_candidates": [
+    {
+      "titles": [
+        "TCS Annual Forum Poster 1"
+      ],
+      "file": "documents/pdf-library/8a054d-1f06dc50326b4836a2fdf20ac5a53369-4bd64c9e.pdf",
+      "score": 0.0,
+      "cover_excerpt": "Treatment Interruption and Mortality among Persons Living with HIV Initiating Antiretroviral Treatment in Jamaica Sharlene Beckford Jarrett1, Sally Stephens1, Tiffany Butterfield2, Alisha Robb-Allen2, Janeil Williams1, Kelly-Ann G"
+    },
+    {
+      "titles": [
+        "TCS Annual Forum Poster 2"
+      ],
+      "file": "documents/pdf-library/8a054d-9397627194fb4426b80cc8067aad32ad-063ff9a7.pdf",
+      "score": 0.0,
+      "cover_excerpt": "Factors Associated with Very Late Presentation Among PLHIV in Southern Jamaica K.Trought, O. Kupa, S. Beckford-Jarrett, R. Khan-Francis, T. Butterfield Introduction Results Cont\u2019d Despite programmatic efforts, advanced Table 1- So"
+    },
+    {
+      "titles": [
+        "TCS Annual Forum Poster 3"
+      ],
+      "file": "documents/pdf-library/8a054d-f79974bc4057439f847eb7d1d9744fb6-18668003.pdf",
+      "score": 0.0,
+      "cover_excerpt": "30 Years of Advancement and Challenges in Early HIV Diagnosis in Jamaica D Perry, R Khan-Francis, S Beckford Jarrett, J Lawrence, A Robb-Allen, W McFarland, N Skyers Background The first case of HIV in Jamaica was reported in 1982"
+    },
+    {
+      "titles": [
+        "Operational Research Abstracts - HSTU Studies 2025"
+      ],
+      "file": "documents/pdf-library/8a054d-d373932716a5460c845c3fda17fc3b9f-ecaebc55.pdf",
+      "score": 0.2,
+      "cover_excerpt": "Retention in Care Among PLHIV Accessing Care at Public Treatment Sites in Jamaica Lewis, Selena, Khan-Francis, Rahanah, Skyers, Nicola, Brissett, Shanille, Whitehead, Akeem, Williams, Andre Objectives: To characterize Jamaica\u2019s HI"
+    }
+  ],
+  "duplicate_bytes": [
+    {
+      "sha": "ecd0be886b21c5626b67d6c7d55e420d973c9968449a8d9e2bee831c1c15a872",
+      "records": [
+        {
+          "local": "documents/pdf-library/8a054d-b71d11e41ac640609d5b9ad4f2cebf5f-4463fa64.pdf",
+          "titles": [
+            "IBBS Study - MSM & TG 2024"
+          ]
+        },
+        {
+          "local": "documents/pdf-library/8a054d-9a00af4364d243b19f3cd6ad48d2d126-f0d10937.pdf",
+          "titles": [
+            "HIV/AIDS Knowledge, Attitudes and Behaviour Survey, Jamaica (2024)"
+          ]
+        }
+      ]
+    }
+  ],
+  "structural_errors": [],
+  "unreadable_pdfs": [
+    {
+      "file": "documents/pdf-library/8a054d-542f8a625ae14a77ab07e43beb524030-5bafbafa.pdf",
+      "titles": [
+        "MOH NSP National Strategic Plan"
+      ]
+    },
+    {
+      "file": "documents/pdf-library/8a054d-726e0dd7ed5247a480fc88d29c268af2-f700dc75.pdf",
+      "titles": [
+        "Jamaica Health & Lifestyle Survey 2017"
+      ]
+    },
+    {
+      "file": "documents/pdf-library/revised-moh-policy-and-procedure-manual-for-the-referral-and-transfer--5b1c624e.pdf",
+      "titles": []
+    }
+  ],
+  "caution": "Automated title-text similarity is a screening tool, not human validation of identity. Image-only PDFs can lack extractable text.",
+  "workflow_run_id": "38483683604",
+  "source_sha": "b7042183619c2f98e3beb1b645b384499735e4b3",
+  "workflow_step_outcome": "success"
+}
