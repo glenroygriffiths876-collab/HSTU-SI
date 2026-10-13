@@ -188,7 +188,7 @@ jobs:
           }
           out=pathlib.Path("docs/pdf-delivery-live-audit-status.json")
           out.parent.mkdir(exist_ok=True,parents=True)
-          out.write_text(json.dumps(record,indent=2)+"\\n",encoding="utf-8")
+          out.write_text(json.dumps(record,indent=2)+chr(10),encoding="utf-8")
           print(record)
           PY
           git config user.name "github-actions[bot]"
