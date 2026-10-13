@@ -102,11 +102,6 @@ try {
     }
     return '4 independent documents have PDF magic header';
   });
-  await check('All 51 original Gallery image paths are available',async()=>{
-    const list=Array.from({length:51},(_,i)=>i); // Count pages in browser, verify rendered images below.
-    assert(list.length===51,'Gallery target count');
-    return 'Gallery image response checks included in browser rendering checks';
-  });
   const catalog=JSON.parse(readFileSync('research-catalogue.json','utf8'));
   await check('Research catalogue and repository content parse correctly',()=>{
     const data=JSON.parse(readFileSync('repository-content.json','utf8'));
@@ -154,8 +149,10 @@ try {
         const style=await target.evaluate(el=>({bg:getComputedStyle(el).backgroundColor,text:getComputedStyle(el).color}));
         assert(style.bg===color&&style.text===fg,route+' colour changed: '+JSON.stringify(style));
         await target.click();
+        await page.waitForTimeout(200);
         assert(await page.locator('#view-'+route+'.active').count()===1,route+' failed first click');
         await page.evaluate(()=>window.setView('home',{push:false}));
+        await page.waitForTimeout(300);
       }
       assert(await page.locator('#home-thematic-areas .hstu-theme-card').count()===15,'Thematic cards changed');
       assert(await page.locator('#home-quick-access .hstu-quick-card').count()===7,'Quick Access count changed');
@@ -163,17 +160,21 @@ try {
     });
     await check(label+': all five Gallery filters work',async()=>{
       await page.evaluate(()=>window.setView('gallery',{push:false}));
+      await page.waitForTimeout(350);
       const expected={All:51,HIV:21,STI:5,TB:1,PrEP:2};
       for(const [name,count] of Object.entries(expected)){
         await page.locator('#hstuGalleryFilters button').filter({hasText:new RegExp('^'+name+'$')}).click();
-        await page.waitForTimeout(100);
+        await page.waitForTimeout(240);
         const visible=await page.locator('#hstuGalleryGrid > *:visible').count();
         assert(visible===count,name+': expected '+count+', received '+visible);
       }
       await page.locator('#hstuGalleryFilters button').filter({hasText:/^All$/}).click();
-      const images=await page.locator('#hstuGalleryGrid img').evaluateAll(els=>els.length);
-      assert(images>=51,'Gallery card images missing '+images);
-      return 'All 51 | HIV 21 | STI 5 | TB 1 | PrEP 2';
+      const urls=await page.locator('#hstuGalleryGrid img').evaluateAll(els=>els.map(el=>el.src));
+      assert(urls.length>=51,'Gallery card images missing '+urls.length);
+      const results=await pool([...new Set(urls)],u=>headFile(u,/image\/(webp|jpeg|png|gif|avif)/i),8);
+      const failed=results.filter(x=>!x.ok);
+      assert(failed.length===0,'Broken Gallery images: '+JSON.stringify(failed.slice(0,10)));
+      return 'All 51 | HIV 21 | STI 5 | TB 1 | PrEP 2; all Gallery image URLs valid';
     });
     await check(label+': 18 Capacity Building manual cards point to real sources',async()=>{
       await page.evaluate(()=>window.setView('capacity',{push:false}));
@@ -195,17 +196,22 @@ try {
       const target=page.locator('#view-capacity a.external-ref[href*="documents/pdf-library/"]').first();
       assert(await target.count()===1,'No visible localized document link to test');
       const href=await target.getAttribute('href');
-      const popupPromise=context.waitForEvent('page',{timeout:16000});
+      // Headless Chromium can download PDFs instead of creating a PDF viewer tab.
+      // Both are valid one-tap outcomes, but Home HTML is never valid.
+      const popupPromise=context.waitForEvent('page',{timeout:10000})
+        .then(p=>({kind:'tab',page:p})).catch(()=>null);
+      const downloadPromise=page.waitForEvent('download',{timeout:10000})
+        .then(d=>({kind:'download',filename:d.suggestedFilename(),url:d.url()})).catch(()=>null);
       await target.click();
-      const popup=await popupPromise;
-      await popup.waitForLoadState('domcontentloaded',{timeout:20000}).catch(()=>{});
-      const raw=popup.url();
-      assert(/\.pdf(?:$|[?#])/.test(raw),'PDF click opened the wrong kind of URL: '+raw);
+      const [tab,download]=await Promise.all([popupPromise,downloadPromise]);
+      let raw=tab?.page?.url()||download?.url||'';
+      assert(tab||download,'PDF tap neither opened a new tab nor initiated download ('+href+')');
+      assert(/\.pdf(?:$|[?#])/.test(raw),'PDF click opened wrong kind of URL: '+raw);
       const checkResponse=await get(raw,{method:'HEAD'});
       assert(checkResponse.ok&&/application\/pdf/i.test(checkResponse.headers.get('content-type')||''),
         'PDF click not real PDF: '+checkResponse.status+' '+checkResponse.headers.get('content-type'));
-      await popup.close();
-      return 'First click opens '+href+' in separate PDF tab';
+      if(tab?.page)await tab.page.close();
+      return 'One tap '+(tab?'opened PDF tab':'downloaded PDF')+' '+href;
     });
     await check(label+': Gia, Gallery and PWA controls remain present',async()=>{
       const fab=page.locator('#clinicalFab');
@@ -231,6 +237,7 @@ try {
         const tb=page.locator('#hstuMobileMenu930 .hstu-mobile-children-930:visible button').filter({hasText:/^TB$/});
         assert(await tb.count()===1,'TB submenu missing');
         await tb.click();
+        await page.waitForTimeout(450);
         assert(await page.locator('#view-gallery.active').count()===1,'Gallery submenu not navigated');
         assert(await page.locator('#hstuGalleryGrid > *:visible').count()===1,'TB filter not retained');
       }else{
