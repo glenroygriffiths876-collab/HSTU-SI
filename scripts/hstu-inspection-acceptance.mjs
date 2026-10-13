@@ -196,6 +196,24 @@ try {
       const target=page.locator('#view-capacity a.external-ref[href*="documents/pdf-library/"]').first();
       assert(await target.count()===1,'No visible localized document link to test');
       const href=await target.getAttribute('href');
+      await page.evaluate(()=>{
+        window.__hstuClickDiagnostic={captured:[],prevented:[]};
+        const old=Event.prototype.preventDefault;
+        Event.prototype.preventDefault=function(){
+          if(this.type==='click'&&this.target?.closest?.('a.external-ref')){
+            window.__hstuClickDiagnostic.prevented.push(new Error('preventDefault stack').stack?.slice(0,1200));
+          }
+          return old.apply(this,arguments);
+        };
+        document.addEventListener('click',e=>{
+          const a=e.target?.closest?.('a.external-ref');
+          if(a)window.__hstuClickDiagnostic.captured.push({phase:'capture',href:a.href,defaultPrevented:e.defaultPrevented,tag:e.target.tagName});
+        },true);
+        document.addEventListener('click',e=>{
+          const a=e.target?.closest?.('a.external-ref');
+          if(a)window.__hstuClickDiagnostic.captured.push({phase:'bubble',href:a.href,defaultPrevented:e.defaultPrevented,tag:e.target.tagName});
+        });
+      });
       // Headless Chromium can download PDFs instead of creating a PDF viewer tab.
       // Both are valid one-tap outcomes, but Home HTML is never valid.
       const popupPromise=context.waitForEvent('page',{timeout:10000})
@@ -212,7 +230,8 @@ try {
           defaultView:location.href,connected:el.isConnected,
           active:document.querySelector('.view.active')?.id
         })).catch(e=>({error:String(e)}));
-        const topState={pageUrl:page.url(),target:href,linkState};
+        const debug=await page.evaluate(()=>window.__hstuClickDiagnostic||{}).catch(()=>({}));
+        const topState={pageUrl:page.url(),target:href,linkState,debug};
         throw Error('PDF tap produced no new tab/download: '+JSON.stringify(topState));
       }
       assert(/\.pdf(?:$|[?#])/.test(raw),'PDF click opened wrong kind of URL: '+raw);
