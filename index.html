@@ -1503,26 +1503,9 @@ function pdfInfo(m){if(!m)return null;const href=manualHref(m);const url=href;if
 function openManual(id){const m=MANUALS.find(x=>x.id===id);if(m)window.open(manualHref(m),'_blank','noopener');}
 
 function bindManualOpen(){
-  // One delegated listener for dynamic filter/search rerenders.
-  // Let the browser open the actual original document directly in a new tab;
-  // no blank tab, HEAD race, or per-render interceptors.
-  if(document.documentElement.dataset.hstuManualOpenReady==='1') return;
-  document.documentElement.dataset.hstuManualOpenReady='1';
-  document.addEventListener('click',e=>{
-    const a=e.target.closest('a[data-open-manual]');
-    if(!a)return;
-    const m=MANUALS.find(x=>x.id===a.dataset.openManual);
-    if(!m)return;
-    const href=manualHref(m);
-    if(!href||href==='#'){
-      e.preventDefault();
-      console.warn('Manual source unavailable:',m.id);
-      return;
-    }
-    a.setAttribute('href',href);
-    a.setAttribute('target','_blank');
-    a.setAttribute('rel','noopener noreferrer');
-  },true);
+  // PDF cards are now ordinary, correct-source links. No interception needed.
+  // Crucially, this must not overwrite a verified localized PDF href that
+  // decoratePdfLinks930() installs after the library manifest arrives.
 }
 bindManualOpen();
 function closePdf(){$('#pdfModal').classList.remove('open');$('#pdfModal').setAttribute('aria-hidden','true');$('#pdfFrame').src='about:blank';document.body.style.overflow=''}
