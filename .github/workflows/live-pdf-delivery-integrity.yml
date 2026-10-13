@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: hstu-live-pdf-delivery
@@ -30,6 +30,7 @@ jobs:
           npm install --no-save playwright@1.57.0
           npx playwright install --with-deps chromium
       - name: Audit published PDFs, previews and manual links
+        id: pdfcheck
         run: |
           cat > pdf-delivery.mjs <<'JS'
           import {chromium} from 'playwright';
@@ -167,6 +168,35 @@ jobs:
           }finally{await browser.close();}
           JS
           node pdf-delivery.mjs
+      - name: Record live audit result for review
+        if: always()
+        env:
+          PDF_RESULT: ${{ steps.pdfcheck.outcome }}
+          AUDIT_SHA: ${{ github.sha }}
+          AUDIT_RUN_ID: ${{ github.run_id }}
+          AUDIT_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json,os,pathlib,datetime
+          record={
+            "source_sha":os.environ.get("AUDIT_SHA"),
+            "workflow_run_id":os.environ.get("AUDIT_RUN_ID"),
+            "workflow_url":os.environ.get("AUDIT_URL"),
+            "status":os.environ.get("PDF_RESULT","unknown"),
+            "timestamp_utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "audit_scope":"Live 75 PDFs, 75 previews, 18 manual links, deployed worker, phone and desktop"
+          }
+          out=pathlib.Path("docs/pdf-delivery-live-audit-status.json")
+          out.parent.mkdir(exist_ok=True,parents=True)
+          out.write_text(json.dumps(record,indent=2)+"\\n",encoding="utf-8")
+          print(record)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/pdf-delivery-live-audit-status.json
+          git commit -m "Record live PDF delivery audit outcome" || true
+          git pull --rebase origin main
+          git push origin HEAD:main
       - name: Save PDF test screenshots
         if: always()
         uses: actions/upload-artifact@v4
