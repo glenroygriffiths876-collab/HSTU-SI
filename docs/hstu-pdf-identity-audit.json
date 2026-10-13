@@ -1,6 +1,6 @@
 {
   "result": "REVIEW_REQUIRED",
-  "generated": "2026-10-13T23:21:13.757416+00:00",
+  "generated": "2026-10-13T23:23:42.920571+00:00",
   "total_hosted_pdfs": 75,
   "structural_failures": 0,
   "low_title_similarity": 4,
@@ -48,13 +48,17 @@
           "local": "documents/pdf-library/8a054d-b71d11e41ac640609d5b9ad4f2cebf5f-4463fa64.pdf",
           "titles": [
             "IBBS Study - MSM & TG 2024"
-          ]
+          ],
+          "cover_excerpt": "Report MSM and TGW Survey 2024 in Jamaica To Client JAMAICA AIDS SUPPORT FOR LIFE (JASL) Prepared by Dr J Peter Figueroa OJ On Behalf of A-Z Information Jamaica Limited 4 March 2025 CONTACT INFORMATION: THE E-BIZ CENTRE / 2 TRAFAL",
+          "title_word_score": 0.667
         },
         {
           "local": "documents/pdf-library/8a054d-9a00af4364d243b19f3cd6ad48d2d126-f0d10937.pdf",
           "titles": [
             "HIV/AIDS Knowledge, Attitudes and Behaviour Survey, Jamaica (2024)"
-          ]
+          ],
+          "cover_excerpt": "Report MSM and TGW Survey 2024 in Jamaica To Client JAMAICA AIDS SUPPORT FOR LIFE (JASL) Prepared by Dr J Peter Figueroa OJ On Behalf of A-Z Information Jamaica Limited 4 March 2025 CONTACT INFORMATION: THE E-BIZ CENTRE / 2 TRAFAL",
+          "title_word_score": 0.667
         }
       ]
     }
@@ -79,7 +83,7 @@
     }
   ],
   "caution": "Automated title-text similarity is a screening tool, not human validation of identity. Image-only PDFs can lack extractable text.",
-  "workflow_run_id": "38483683604",
-  "source_sha": "b7042183619c2f98e3beb1b645b384499735e4b3",
+  "workflow_run_id": "38483931439",
+  "source_sha": "fb0fc36a32ccb550a42d1cd34902b9d9ac9df0c1",
   "workflow_step_outcome": "success"
 }
