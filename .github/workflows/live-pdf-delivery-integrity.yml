@@ -2,6 +2,8 @@ name: Live PDF delivery integrity
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'index.html'
       - 'service-worker.js'
@@ -10,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: hstu-live-pdf-delivery
@@ -138,13 +140,22 @@ jobs:
               const cards=page.locator('#manualGrid [data-open-manual]');
               must(await cards.count()===18,label+': not all manual cards present');
               const cardItems=await cards.evaluateAll(nodes=>nodes.map(el=>({
-                id:el.dataset.openManual,href:el.href,target:el.target
+                id:el.dataset.openManual,href:el.href,target:el.target,
+                original:el.dataset.originalPdfUrl||''
               })));
               for(const c of cardItems){
                 const manual=manuals.find(m=>m.id===c.id);
+                const reader=(()=>{
+                  try{
+                    const u=new URL(c.href);
+                    return u.pathname.endsWith('/HSTU-SI/pdf-reader.html')
+                      && /^documents\/pdf-library\/[a-z0-9_.-]+\.pdf$/i.test(u.searchParams.get('file')||'')
+                      && c.original===manual?.source;
+                  }catch{return false}
+                })();
                 const localized=c.href.includes('/HSTU-SI/documents/pdf-library/');
-                must(manual&&(c.href===manual.source||localized),
-                  label+': wrong PDF target on '+c.id+': '+c.href);
+                must(manual&&(c.href===manual.source||localized||reader),
+                  label+': wrong PDF identity on '+c.id+': '+c.href);
                 must(c.target==='_blank',label+': manual should open in a separate tab '+c.id);
               }
               const dims=await page.evaluate(()=>({
@@ -191,12 +202,6 @@ jobs:
           out.write_text(json.dumps(record,indent=2)+chr(10),encoding="utf-8")
           print(record)
           PY
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/pdf-delivery-live-audit-status.json
-          git commit -m "Record live PDF delivery audit outcome" || true
-          git pull --rebase origin main
-          git push origin HEAD:main
       - name: Save PDF test screenshots
         if: always()
         uses: actions/upload-artifact@v4
@@ -205,4 +210,5 @@ jobs:
           path: |
             /tmp/hstu-pdf-mobile.png
             /tmp/hstu-pdf-desktop.png
+            docs/pdf-delivery-live-audit-status.json
           if-no-files-found: ignore

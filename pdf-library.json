@@ -512,12 +512,6 @@
       "bytes": 3472226,
       "status": "downloaded"
     },
-    "https://drive.google.com/file/d/${drive[1]}/preview`,external:url,local:false};if(/\\.pdf": {
-      "source": "https://drive.google.com/file/d/${drive[1]}/preview`,external:url,local:false};if(/\\.pdf",
-      "local": null,
-      "preview": null,
-      "status": "external"
-    },
     "https://aidsinfo.nih.gov/contentfiles/lvguidelines/oi_guidelines_pediatrics.pdf": {
       "source": "https://aidsinfo.nih.gov/contentfiles/lvguidelines/oi_guidelines_pediatrics.pdf",
       "local": null,
@@ -582,11 +576,11 @@
     }
   },
   "stats": {
-    "pdf_urls_discovered": 84,
+    "pdf_urls_discovered": 83,
     "localized": 75,
-    "external_remaining": 9,
+    "external_remaining": 8,
     "previews_generated": 75,
-    "failures": 9,
+    "failures": 8,
     "localized_bytes": 164013656
   }
 }

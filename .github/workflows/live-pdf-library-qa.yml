@@ -1,6 +1,8 @@
 name: Live PDF library QA
 on:
   push:
+    branches:
+      - main
     paths:
       - '.github/workflows/live-pdf-library-qa.yml'
       - 'pdf-library.json'
@@ -95,12 +97,20 @@ jobs:
             for(let i=0;i<3;i++){
               const card=refs.nth(i);
               const href=await card.getAttribute('href');
-              ok(href && href.includes('documents/pdf-library/'),name+': official reference '+i+' not local: '+href);
+              const parsed=new URL(href,BASE);
+              const original=card.getAttribute('data-original-pdf-url');
+              const localFile=parsed.pathname.endsWith('/pdf-reader.html')
+                ? parsed.searchParams.get('file') : href;
+              ok(localFile && localFile.includes('documents/pdf-library/'),
+                name+': official reference '+i+' not local: '+href);
+              const meta=Object.values(data.by_url).find(v=>v.local===localFile);
+              ok(meta&&original===meta.source,
+                name+': official reference '+i+' points to wrong source PDF');
               ok(await card.locator('.hstu-pdf-preview-image-930').count()===1,name+': official reference '+i+' lacks preview');
               const img=card.locator('.hstu-pdf-preview-image-930');
               const src=await img.getAttribute('src');
               ok(src && src.includes('media/pdf-previews/'),name+': official preview path '+i);
-              const pdfResp=await page.request.get(new URL(href,BASE).href);
+              const pdfResp=await page.request.get(new URL(localFile,BASE).href);
               ok(pdfResp.ok(),name+': local official PDF '+i+' HTTP '+pdfResp.status());
               const bytes=await pdfResp.body();
               ok(bytes.length>1000 && bytes.subarray(0,5).toString()==='%PDF-',name+': local official PDF invalid '+i);
@@ -123,7 +133,10 @@ jobs:
             ok(await opSection.getByText(/View all 11 operational research/i).count()===0,name+': View all Operational Research text remains');
             ok(await opSection.locator('.hstu-pdf-preview-930 img').count()>=10,name+': Operational Research PDF previews missing');
             const opHref=await opSection.locator('.hstu-pdf-preview-930').first().getAttribute('href');
-            ok(opHref && opHref.includes('documents/pdf-library/'),name+': Operational Research not opening local PDF');
+            const operationalPdf=opHref && new URL(opHref,BASE).pathname.endsWith('/pdf-reader.html')
+              ? new URL(opHref,BASE).searchParams.get('file') : opHref;
+            ok(operationalPdf&&operationalPdf.includes('documents/pdf-library/'),
+              name+': Operational Research not opening local PDF');
 
             await activate(page,'data-audit');
             const auditCards=page.locator('#data-audit-reports .hstu-parity-card');
@@ -133,7 +146,8 @@ jobs:
             // Manifest integrity.
             ok(data.stats.localized===75,name+': expected 75 localized PDFs, got '+data.stats.localized);
             ok(data.stats.previews_generated===75,name+': expected 75 previews, got '+data.stats.previews_generated);
-            ok(data.stats.external_remaining===9,name+': expected 9 external fallbacks, got '+data.stats.external_remaining);
+            ok(data.stats.external_remaining===Object.values(data.by_url).filter(v=>!v.local).length,
+              name+': external fallback count does not match PDF manifest');
 
             if(name==='desktop'){
               await activate(page,'capacity');

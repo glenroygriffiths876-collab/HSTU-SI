@@ -1,0 +1,54 @@
+name: HSTU All-Document Click and Reader Gate
+
+on:
+  push:
+    branches:
+      - 'fix/pdf-document-integrity-20261013'
+    paths:
+      - 'pdf-reader.html'
+      - 'final-refinements-930.js'
+      - 'scripts/hstu-all-documents-browser-audit.mjs'
+      - '.github/workflows/hstu-full-document-click-gate.yml'
+  pull_request:
+    paths:
+      - 'pdf-reader.html'
+      - 'final-refinements-930.js'
+      - 'scripts/hstu-all-documents-browser-audit.mjs'
+      - '.github/workflows/hstu-full-document-click-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-journeys:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned browser and system libraries
+        run: |
+          npm install --no-save playwright@1.57.0
+          npx playwright install --with-deps chromium
+      - name: Start isolated branch build (no live changes)
+        run: |
+          python3 -m http.server 8765 > /tmp/hstu-server.log 2>&1 &
+          echo $! > /tmp/hstu-server.pid
+          sleep 2
+          curl --fail -s http://127.0.0.1:8765/pdf-reader.html > /dev/null
+      - name: Verify every PDF and all eight sections in real browser
+        env:
+          HSTU_TEST_BASE: http://127.0.0.1:8765/
+        run: node scripts/hstu-all-documents-browser-audit.mjs
+      - name: Preserve full audit and mobile evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-pdf-click-and-render-results
+          path: |
+            docs/hstu-all-documents-browser-audit.json
+            /tmp/hstu-mystery-reader.png
+          if-no-files-found: warn
