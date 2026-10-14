@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   reader-acceptance:
@@ -54,20 +54,14 @@ jobs:
           print('HSTU READER RESULT',j['result'])
           for issue in j.get('issues',[]):print('ISSUE',issue)
           PY
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/hstu-pdf-reader-acceptance.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Record PDF reader live phone and desktop acceptance"
-            git pull --rebase origin main
-            git push origin HEAD:main
-          fi
       - name: Preserve phone and desktop screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: hstu-pdf-reader-mobile-and-desktop
-          path: /tmp/hstu-reader-*.png
+          path: |
+            /tmp/hstu-reader-*.png
+            docs/hstu-pdf-reader-acceptance.json
           if-no-files-found: ignore
       - name: Mark failure if reader could not render
         if: always()
