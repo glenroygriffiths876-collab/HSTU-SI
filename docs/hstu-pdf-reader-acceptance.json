@@ -1,6 +1,6 @@
 {
   "suite": "HSTU hosted PDF first-click reader",
-  "checkedAt": "2026-10-14T00:21:57.803Z",
+  "checkedAt": "2026-10-14T00:24:23.220Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "name": "phone: PDF.js loads and renders full first page",
       "result": "FAIL",
-      "reason": "Error: Full PDF did not render: {\"diag\":{\"scriptLoaded\":\"object\",\"pdfjsVersion\":\"3.11.174\",\"worker\":\"./vendor/pdfjs/pdf.worker.min.js\",\"status\":\"The full reader could not finish loading. The first-page preview is shown below; open the original PDF or download it above.\",\"counter\":\"Page 1\",\"cover\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/media/pdf-previews/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.webp\",\"coverVisible\":true,\"canvasHidden\":true},\"readerErrors\":[\"console: HSTU document reader: UnknownErrorException\"]}\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:94:12\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:3"
+      "reason": "Error: Full PDF did not render: {\"diag\":{\"scriptLoaded\":\"object\",\"pdfjsVersion\":\"3.11.174\",\"worker\":\"./vendor/pdfjs/pdf.worker.min.js\",\"status\":\"The full reader could not finish loading. The first-page preview is shown below; open the original PDF or download it above.\",\"counter\":\"Page 1\",\"cover\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/media/pdf-previews/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.webp\",\"coverVisible\":true,\"canvasHidden\":true,\"activePDF\":\"documents/pdf-library/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf\"},\"readerErrors\":[\"console: HSTU document reader: UnknownErrorException\"]}\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:94:12\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:3"
     },
     {
       "name": "phone: next page and original PDF work",
@@ -72,7 +72,7 @@
   "issues": [
     {
       "name": "phone: PDF.js loads and renders full first page",
-      "reason": "Error: Full PDF did not render: {\"diag\":{\"scriptLoaded\":\"object\",\"pdfjsVersion\":\"3.11.174\",\"worker\":\"./vendor/pdfjs/pdf.worker.min.js\",\"status\":\"The full reader could not finish loading. The first-page preview is shown below; open the original PDF or download it above.\",\"counter\":\"Page 1\",\"cover\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/media/pdf-previews/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.webp\",\"coverVisible\":true,\"canvasHidden\":true},\"readerErrors\":[\"console: HSTU document reader: UnknownErrorException\"]}\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:94:12\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:3"
+      "reason": "Error: Full PDF did not render: {\"diag\":{\"scriptLoaded\":\"object\",\"pdfjsVersion\":\"3.11.174\",\"worker\":\"./vendor/pdfjs/pdf.worker.min.js\",\"status\":\"The full reader could not finish loading. The first-page preview is shown below; open the original PDF or download it above.\",\"counter\":\"Page 1\",\"cover\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/media/pdf-previews/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.webp\",\"coverVisible\":true,\"canvasHidden\":true,\"activePDF\":\"documents/pdf-library/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf\"},\"readerErrors\":[\"console: HSTU document reader: UnknownErrorException\"]}\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:94:12\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:3"
     },
     {
       "name": "phone: next page and original PDF work",
@@ -98,8 +98,8 @@
   "source": "Live GitHub Pages",
   "checksPassed": 7,
   "checksFailed": 6,
-  "run_id": "38489703435",
-  "run_url": "https://github.com/glenroygriffiths876-collab/HSTU-SI/actions/runs/38489703435",
-  "source_sha": "206df93e313adcade46a3b2b9ed80db7e801cf68",
+  "run_id": "38489928907",
+  "run_url": "https://github.com/glenroygriffiths876-collab/HSTU-SI/actions/runs/38489928907",
+  "source_sha": "23a047a25d072d4d6c136257b4426b027088dac9",
   "test_step_outcome": "failure"
 }
