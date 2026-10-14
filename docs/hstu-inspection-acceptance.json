@@ -1,13 +1,13 @@
 {
   "title": "HSTU-SI inspection acceptance",
-  "timestamp": "2026-10-14T00:35:26.688Z",
+  "timestamp": "2026-10-14T00:37:34.510Z",
   "target": "https://glenroygriffiths876-collab.github.io/HSTU-SI/",
   "deployedVersion": "PDF fix + restricted manual label confirmed",
   "checks": [
     {
       "name": "Production deployment corresponds to fixed PDF code",
       "status": "PASS",
-      "duration_ms": 288,
+      "duration_ms": 108,
       "detail": "Fixed HTML and service worker served by GitHub Pages"
     },
     {
@@ -19,115 +19,115 @@
     {
       "name": "Every localized PDF and image preview is hosted as correct media",
       "status": "PASS",
-      "duration_ms": 2234,
+      "duration_ms": 990,
       "detail": "150/150 hosted paths return correct content type"
     },
     {
       "name": "Local PDF contains actual PDF bytes",
       "status": "PASS",
-      "duration_ms": 498,
+      "duration_ms": 159,
       "detail": "4 independent documents have PDF magic header"
     },
     {
       "name": "Research catalogue and repository content parse correctly",
       "status": "PASS",
-      "duration_ms": 0,
+      "duration_ms": 1,
       "detail": "Both JSON data sources parsed; 15 thematic areas"
     },
     {
       "name": "phone: cold first-entry renders without blank page",
       "status": "PASS",
-      "duration_ms": 1871,
+      "duration_ms": 2091,
       "detail": "Page ready, full Home text and responsive width"
     },
     {
       "name": "phone: eight sections show the proper view",
       "status": "PASS",
-      "duration_ms": 801,
+      "duration_ms": 852,
       "detail": "home, research, capacity, reports, data-audit, gallery, resources, services"
     },
     {
       "name": "phone: homepage buttons, branding and core collections",
       "status": "PASS",
-      "duration_ms": 10191,
+      "duration_ms": 10208,
       "detail": "Green/red/gold buttons and first clicks; 15 themes; 7 Quick Access"
     },
     {
       "name": "phone: all five Gallery filters work",
       "status": "PASS",
-      "duration_ms": 3217,
+      "duration_ms": 2136,
       "detail": "All 51 | HIV 21 | STI 5 | TB 1 | PrEP 2; all Gallery image URLs valid"
     },
     {
       "name": "phone: 18 Capacity Building manual cards point to real sources",
-      "status": "FAIL",
-      "duration_ms": 11,
-      "reason": "Wrong manual URL prep-handbook-2023 -> https://glenroygriffiths876-collab.github.io/HSTU-SI/pdf-reader.html?file=documents%2Fpdf-library%2Fprep-handbook-complete-final-october-9-2023-1-c39fe0c4.pdf&title=PrEP%20Handbook"
+      "status": "PASS",
+      "duration_ms": 29,
+      "detail": "18/18 correct source links, none point at nonexistent root PDFs"
     },
     {
       "name": "phone: actual PDF reader displays correct document on first tap",
       "status": "PASS",
-      "duration_ms": 3396,
+      "duration_ms": 3230,
       "detail": "One tap loads the correct full PDF page and preserves original PDF"
     },
     {
       "name": "phone: Gia, Gallery and PWA controls remain present",
       "status": "PASS",
-      "duration_ms": 446,
+      "duration_ms": 434,
       "detail": "Gia opens, Gallery exists, PWA actions remain"
     },
     {
       "name": "phone: phone/desktop menu is operable",
       "status": "PASS",
-      "duration_ms": 567,
+      "duration_ms": 568,
       "detail": "Navigation menu + section selection succeeded"
     },
     {
       "name": "phone: JavaScript and layout regression scan",
       "status": "PASS",
-      "duration_ms": 1,
+      "duration_ms": 6,
       "detail": "Zero uncaught JavaScript exceptions; no horizontal overflow"
     },
     {
       "name": "desktop: cold first-entry renders without blank page",
       "status": "PASS",
-      "duration_ms": 2178,
+      "duration_ms": 2512,
       "detail": "Page ready, full Home text and responsive width"
     },
     {
       "name": "desktop: eight sections show the proper view",
       "status": "PASS",
-      "duration_ms": 848,
+      "duration_ms": 929,
       "detail": "home, research, capacity, reports, data-audit, gallery, resources, services"
     },
     {
       "name": "desktop: homepage buttons, branding and core collections",
       "status": "PASS",
-      "duration_ms": 3692,
+      "duration_ms": 3153,
       "detail": "Green/red/gold buttons and first clicks; 15 themes; 7 Quick Access"
     },
     {
       "name": "desktop: all five Gallery filters work",
       "status": "PASS",
-      "duration_ms": 3051,
+      "duration_ms": 2506,
       "detail": "All 51 | HIV 21 | STI 5 | TB 1 | PrEP 2; all Gallery image URLs valid"
     },
     {
       "name": "desktop: 18 Capacity Building manual cards point to real sources",
-      "status": "FAIL",
-      "duration_ms": 11,
-      "reason": "Wrong manual URL prep-handbook-2023 -> https://glenroygriffiths876-collab.github.io/HSTU-SI/pdf-reader.html?file=documents%2Fpdf-library%2Fprep-handbook-complete-final-october-9-2023-1-c39fe0c4.pdf&title=PrEP%20Handbook"
+      "status": "PASS",
+      "duration_ms": 26,
+      "detail": "18/18 correct source links, none point at nonexistent root PDFs"
     },
     {
       "name": "desktop: actual PDF reader displays correct document on first tap",
       "status": "PASS",
-      "duration_ms": 2417,
+      "duration_ms": 2762,
       "detail": "One tap loads the correct full PDF page and preserves original PDF"
     },
     {
       "name": "desktop: Gia, Gallery and PWA controls remain present",
       "status": "PASS",
-      "duration_ms": 413,
+      "duration_ms": 526,
       "detail": "Gia opens, Gallery exists, PWA actions remain"
     },
     {
@@ -139,32 +139,23 @@
     {
       "name": "desktop: JavaScript and layout regression scan",
       "status": "PASS",
-      "duration_ms": 1,
+      "duration_ms": 13,
       "detail": "Zero uncaught JavaScript exceptions; no horizontal overflow"
     }
   ],
-  "failures": [
-    {
-      "name": "phone: 18 Capacity Building manual cards point to real sources",
-      "reason": "Wrong manual URL prep-handbook-2023 -> https://glenroygriffiths876-collab.github.io/HSTU-SI/pdf-reader.html?file=documents%2Fpdf-library%2Fprep-handbook-complete-final-october-9-2023-1-c39fe0c4.pdf&title=PrEP%20Handbook"
-    },
-    {
-      "name": "desktop: 18 Capacity Building manual cards point to real sources",
-      "reason": "Wrong manual URL prep-handbook-2023 -> https://glenroygriffiths876-collab.github.io/HSTU-SI/pdf-reader.html?file=documents%2Fpdf-library%2Fprep-handbook-complete-final-october-9-2023-1-c39fe0c4.pdf&title=PrEP%20Handbook"
-    }
-  ],
+  "failures": [],
   "warnings": [],
   "measurements": {
     "hostedPdfFiles": 75,
     "hostedPreviewFiles": 75,
     "checks": 23,
-    "passed": 21,
-    "failed": 2
+    "passed": 23,
+    "failed": 0
   },
-  "result": "FAIL",
-  "github_run_id": "38490993357",
-  "source_sha": "45752b7b77ba4b6b4e36262847724f34feb09740",
-  "github_run_url": "https://github.com/glenroygriffiths876-collab/HSTU-SI/actions/runs/38490993357",
-  "qa_step_outcome": "failure",
-  "recorded_utc": "2026-10-14T00:36:03.252428+00:00"
+  "result": "PASS",
+  "github_run_id": "38491160682",
+  "source_sha": "280ddd1fbf9862f9c8dee590c76d563da4a5b266",
+  "github_run_url": "https://github.com/glenroygriffiths876-collab/HSTU-SI/actions/runs/38491160682",
+  "qa_step_outcome": "success",
+  "recorded_utc": "2026-10-14T00:38:09.430815+00:00"
 }
