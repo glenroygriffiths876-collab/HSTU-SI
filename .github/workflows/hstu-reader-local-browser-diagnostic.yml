@@ -1,0 +1,66 @@
+name: HSTU PDF Reader Browser Diagnostic (source files)
+on:
+  push:
+    paths:
+      - '.github/workflows/hstu-reader-local-browser-diagnostic.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          npm install --no-save playwright@1.57.0
+          npx playwright install --with-deps chromium
+      - name: Isolated local browser PDF rendering diagnosis
+        run: |
+          python3 -m http.server 8765 >/tmp/hstu-browser-http.log 2>&1 &
+          sleep 2
+          cat > /tmp/hstu-probe.cjs <<'JS'
+          const {chromium}=require(process.cwd()+'/node_modules/playwright');
+          const fs=require('fs');
+          (async()=>{
+            const b=await chromium.launch();
+            const p=await b.newPage();
+            const messages=[],failures=[];
+            p.on('console',m=>{if(['error','warning'].includes(m.type())) messages.push({type:m.type(),text:m.text()})});
+            p.on('pageerror',e=>failures.push(e.message));
+            p.on('requestfailed',r=>failures.push(r.url()+': '+r.failure()?.errorText));
+            const file='documents/pdf-library/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf';
+            await p.goto('http://127.0.0.1:8765/pdf-reader.html?file='+encodeURIComponent(file)+'&title=SI%20Report%20(July%202026)',{waitUntil:'domcontentloaded'});
+            await p.waitForTimeout(14000);
+            const state=await p.evaluate(()=>({lib:typeof pdfjsLib,version:pdfjsLib?.version,
+              active:document.documentElement.dataset.hstuPdfFile,
+              ready:document.documentElement.dataset.hstuPdfReady,
+              failed:document.documentElement.dataset.hstuPdfError,
+              status:document.querySelector('#statusText')?.textContent,
+              preview:document.querySelector('#cover')?.src,
+              canvasVisible:!document.querySelector('#pageCanvas')?.hidden,
+              page:document.querySelector('#counter')?.textContent}));
+            const result={state,messages,failures};
+            console.log('LOCAL BROWSER PDF DIAGNOSTIC',JSON.stringify(result));
+            fs.mkdirSync('docs',{recursive:true});
+            fs.writeFileSync('docs/hstu-local-browser-pdf-diagnostic.json',JSON.stringify(result,null,2)+'\n');
+            await b.close();
+          })().catch(e=>{console.error(e);process.exitCode=1});
+          JS
+          node /tmp/hstu-probe.cjs
+      - name: Store actual source browser diagnosis
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/hstu-local-browser-pdf-diagnostic.json || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Record browser PDF rendering diagnosis without Pages cache"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
