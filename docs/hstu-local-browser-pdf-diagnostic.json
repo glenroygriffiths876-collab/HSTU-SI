@@ -1,14 +1,39 @@
 {
-  "state": {
-    "lib": "object",
-    "version": "3.11.174",
-    "active": "documents/pdf-library/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf",
-    "ready": "1",
-    "status": "Showing the first-page preview while the document opens…",
-    "preview": "http://127.0.0.1:8765/media/pdf-previews/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.webp",
-    "canvasVisible": true,
-    "page": "Page 1 of 55"
-  },
+  "result": "PASS",
+  "results": [
+    {
+      "requested": {
+        "title": "SI Report (July 2026)",
+        "pages": 55,
+        "local": "documents/pdf-library/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf"
+      },
+      "state": {
+        "active": "documents/pdf-library/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf",
+        "title": "SI Report (July 2026)",
+        "ready": "1",
+        "preview": "http://127.0.0.1:8765/media/pdf-previews/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.webp",
+        "canvasVisible": true,
+        "page": "Page 1 of 55",
+        "imageFingerprint": 1215806911
+      }
+    },
+    {
+      "requested": {
+        "title": "SI Quarterly Report (March 2026)",
+        "pages": 61,
+        "local": "documents/pdf-library/8a054d-1479a1a62dc646c79c0da8c220455801-d583c09d.pdf"
+      },
+      "state": {
+        "active": "documents/pdf-library/8a054d-1479a1a62dc646c79c0da8c220455801-d583c09d.pdf",
+        "title": "SI Quarterly Report (March 2026)",
+        "ready": "1",
+        "preview": "http://127.0.0.1:8765/media/pdf-previews/8a054d-1479a1a62dc646c79c0da8c220455801-d583c09d.webp",
+        "canvasVisible": true,
+        "page": "Page 1 of 61",
+        "imageFingerprint": 3819228925
+      }
+    }
+  ],
   "messages": [],
   "failures": []
 }
