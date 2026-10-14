@@ -1,0 +1,60 @@
+name: PDF Parsing Diagnostic (no site changes)
+on:
+  push:
+    paths:
+      - '.github/workflows/hstu-pdfjs-parse-diagnostic.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save pdfjs-dist@3.11.174
+      - name: Independently parse both actual PDFs using same PDF.js version
+        id: probe
+        continue-on-error: true
+        run: |
+          cat > /tmp/hstu-parse.cjs <<'JS'
+          const fs=require('fs');
+          const pdfjs=require(process.cwd()+'/node_modules/pdfjs-dist/legacy/build/pdf.js');
+          const items=[
+            ['July','documents/pdf-library/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf'],
+            ['March','documents/pdf-library/8a054d-1479a1a62dc646c79c0da8c220455801-d583c09d.pdf']
+          ];
+          const outcome=[];
+          (async()=>{
+            for(const [label,path] of items){
+              let result={label,path};
+              try{
+                const data=new Uint8Array(fs.readFileSync(path));
+                const doc=await pdfjs.getDocument({data,disableFontFace:true}).promise;
+                const page=await doc.getPage(1);
+                const text=(await page.getTextContent()).items.map(x=>x.str).join(' ');
+                result={...result,status:'PASS',pages:doc.numPages,opening_text:text.slice(0,450)};
+              }catch(e){result={...result,status:'FAIL',name:e?.name,message:e?.message,stack:e?.stack?.slice(0,1400)}}
+              console.log('PDF.JS PARSE PROBE',JSON.stringify(result));
+              outcome.push(result);
+            }
+            fs.mkdirSync('docs',{recursive:true});
+            fs.writeFileSync('docs/hstu-pdfjs-parse-diagnostic.json',JSON.stringify(outcome,null,2)+'\n');
+            if(outcome.some(x=>x.status!=='PASS'))process.exitCode=1;
+          })();
+          JS
+          node /tmp/hstu-parse.cjs
+      - name: Preserve failure or success evidence
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/hstu-pdfjs-parse-diagnostic.json || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Record independent PDF.js parse diagnosis"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
