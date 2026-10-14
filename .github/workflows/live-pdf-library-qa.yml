@@ -105,7 +105,8 @@ jobs:
                 name+': official reference '+i+' not local: '+href);
               const meta=Object.values(data.by_url).find(v=>v.local===localFile);
               ok(meta&&original===meta.source,
-                name+': official reference '+i+' points to wrong source PDF');
+                name+': official reference '+i+' points to wrong source PDF: '+
+                JSON.stringify({href,localFile,original,manifestSource:meta?.source,manifestLocal:meta?.local}));
               ok(await card.locator('.hstu-pdf-preview-image-930').count()===1,name+': official reference '+i+' lacks preview');
               const img=card.locator('.hstu-pdf-preview-image-930');
               const src=await img.getAttribute('src');
