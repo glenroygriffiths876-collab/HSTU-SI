@@ -180,14 +180,25 @@ try {
       await page.evaluate(()=>window.setView('capacity',{push:false}));
       const items=await page.evaluate(()=>MANUALS.map(m=>({id:m.id,title:m.title,source:manualHref(m)})));
       assert(items.length===18,'Only '+items.length+' manual records');
-      const cardNodes=await page.locator('#manualGrid a[data-open-manual]').evaluateAll(nodes=>nodes.map(x=>({id:x.dataset.openManual,href:x.href})));
+      const cardNodes=await page.locator('#manualGrid a[data-open-manual]').evaluateAll(nodes=>nodes.map(x=>({
+        id:x.dataset.openManual,href:x.href,original:x.dataset.originalPdfUrl||''
+      })));
       assert(cardNodes.length===18,'Only '+cardNodes.length+' manual cards');
       for(const item of items){
         assert(/^https:\/\//i.test(item.source),'Missing remote document: '+item.id);
         const displayed=cardNodes.find(x=>x.id===item.id);
         assert(!!displayed,'No manual card for '+item.id);
-        assert(displayed.href===item.source || displayed.href.includes('/HSTU-SI/documents/pdf-library/'),
-          'Wrong manual URL '+item.id+' -> '+displayed.href);
+        const reader=(()=>{
+          try{
+            const u=new URL(displayed.href);
+            const file=u.searchParams.get('file')||'';
+            return u.pathname.endsWith('/HSTU-SI/pdf-reader.html')
+              && /^documents\/pdf-library\/[a-z0-9_.-]+\.pdf$/i.test(file)
+              && displayed.original===item.source;
+          }catch{return false}
+        })();
+        assert(displayed.href===item.source || displayed.href.includes('/HSTU-SI/documents/pdf-library/') || reader,
+          'Wrong manual document identity '+item.id+' -> '+JSON.stringify(displayed));
       }
       return '18/18 correct source links, none point at nonexistent root PDFs';
     });
