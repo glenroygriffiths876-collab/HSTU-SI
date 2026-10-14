@@ -157,13 +157,29 @@ document.addEventListener('DOMContentLoaded',async()=>{
  try{
   if(!window.pdfjsLib)throw Error('Reader library not available');
   pdfjsLib.GlobalWorkerOptions.workerSrc='./vendor/pdfjs/pdf.worker.min.js';
-  pageState.doc=await pdfjsLib.getDocument({url:pdfURL.href,rangeChunkSize:65536}).promise;
+  // A few GitHub Pages/browser combinations mishandle PDF range loading.
+  // Retry via the complete downloaded binary, preserving the correct file URL.
+  try{
+   pageState.doc=await pdfjsLib.getDocument({url:pdfURL.href,
+     rangeChunkSize:65536,disableAutoFetch:false}).promise;
+  }catch(streamError){
+   console.warn('HSTU PDF range load failed, attempting full binary:',
+     streamError?.name,streamError?.message);
+   const response=await fetch(pdfURL.href,{cache:'no-store'});
+   if(!response.ok)throw Error('PDF download HTTP '+response.status);
+   const data=new Uint8Array(await response.arrayBuffer());
+   if(data[0]!==37||data[1]!==80||data[2]!==68||data[3]!==70||data[4]!==45)
+     throw Error('Document response is not a PDF');
+   pageState.doc=await pdfjsLib.getDocument({data}).promise;
+  }
   pageState.pages=pageState.doc.numPages;
   document.documentElement.dataset.hstuPdfReady='1';
   if(!pageState.pages)throw Error('PDF is empty');
   await draw();
  }catch(e){
-  console.warn('HSTU document reader:',e);
+  const reason=[e?.name,e?.message,e?.stack].filter(Boolean).join(' | ').slice(0,1400);
+  document.documentElement.dataset.hstuPdfError=reason;
+  console.error('HSTU document reader failed:',reason);
   setError('The full reader could not finish loading. The first-page preview is shown below; open the original PDF or download it above.');
  }
 });
