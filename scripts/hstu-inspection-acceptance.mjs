@@ -191,72 +191,35 @@ try {
       }
       return '18/18 correct source links, none point at nonexistent root PDFs';
     });
-    await check(label+': actual PDF click opens document instead of homepage',async()=>{
+    await check(label+': actual PDF reader displays correct document on first tap',async()=>{
       await page.evaluate(()=>window.setView('capacity',{push:false}));
-      const target=page.locator('#view-capacity a.external-ref[href*="documents/pdf-library/"]').first();
-      assert(await target.count()===1,'No visible localized document link to test');
+      await page.waitForTimeout(250);
+      const target=page.locator('#view-capacity a.external-ref[href*="pdf-reader.html?file="]').first();
+      assert(await target.count()===1,'No localized PDF reader link in Capacity Building');
       const href=await target.getAttribute('href');
-      await page.evaluate(()=>{
-        window.__hstuClickDiagnostic={captured:[],prevented:[]};
-        const old=Event.prototype.preventDefault;
-        Event.prototype.preventDefault=function(){
-          if(this.type==='click'&&this.target?.closest?.('a.external-ref')){
-            window.__hstuClickDiagnostic.prevented.push(new Error('preventDefault stack').stack?.slice(0,1200));
-          }
-          return old.apply(this,arguments);
-        };
-        document.addEventListener('click',e=>{
-          const a=e.target?.closest?.('a.external-ref');
-          if(a)window.__hstuClickDiagnostic.captured.push({phase:'capture',href:a.href,defaultPrevented:e.defaultPrevented,tag:e.target.tagName});
-        },true);
-        document.addEventListener('click',e=>{
-          const a=e.target?.closest?.('a.external-ref');
-          if(a)window.__hstuClickDiagnostic.captured.push({phase:'bubble',href:a.href,defaultPrevented:e.defaultPrevented,tag:e.target.tagName});
-        });
-      });
-      const pdfTraffic={requests:[],responses:[]};
-      context.on('request',req=>{
-        if(/\.pdf(?:[?#]|$)/i.test(req.url()))
-          pdfTraffic.requests.push({url:req.url(),method:req.method()});
-      });
-      context.on('response',resp=>{
-        if(/\.pdf(?:[?#]|$)/i.test(resp.url()))
-          pdfTraffic.responses.push({url:resp.url(),status:resp.status(),
-            type:resp.headers()['content-type']||''});
-      });
-      // Headless Chromium can download PDFs instead of creating a PDF viewer tab.
-      // Both are valid one-tap outcomes, but Home HTML is never valid.
-      const popupPromise=context.waitForEvent('page',{timeout:10000})
-        .then(p=>({kind:'tab',page:p})).catch(()=>null);
-      const downloadPromise=page.waitForEvent('download',{timeout:10000})
-        .then(d=>({kind:'download',filename:d.suggestedFilename(),url:d.url()})).catch(()=>null);
+      const expected=new URL(href,BASE).searchParams.get('file');
+      assert(/^documents\/pdf-library\/.+\.pdf$/i.test(expected),'Invalid reader file '+expected);
+      const popupPromise=page.waitForEvent('popup',{timeout:15000});
       await target.click();
-      const [tab,download]=await Promise.all([popupPromise,downloadPromise]);
-      let raw=tab?.page?.url()||download?.url||'';
-      if(!tab&&!download){
-        await page.waitForTimeout(900);
-        const expectedPDF=new URL(href,BASE).href;
-        const actualResponse=pdfTraffic.responses.find(x=>x.url===expectedPDF &&
-          x.status>=200 && x.status<300 && /application\/pdf/i.test(x.type));
-        const actualRequest=pdfTraffic.requests.find(x=>x.url===expectedPDF && x.method==='GET');
-        if(actualRequest && actualResponse)
-          return 'One-tap PDF GET and application/pdf response verified (Chromium viewer window not exposed)';
-        const linkState=await target.evaluate(el=>({
-          href:el.href,rawHref:el.getAttribute('href'),target:el.target,
-          outerHTML:el.outerHTML.slice(0,500),
-          defaultView:location.href,connected:el.isConnected,
-          active:document.querySelector('.view.active')?.id
-        })).catch(e=>({error:String(e)}));
-        const debug=await page.evaluate(()=>window.__hstuClickDiagnostic||{}).catch(()=>({}));
-        const topState={pageUrl:page.url(),target:href,linkState,debug,pdfTraffic};
-        throw Error('PDF tap produced no new tab/download: '+JSON.stringify(topState));
-      }
-      assert(/\.pdf(?:$|[?#])/.test(raw),'PDF click opened wrong kind of URL: '+raw);
-      const checkResponse=await get(raw,{method:'HEAD'});
-      assert(checkResponse.ok&&/application\/pdf/i.test(checkResponse.headers.get('content-type')||''),
-        'PDF click not real PDF: '+checkResponse.status+' '+checkResponse.headers.get('content-type'));
-      if(tab?.page)await tab.page.close();
-      return 'One tap '+(tab?'opened PDF tab':'downloaded PDF')+' '+href;
+      const reader=await popupPromise;
+      try{
+        await reader.waitForLoadState('domcontentloaded',{timeout:20000});
+        assert(reader.url().includes('/pdf-reader.html?file='),'Click opened wrong destination '+reader.url());
+        await reader.waitForFunction(()=>document.documentElement.dataset.hstuPdfReady==='1' &&
+          document.querySelector('#pageCanvas')?.width>100 && !document.querySelector('#pageCanvas').hidden,
+          null,{timeout:22000});
+        const state=await reader.evaluate(()=>({
+          file:document.documentElement.dataset.hstuPdfFile,
+          original:document.querySelector('#original')?.href,
+          firstPage:document.querySelector('#counter')?.textContent
+        }));
+        assert(state.file===expected,'Reader opened WRONG document: '+JSON.stringify(state));
+        assert(state.original.endsWith(expected),'Original PDF mismatch: '+JSON.stringify(state));
+        const resp=await get(state.original,{method:'HEAD'});
+        assert(resp.ok&&/application\/pdf/i.test(resp.headers.get('content-type')||''),
+          'Reader original file is not a real PDF');
+        return 'One tap loads the correct full PDF page and preserves original PDF';
+      }finally{await reader.close();}
     });
     await check(label+': Gia, Gallery and PWA controls remain present',async()=>{
       const fab=page.locator('#clinicalFab');
