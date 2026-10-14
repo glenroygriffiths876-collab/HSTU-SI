@@ -9,6 +9,8 @@
 <style>
 :root{color-scheme:light;--ink:#1d3125;--green:#146a3a;--red:#ba2934;--gold:#edb937}
 *{box-sizing:border-box}
+/* Explicit hidden-state protection: author display:flex/block rules override the browser's default hidden styling. */
+[hidden]{display:none!important}
 body{margin:0;background:#f2f5ef;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 header{background:#fff;border-bottom:3px solid var(--gold);box-shadow:0 2px 12px #112e1c13;padding:12px max(16px,env(safe-area-inset-left));display:flex;align-items:center;gap:12px}
 header img{width:38px;height:38px;object-fit:contain;border-radius:8px}
@@ -129,6 +131,7 @@ async function draw(){
   canvas.hidden=false;
   el('cover').hidden=true;
   el('status').hidden=true;
+  document.documentElement.dataset.hstuPdfRendered=String(pageState.num);
   updateButtons();
   stage.scrollTo({top:0,left:0,behavior:'instant'});
  }catch(e){
