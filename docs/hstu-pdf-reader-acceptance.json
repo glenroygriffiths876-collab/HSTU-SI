@@ -1,6 +1,6 @@
 {
   "suite": "HSTU hosted PDF first-click reader",
-  "checkedAt": "2026-10-14T00:16:08.994Z",
+  "checkedAt": "2026-10-14T00:19:27.429Z",
   "result": "FAIL",
   "checks": [
     {
@@ -80,8 +80,8 @@
   "source": "Live GitHub Pages",
   "checksPassed": 7,
   "checksFailed": 4,
-  "run_id": "38489127550",
-  "run_url": "https://github.com/glenroygriffiths876-collab/HSTU-SI/actions/runs/38489127550",
-  "source_sha": "7a45c81641656745a9ab2ce7e0617346ddd447df",
+  "run_id": "38489450865",
+  "run_url": "https://github.com/glenroygriffiths876-collab/HSTU-SI/actions/runs/38489450865",
+  "source_sha": "091efa2b06403cd5f25c87f952a24ab08c23fc8e",
   "test_step_outcome": "failure"
 }
