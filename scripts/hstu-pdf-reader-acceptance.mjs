@@ -18,7 +18,7 @@ async function waitPublished(){
    fetch(BASE+'vendor/pdfjs/pdf.min.js?readerqa='+Date.now(),{cache:'no-store'}).catch(()=>null),
    fetch(BASE+'vendor/pdfjs/pdf.worker.min.js?readerqa='+Date.now(),{cache:'no-store'}).catch(()=>null)
   ]);
-  if(h.includes("function readerHref930(file,title)")&&r.includes('Showing the first-page preview')
+  if(h.includes("function readerHref930(file,title)")&&r.includes('attempting full binary')
    &&js?.ok&&w?.ok)return;
   await pause(8000);
  }
