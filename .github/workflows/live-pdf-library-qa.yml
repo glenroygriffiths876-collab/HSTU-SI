@@ -98,7 +98,7 @@ jobs:
               const card=refs.nth(i);
               const href=await card.getAttribute('href');
               const parsed=new URL(href,BASE);
-              const original=card.getAttribute('data-original-pdf-url');
+              const original=await card.getAttribute('data-original-pdf-url');
               const localFile=parsed.pathname.endsWith('/pdf-reader.html')
                 ? parsed.searchParams.get('file') : href;
               ok(localFile && localFile.includes('documents/pdf-library/'),
