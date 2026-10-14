@@ -1,0 +1,43 @@
+name: Prepare HSTU PDF reader assets
+
+on:
+  push:
+    paths:
+      - '.github/workflows/vendor-hstu-pdf-reader.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  vendor-pdfjs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Pin and vendor Mozilla PDF.js 3.11.174 (Apache 2.0)
+        run: |
+          set -euo pipefail
+          mkdir -p vendor/pdfjs /tmp/hstu-pdfjs
+          cd /tmp/hstu-pdfjs
+          npm pack pdfjs-dist@3.11.174 --silent
+          tar -xzf pdfjs-dist-3.11.174.tgz
+          cp package/build/pdf.min.js "$GITHUB_WORKSPACE/vendor/pdfjs/pdf.min.js"
+          cp package/build/pdf.worker.min.js "$GITHUB_WORKSPACE/vendor/pdfjs/pdf.worker.min.js"
+          cp package/LICENSE "$GITHUB_WORKSPACE/vendor/pdfjs/LICENSE"
+          node -e "const fs=require('fs');for(const n of ['pdf.min.js','pdf.worker.min.js']){const size=fs.statSync(process.env.GITHUB_WORKSPACE+'/vendor/pdfjs/'+n).size;if(size<100000)throw Error('Incomplete '+n+': '+size);console.log(n,size)}"
+      - name: Commit browser library without editing website code
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add vendor/pdfjs/pdf.min.js vendor/pdfjs/pdf.worker.min.js vendor/pdfjs/LICENSE
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Vendor pinned Mozilla PDF.js for fast offline-capable document reader"
+          git pull --rebase origin main
+          git push origin HEAD:main
