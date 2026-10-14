@@ -1,0 +1,120 @@
+{
+  "hosted": {
+    "sti-handbook-2026": {
+      "source": "https://drive.google.com/file/d/15Ag_YV7T-DOsLUFvDov90_NM-fLmTn3J/view",
+      "local": "documents/pdf-library/capacity-sti-handbook-2026.pdf",
+      "preview": "media/pdf-previews/capacity-sti-handbook-2026.webp",
+      "bytes": 1432942,
+      "sha256": "5fda07e1810de4c9a60e2035bbf1ba82632f711c02c754e7cc940c4414ab0419",
+      "status": "downloaded"
+    },
+    "hiv-clinical-2020": {
+      "source": "https://drive.google.com/file/d/1bpsDUxsDYgkVaXrBtuc68CU6yCgA1rdv/view",
+      "local": "documents/pdf-library/capacity-hiv-clinical-2020.pdf",
+      "preview": "media/pdf-previews/capacity-hiv-clinical-2020.webp",
+      "bytes": 2464085,
+      "sha256": "23c9344e0aafdf78149456ec49b43aa264576cad5868ed7505494f6e530a572a",
+      "status": "downloaded"
+    },
+    "sti-manual-2020": {
+      "source": "https://drive.google.com/file/d/18R3GFXNIYtUDguGPGmVekRMY18sbjx5g/view",
+      "local": "documents/pdf-library/capacity-sti-manual-2020.pdf",
+      "preview": "media/pdf-previews/capacity-sti-manual-2020.webp",
+      "bytes": 3481787,
+      "sha256": "9a6fc1b30b29bc0091eb12924b9154b92d6516e0a5fa220a3258affadd5a38db",
+      "status": "downloaded"
+    },
+    "tb-2021": {
+      "source": "https://drive.google.com/file/d/1Smuz3Bqm09I7udxvlE-osIZKixiCBYxb/view",
+      "local": "documents/pdf-library/capacity-tb-2021.pdf",
+      "preview": "media/pdf-previews/capacity-tb-2021.webp",
+      "bytes": 3119945,
+      "sha256": "764f51a8deeaf8b40a6763a49124bfc48fd19337c26ed0fbd1d6dccb6c9d6214",
+      "status": "downloaded"
+    },
+    "pmtct-2020": {
+      "source": "https://drive.google.com/file/d/1lDjJNU1zdmptgdXuhDYdKzT_kNCsY5Xv/view",
+      "local": "documents/pdf-library/capacity-pmtct-2020.pdf",
+      "preview": "media/pdf-previews/capacity-pmtct-2020.webp",
+      "bytes": 2219506,
+      "sha256": "936515cf7622b7e5af3837c2d887e80be7256f0ab6248e41d0e0a89617bea012",
+      "status": "downloaded"
+    },
+    "paediatric-2021": {
+      "source": "https://drive.google.com/file/d/1yt-9Za2EZLeBBWT_h80wjFUZnBJ64fBo/view",
+      "local": "documents/pdf-library/capacity-paediatric-2021.pdf",
+      "preview": "media/pdf-previews/capacity-paediatric-2021.webp",
+      "bytes": 1351904,
+      "sha256": "da4a01b19801e280ede454bebeaa30c7515a36764b8cc3cf713c9a77992b0a69",
+      "status": "downloaded"
+    },
+    "prep-implementation-2025": {
+      "source": "https://drive.google.com/file/d/1maP4824o5bv75_N7mKHVr7uRkSeJZbAT/view",
+      "local": "documents/pdf-library/capacity-prep-implementation-2025.pdf",
+      "preview": "media/pdf-previews/capacity-prep-implementation-2025.webp",
+      "bytes": 4010198,
+      "sha256": "dee2fde4c6d56cd597276d60d2487b6b77542e3e367b52826a26c3b43e33b0af",
+      "status": "downloaded"
+    },
+    "ci-field-2025": {
+      "source": "https://drive.google.com/file/d/1SqBmSquvVqqE6fwPCouiCpjxHVS1hgNQ/view",
+      "local": "documents/pdf-library/capacity-ci-field-2025.pdf",
+      "preview": "media/pdf-previews/capacity-ci-field-2025.webp",
+      "bytes": 5240855,
+      "sha256": "b2cc672eb3a46f07c3041814695757b448a91cfef91af0ac942e11a7b6b4e3ba",
+      "status": "downloaded"
+    },
+    "disclosure-2021": {
+      "source": "https://drive.google.com/file/d/1ohTn_SmKE3ZUkDYS9OhOwfLmvSJpkWPp/view",
+      "local": "documents/pdf-library/capacity-disclosure-2021.pdf",
+      "preview": "media/pdf-previews/capacity-disclosure-2021.webp",
+      "bytes": 853570,
+      "sha256": "21f3ad4abf83506c0cfea42d0d92964c0f68f769b018f72c22354d04e3a64eac",
+      "status": "downloaded"
+    },
+    "linkage-retention": {
+      "source": "https://drive.google.com/file/d/1U6kRcpG984hZyz536bz6hzQL1b_cBw6R/view",
+      "local": "documents/pdf-library/capacity-linkage-retention.pdf",
+      "preview": "media/pdf-previews/capacity-linkage-retention.webp",
+      "bytes": 4252510,
+      "sha256": "29cced26c41cbcba5619bafa24f76a4dbfc9e0f12e2f8a21dad45ae67f7a66ff",
+      "status": "downloaded"
+    },
+    "pitc": {
+      "source": "https://drive.google.com/file/d/1EwlhYB-ZCTkJ_luhV9sOo0jeqrvbR9E6/view",
+      "local": "documents/pdf-library/capacity-pitc.pdf",
+      "preview": "media/pdf-previews/capacity-pitc.webp",
+      "bytes": 11178059,
+      "sha256": "e42c53288b8104aea86c773e1f1cc63a2367dc6e5b248fb7d219d7c08561593b",
+      "status": "downloaded"
+    },
+    "dhis2-2026": {
+      "source": "https://drive.google.com/file/d/1WM0-K1qkvgO-5Z1n1rCg5eP8T-vGOLNx/view",
+      "local": "documents/pdf-library/capacity-dhis2-2026.pdf",
+      "preview": "media/pdf-previews/capacity-dhis2-2026.webp",
+      "bytes": 5488116,
+      "sha256": "b0d26f05526b4379a7b8fe98f4700d1d62545db4f2ed27366d0ac2232259fa72",
+      "status": "downloaded"
+    },
+    "tsis2-2026": {
+      "source": "https://drive.google.com/file/d/1yy7IGq4eiauZ6HoYvUO9fNNuLHJOU5BK/view",
+      "local": "documents/pdf-library/capacity-tsis2-2026.pdf",
+      "preview": "media/pdf-previews/capacity-tsis2-2026.webp",
+      "bytes": 14916709,
+      "sha256": "3484fdfc55ef69bfe859cad1a2c8e29c6e3fd9246bba272b8f05399feff58515",
+      "status": "downloaded"
+    },
+    "nsp-2023-2030": {
+      "source": "https://drive.google.com/file/d/14i6aH8agpCZSncBY3RWDKHuPkTu4LXui/view",
+      "local": "documents/pdf-library/capacity-nsp-2023-2030.pdf",
+      "preview": "media/pdf-previews/capacity-nsp-2023-2030.webp",
+      "bytes": 4524064,
+      "sha256": "0052b6bab2ba6e5d08c44b2da749cd009ab9510d33dc881709cc49c0b8c43b14",
+      "status": "downloaded"
+    }
+  },
+  "restricted": {
+    "id": "pitc-facilitator",
+    "published": false
+  }
+}
