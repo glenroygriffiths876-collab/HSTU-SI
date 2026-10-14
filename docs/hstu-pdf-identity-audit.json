@@ -1,36 +1,12 @@
 {
   "result": "REVIEW_REQUIRED",
-  "generated": "2026-10-13T23:23:42.920571+00:00",
+  "generated": "2026-10-14T00:21:02.424201+00:00",
   "total_hosted_pdfs": 75,
   "structural_failures": 0,
-  "low_title_similarity": 4,
+  "low_title_similarity": 1,
   "no_meaningful_extractable_text": 3,
   "duplicate_content_groups": 1,
   "strong_mismatch_candidates": [
-    {
-      "titles": [
-        "TCS Annual Forum Poster 1"
-      ],
-      "file": "documents/pdf-library/8a054d-1f06dc50326b4836a2fdf20ac5a53369-4bd64c9e.pdf",
-      "score": 0.0,
-      "cover_excerpt": "Treatment Interruption and Mortality among Persons Living with HIV Initiating Antiretroviral Treatment in Jamaica Sharlene Beckford Jarrett1, Sally Stephens1, Tiffany Butterfield2, Alisha Robb-Allen2, Janeil Williams1, Kelly-Ann G"
-    },
-    {
-      "titles": [
-        "TCS Annual Forum Poster 2"
-      ],
-      "file": "documents/pdf-library/8a054d-9397627194fb4426b80cc8067aad32ad-063ff9a7.pdf",
-      "score": 0.0,
-      "cover_excerpt": "Factors Associated with Very Late Presentation Among PLHIV in Southern Jamaica K.Trought, O. Kupa, S. Beckford-Jarrett, R. Khan-Francis, T. Butterfield Introduction Results Cont\u2019d Despite programmatic efforts, advanced Table 1- So"
-    },
-    {
-      "titles": [
-        "TCS Annual Forum Poster 3"
-      ],
-      "file": "documents/pdf-library/8a054d-f79974bc4057439f847eb7d1d9744fb6-18668003.pdf",
-      "score": 0.0,
-      "cover_excerpt": "30 Years of Advancement and Challenges in Early HIV Diagnosis in Jamaica D Perry, R Khan-Francis, S Beckford Jarrett, J Lawrence, A Robb-Allen, W McFarland, N Skyers Background The first case of HIV in Jamaica was reported in 1982"
-    },
     {
       "titles": [
         "Operational Research Abstracts - HSTU Studies 2025"
@@ -54,13 +30,31 @@
         },
         {
           "local": "documents/pdf-library/8a054d-9a00af4364d243b19f3cd6ad48d2d126-f0d10937.pdf",
-          "titles": [
-            "HIV/AIDS Knowledge, Attitudes and Behaviour Survey, Jamaica (2024)"
-          ],
+          "titles": [],
           "cover_excerpt": "Report MSM and TGW Survey 2024 in Jamaica To Client JAMAICA AIDS SUPPORT FOR LIFE (JASL) Prepared by Dr J Peter Figueroa OJ On Behalf of A-Z Information Jamaica Limited 4 March 2025 CONTACT INFORMATION: THE E-BIZ CENTRE / 2 TRAFAL",
-          "title_word_score": 0.667
+          "title_word_score": null
         }
       ]
+    }
+  ],
+  "report_cover_identity": [
+    {
+      "file": "documents/pdf-library/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf",
+      "titles": [
+        "SI Report (July 2026)"
+      ],
+      "pages": 55,
+      "first_text_excerpt": "1 Table of Contents HIV Prevention..\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u20263 PMTCT\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026.14 HIV Treatment..\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u202618 STI..\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026...... 32 Tuberculosis.\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026.....46 Health Information Syst",
+      "sha256": "9769eb169b6abdb68f836db99782174f5123133d4b378d98769714e007489aea"
+    },
+    {
+      "file": "documents/pdf-library/8a054d-1479a1a62dc646c79c0da8c220455801-d583c09d.pdf",
+      "titles": [
+        "SI Quarterly Report (March 2026)"
+      ],
+      "pages": 61,
+      "first_text_excerpt": "Reporting Month: April 2026 Reporting Period: March 2026 Table of Contents HIV Prevention\u200b \u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026......2 PMTCT\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026....13 HIV Treatment \u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u202617 STI \u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026...43 ",
+      "sha256": "9d905a6ac6c46ec27ea431b8b2da1afe85a5d9ac7d903b6bcd63b9194fcd8a2e"
     }
   ],
   "structural_errors": [],
@@ -83,7 +77,7 @@
     }
   ],
   "caution": "Automated title-text similarity is a screening tool, not human validation of identity. Image-only PDFs can lack extractable text.",
-  "workflow_run_id": "38483931439",
-  "source_sha": "fb0fc36a32ccb550a42d1cd34902b9d9ac9df0c1",
+  "workflow_run_id": "38489632951",
+  "source_sha": "f364f06c94ebc38b6e0e2aaa07199aae0e610e89",
   "workflow_step_outcome": "success"
 }
