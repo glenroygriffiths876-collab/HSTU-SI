@@ -97,6 +97,74 @@ try{
    requireTrue(response.ok&&/application\/pdf/i.test(response.headers.get('content-type')||''),'Original document does not return PDF');
    return 'Page 2 renders; original '+href;
   });
+
+  await check(kind+': switching July and March reports opens two DISTINCT correct PDFs',async()=>{
+   const cases=[
+    {title:'SI Report (July 2026)',
+     local:'documents/pdf-library/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf',
+     id:'089d438912ef4d23a90c6a211e3c9f05'},
+    {title:'SI Quarterly Report (March 2026)',
+     local:'documents/pdf-library/8a054d-1479a1a62dc646c79c0da8c220455801-d583c09d.pdf',
+     id:'1479a1a62dc646c79c0da8c220455801'}
+   ];
+   const observations=[];
+   for(const item of cases){
+    await page.evaluate(()=>window.setView('reports',{push:false}));
+    await page.waitForTimeout(160);
+    const cards=page.locator('#view-reports article.hstu-refine-card');
+    const card=cards.filter({has:page.getByRole('heading',{name:item.title,exact:true})});
+    requireTrue(await card.count()===1,'Expected one card for '+item.title+', received '+await card.count());
+    const link=card.locator('a[href*="pdf-reader.html"]').first();
+    requireTrue(await link.count()===1,'Reader link missing on '+item.title);
+    const raw=await link.getAttribute('href');
+    requireTrue(decodeURIComponent(raw).includes(item.local),
+      'Card for '+item.title+' points to WRONG PDF '+raw);
+    const pop=page.waitForEvent('popup',{timeout:18000});
+    await link.click({timeout:18000});
+    const opened=await pop;
+    try{
+     await opened.waitForLoadState('domcontentloaded',{timeout:20000});
+     const url=new URL(opened.url());
+     requireTrue(url.pathname.endsWith('/pdf-reader.html'),'Wrong destination '+url.href);
+     requireTrue(url.searchParams.get('file')===item.local,
+       'Clicked '+item.title+' but opened '+url.searchParams.get('file'));
+     requireTrue(url.searchParams.get('title')===item.title,
+       'Displayed title URL disagrees with clicked title: '+url.searchParams.get('title'));
+     await opened.waitForFunction(()=>
+       document.documentElement.dataset.hstuPdfReady==='1' &&
+       document.querySelector('#pageCanvas')?.width>50 &&
+       !document.querySelector('#pageCanvas')?.hidden,
+       null,{timeout:50000});
+     const details=await opened.evaluate(()=>{
+      const p=document.documentElement.dataset.hstuPdfFile;
+      const cover=document.querySelector('#cover')?.src||'';
+      const orig=document.querySelector('#original')?.href||'';
+      const canvas=document.querySelector('#pageCanvas');
+      // Hash the page pixels to guarantee distinct visual content, not merely distinct paths.
+      const raw=canvas.toDataURL('image/png');
+      let hash=2166136261;
+      for(let i=0;i<raw.length;i++) hash=Math.imul(hash^raw.charCodeAt(i),16777619)>>>0;
+      return {file:p,title:document.querySelector('h1')?.textContent,
+       cover,original:orig,renderHash:hash,renderLength:raw.length,
+       pages:document.querySelector('#counter')?.textContent};
+     });
+     requireTrue(details.file===item.local,'Reader silently reused previous PDF: '+JSON.stringify(details));
+     requireTrue(details.title===item.title,'Title mismatched on '+JSON.stringify(details));
+     requireTrue(details.original.endsWith(item.local),'Original PDF mismatched '+details.original);
+     requireTrue(details.cover.includes(item.id),'Wrong thumbnail shown for '+item.title+': '+details.cover);
+     observations.push(details);
+     await opened.screenshot({path:'/tmp/hstu-reader-'+kind+'-'+(observations.length===1?'july':'march')+'.png'});
+    }finally{await opened.close();}
+   }
+   requireTrue(observations.length===2,'Did not complete both reports');
+   requireTrue(observations[0].file!==observations[1].file,'Both reports use the SAME file');
+   requireTrue(observations[0].renderHash!==observations[1].renderHash,
+     'Both reports rendered identical pages despite different titles');
+   return {verified:[
+    {title:observations[0].title,source:observations[0].file,pageHash:observations[0].renderHash},
+    {title:observations[1].title,source:observations[1].file,pageHash:observations[1].renderHash}
+   ],distinctRenderedPages:true};
+  });
   await check(kind+': original site and reader retain mobile-safe UI',async()=>{
    const a=await page.evaluate(()=>({viewport:innerWidth,document:document.documentElement.scrollWidth}));
    const b=await popup.evaluate(()=>({viewport:innerWidth,document:document.documentElement.scrollWidth}));
