@@ -1,6 +1,6 @@
 {
   "suite": "HSTU hosted PDF first-click reader",
-  "checkedAt": "2026-10-14T00:19:27.429Z",
+  "checkedAt": "2026-10-14T00:21:57.803Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,12 +21,17 @@
     {
       "name": "phone: PDF.js loads and renders full first page",
       "result": "FAIL",
-      "reason": "page.waitForFunction: Timeout 50000ms exceeded.\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:73:16\n    at check (/home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:25)\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:9"
+      "reason": "Error: Full PDF did not render: {\"diag\":{\"scriptLoaded\":\"object\",\"pdfjsVersion\":\"3.11.174\",\"worker\":\"./vendor/pdfjs/pdf.worker.min.js\",\"status\":\"The full reader could not finish loading. The first-page preview is shown below; open the original PDF or download it above.\",\"counter\":\"Page 1\",\"cover\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/media/pdf-previews/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.webp\",\"coverVisible\":true,\"canvasHidden\":true},\"readerErrors\":[\"console: HSTU document reader: UnknownErrorException\"]}\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:94:12\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:3"
     },
     {
       "name": "phone: next page and original PDF work",
       "result": "FAIL",
-      "reason": "Error: Report unexpectedly has only one page\n    at requireTrue (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:7:45)\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:91:4\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:87:3"
+      "reason": "Error: Report unexpectedly has only one page\n    at requireTrue (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:7:45)\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:109:4\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:105:3"
+    },
+    {
+      "name": "phone: switching July and March reports opens two DISTINCT correct PDFs",
+      "result": "FAIL",
+      "reason": "page.waitForFunction: Timeout 15000ms exceeded.\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:151:19\n    at async check (/home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:119:3"
     },
     {
       "name": "phone: original site and reader retain mobile-safe UI",
@@ -46,12 +51,17 @@
     {
       "name": "desktop: PDF.js loads and renders full first page",
       "result": "FAIL",
-      "reason": "page.waitForFunction: Timeout 50000ms exceeded.\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:73:16\n    at check (/home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:25)\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:9"
+      "reason": "Error: Full PDF did not render: {\"diag\":{\"scriptLoaded\":\"object\",\"pdfjsVersion\":\"3.11.174\",\"worker\":\"./vendor/pdfjs/pdf.worker.min.js\",\"status\":\"The full reader could not finish loading. The first-page preview is shown below; open the original PDF or download it above.\",\"counter\":\"Page 1\",\"cover\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/media/pdf-previews/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.webp\",\"coverVisible\":true,\"canvasHidden\":true,\"activePDF\":\"documents/pdf-library/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf\"},\"readerErrors\":[\"console: HSTU document reader: UnknownErrorException\"]}\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:94:12\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:3"
     },
     {
       "name": "desktop: next page and original PDF work",
       "result": "FAIL",
-      "reason": "Error: Report unexpectedly has only one page\n    at requireTrue (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:7:45)\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:91:4\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:87:3"
+      "reason": "Error: Report unexpectedly has only one page\n    at requireTrue (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:7:45)\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:109:4\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:105:3"
+    },
+    {
+      "name": "desktop: switching July and March reports opens two DISTINCT correct PDFs",
+      "result": "FAIL",
+      "reason": "page.waitForFunction: Timeout 15000ms exceeded.\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:151:19\n    at async check (/home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:119:3"
     },
     {
       "name": "desktop: original site and reader retain mobile-safe UI",
@@ -62,26 +72,34 @@
   "issues": [
     {
       "name": "phone: PDF.js loads and renders full first page",
-      "reason": "page.waitForFunction: Timeout 50000ms exceeded.\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:73:16\n    at check (/home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:25)\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:9"
+      "reason": "Error: Full PDF did not render: {\"diag\":{\"scriptLoaded\":\"object\",\"pdfjsVersion\":\"3.11.174\",\"worker\":\"./vendor/pdfjs/pdf.worker.min.js\",\"status\":\"The full reader could not finish loading. The first-page preview is shown below; open the original PDF or download it above.\",\"counter\":\"Page 1\",\"cover\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/media/pdf-previews/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.webp\",\"coverVisible\":true,\"canvasHidden\":true},\"readerErrors\":[\"console: HSTU document reader: UnknownErrorException\"]}\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:94:12\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:3"
     },
     {
       "name": "phone: next page and original PDF work",
-      "reason": "Error: Report unexpectedly has only one page\n    at requireTrue (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:7:45)\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:91:4\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:87:3"
+      "reason": "Error: Report unexpectedly has only one page\n    at requireTrue (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:7:45)\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:109:4\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:105:3"
+    },
+    {
+      "name": "phone: switching July and March reports opens two DISTINCT correct PDFs",
+      "reason": "page.waitForFunction: Timeout 15000ms exceeded.\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:151:19\n    at async check (/home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:119:3"
     },
     {
       "name": "desktop: PDF.js loads and renders full first page",
-      "reason": "page.waitForFunction: Timeout 50000ms exceeded.\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:73:16\n    at check (/home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:25)\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:9"
+      "reason": "Error: Full PDF did not render: {\"diag\":{\"scriptLoaded\":\"object\",\"pdfjsVersion\":\"3.11.174\",\"worker\":\"./vendor/pdfjs/pdf.worker.min.js\",\"status\":\"The full reader could not finish loading. The first-page preview is shown below; open the original PDF or download it above.\",\"counter\":\"Page 1\",\"cover\":\"https://glenroygriffiths876-collab.github.io/HSTU-SI/media/pdf-previews/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.webp\",\"coverVisible\":true,\"canvasHidden\":true,\"activePDF\":\"documents/pdf-library/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf\"},\"readerErrors\":[\"console: HSTU document reader: UnknownErrorException\"]}\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:94:12\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:3"
     },
     {
       "name": "desktop: next page and original PDF work",
-      "reason": "Error: Report unexpectedly has only one page\n    at requireTrue (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:7:45)\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:91:4\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:87:3"
+      "reason": "Error: Report unexpectedly has only one page\n    at requireTrue (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:7:45)\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:109:4\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:105:3"
+    },
+    {
+      "name": "desktop: switching July and March reports opens two DISTINCT correct PDFs",
+      "reason": "page.waitForFunction: Timeout 15000ms exceeded.\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:151:19\n    at async check (/home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:119:3"
     }
   ],
   "source": "Live GitHub Pages",
   "checksPassed": 7,
-  "checksFailed": 4,
-  "run_id": "38489450865",
-  "run_url": "https://github.com/glenroygriffiths876-collab/HSTU-SI/actions/runs/38489450865",
-  "source_sha": "091efa2b06403cd5f25c87f952a24ab08c23fc8e",
+  "checksFailed": 6,
+  "run_id": "38489703435",
+  "run_url": "https://github.com/glenroygriffiths876-collab/HSTU-SI/actions/runs/38489703435",
+  "source_sha": "206df93e313adcade46a3b2b9ed80db7e801cf68",
   "test_step_outcome": "failure"
 }
