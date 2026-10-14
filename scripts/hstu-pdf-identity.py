@@ -78,6 +78,14 @@ summary={
  'strong_mismatch_candidates':[{'titles':x['titles'],'file':x['local'],'score':x['title_word_score'],
                                 'cover_excerpt':x.get('first_text_excerpt')} for x in strong],
  'duplicate_bytes':duplicate_bytes,
+ 'report_cover_identity':[
+    {'file':x['local'],
+     'titles':x['titles'],
+     'pages':x['pages'],
+     'first_text_excerpt':x.get('first_text_excerpt'),
+     'sha256':x.get('sha256')}
+    for x in results if ('089d438912ef4d23a90c6a211e3c9f05' in x['local'] or
+                         '1479a1a62dc646c79c0da8c220455801' in x['local'])],
  'structural_errors':[{'file':x['local'],'errors':x['errors']} for x in critical],
  'unreadable_pdfs':[{'file':x['local'],'titles':x['titles']} for x in unreadable],
  'caution':'Automated title-text similarity is a screening tool, not human validation of identity. Image-only PDFs can lack extractable text.'
