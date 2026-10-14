@@ -1,0 +1,14 @@
+{
+  "state": {
+    "lib": "object",
+    "version": "3.11.174",
+    "active": "documents/pdf-library/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf",
+    "ready": "1",
+    "status": "Showing the first-page preview while the document opens…",
+    "preview": "http://127.0.0.1:8765/media/pdf-previews/8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.webp",
+    "canvasVisible": true,
+    "page": "Page 1 of 55"
+  },
+  "messages": [],
+  "failures": []
+}
