@@ -1,0 +1,45 @@
+name: HSTU 75-PDF and Preview Integrity Gate
+
+on:
+  push:
+    branches:
+      - 'fix/pdf-document-integrity-20261013'
+    paths:
+      - 'pdf-reader.html'
+      - 'pdf-library.json'
+      - 'scripts/hstu-document-integrity-audit.py'
+      - '.github/workflows/hstu-document-integrity-gate.yml'
+  pull_request:
+    paths:
+      - 'pdf-reader.html'
+      - 'pdf-library.json'
+      - 'scripts/hstu-document-integrity-audit.py'
+      - '.github/workflows/hstu-document-integrity-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pdf-preview-identity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install image and PDF identity inspectors
+        run: |
+          pip install --disable-pip-version-check --quiet pymupdf==1.26.5 Pillow==11.3.0 numpy==2.3.3
+      - name: Examine all hosted PDFs and compare the covers against the actual first pages
+        run: python scripts/hstu-document-integrity-audit.py
+      - name: Save searchable QA inventory and any mismatches
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hstu-document-identity-inventory
+          path: |
+            docs/hstu-document-integrity-audit.json
+            docs/hstu-document-integrity-audit.csv
+          if-no-files-found: error
