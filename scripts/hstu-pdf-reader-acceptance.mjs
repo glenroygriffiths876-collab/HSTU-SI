@@ -96,9 +96,16 @@ try{
    const detail=await popup.evaluate(()=>({
      page:document.querySelector('#counter')?.textContent,
      canvas:[document.querySelector('#pageCanvas')?.width,document.querySelector('#pageCanvas')?.height],
-     title:document.querySelector('#documentTitle')?.textContent
+     title:document.querySelector('#documentTitle')?.textContent,
+     loadedPage:document.documentElement.dataset.hstuPdfRendered,
+     statusDisplay:getComputedStyle(document.querySelector('#status')).display,
+     previewDisplay:getComputedStyle(document.querySelector('#cover')).display,
+     canvasDisplay:getComputedStyle(document.querySelector('#pageCanvas')).display
    }));
    requireTrue(detail.page.includes('Page 1 of '),'PDF did not expose page count');
+   requireTrue(detail.loadedPage==='1'&&detail.statusDisplay==='none'&&
+     detail.previewDisplay==='none'&&detail.canvasDisplay!=='none',
+     'Reader still displays loading or preview AFTER PDF rendering: '+JSON.stringify(detail));
    await popup.screenshot({path:'/tmp/hstu-reader-'+kind+'-rendered.png'});
    return detail;
   });
