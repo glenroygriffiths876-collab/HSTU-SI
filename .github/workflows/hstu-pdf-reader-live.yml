@@ -1,0 +1,81 @@
+name: HSTU Mobile PDF Reader Acceptance
+
+on:
+  push:
+    paths:
+      - 'scripts/hstu-pdf-reader-acceptance.mjs'
+      - 'pdf-reader.html'
+      - '.github/workflows/hstu-pdf-reader-live.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  reader-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium test browser
+        run: |
+          npm install --no-save playwright@1.57.0
+          npx playwright install --with-deps chromium
+      - name: Test deployed phone and desktop reader
+        id: reader
+        continue-on-error: true
+        run: node scripts/hstu-pdf-reader-acceptance.mjs
+      - name: Preserve acceptance result for inspection
+        if: always()
+        env:
+          STEP_OUTCOME: ${{ steps.reader.outcome }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path('docs/hstu-pdf-reader-acceptance.json')
+          if p.exists():
+            j=json.loads(p.read_text(encoding='utf-8'))
+          else:
+            j={'result':'FAIL','issues':[{'name':'No generated reader report','reason':'Test script exited without results'}]}
+          j['run_id']=os.environ['RUN_ID']
+          j['run_url']=os.environ['RUN_URL']
+          j['source_sha']=os.environ['SOURCE_SHA']
+          j['test_step_outcome']=os.environ['STEP_OUTCOME']
+          p.parent.mkdir(exist_ok=True)
+          p.write_text(json.dumps(j,indent=2)+'\n',encoding='utf-8')
+          print('HSTU READER RESULT',j['result'])
+          for issue in j.get('issues',[]):print('ISSUE',issue)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/hstu-pdf-reader-acceptance.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Record PDF reader live phone and desktop acceptance"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Preserve phone and desktop screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hstu-pdf-reader-mobile-and-desktop
+          path: /tmp/hstu-reader-*.png
+          if-no-files-found: ignore
+      - name: Mark failure if reader could not render
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json,sys
+          j=json.load(open('docs/hstu-pdf-reader-acceptance.json'))
+          if j.get('result')!='PASS':
+            sys.exit('PDF reader NOT accepted: '+str(j.get('issues')))
+          print('LIVE PDF READER ACCEPTED')
+          PY
