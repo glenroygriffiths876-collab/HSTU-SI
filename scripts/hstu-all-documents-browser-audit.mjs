@@ -66,6 +66,7 @@ try{
         for(const entry of data){ entry.view=view;found.push(entry); }
       }
       check(found.length>40,'Only '+found.length+' PDF link anchors discovered in 8 sections');
+      console.log('UNMAPPED_PDF_ANCHORS',device,JSON.stringify(found.filter(x=>!extract(x.href))));
       let verified=0;
       for(const a of found){
         const dest=extract(a.href);
