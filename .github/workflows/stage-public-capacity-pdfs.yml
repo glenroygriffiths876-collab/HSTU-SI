@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install verified PDF transport and rendering tools
-        run: pip install --disable-pip-version-check --quiet gdown==5.2.0 pymupdf==1.26.5
+        run: pip install --disable-pip-version-check --quiet gdown==5.2.0 pymupdf==1.26.5 Pillow==11.3.0
       - name: Download and verify only the 14 already-public manuals
         run: |
           python - <<'PY'
