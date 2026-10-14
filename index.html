@@ -3374,49 +3374,60 @@ function expandResourceCollections930(){
 function expandOperationalResearch930(){
  expandResourceCollections930();
 }
+// Local PDFs open through a first-page-preview reader so Android Chrome
+// never presents a blank native PDF viewer as the first screen.
+// Source PDF URLs, title and image previews remain unchanged and available.
+function readerHref930(file,title){
+ if(!/^documents\/pdf-library\/[a-z0-9][a-z0-9_.-]*\.pdf$/i.test(file)||file.includes('..'))return file;
+ return 'pdf-reader.html?file='+encodeURIComponent(file)+'&title='+encodeURIComponent(title||'Document');
+}
 function decoratePdfLinks930(manifest){
  const byUrl=manifest?.by_url||{};
  document.querySelectorAll('a[href]').forEach(a=>{
    const raw=a.getAttribute('href')||'';
-   const absolute=(()=>{try{return new URL(raw,document.baseURI).href}catch(_){return raw}})();
-   const item=byUrl[raw]||byUrl[absolute]||null;
+   // Preserve source provenance across re-renders and MutationObserver passes.
+   const source=a.getAttribute('data-original-pdf-url')||raw;
+   const absolute=(()=>{try{return new URL(source,document.baseURI).href}catch(_){return source}})();
+   const item=byUrl[source]||byUrl[absolute]||null;
    const isPdf=!!item||/\.pdf(?:$|[?#])/i.test(raw);
-   if(!isPdf) return;
+   if(!isPdf)return;
+   const card=a.closest('article.hstu-refine-card,.hstu-parity-card,.external-ref');
+   const title=tidy(card?.querySelector('h3,b')?.textContent)
+     ||tidy(a.getAttribute('aria-label')||'').replace(/^Open\s+/i,'')||'Document';
    if(item?.local){
-     a.setAttribute('href',item.local);
-     a.setAttribute('data-original-pdf-url',item.source||raw);
+     a.setAttribute('href',readerHref930(item.local,title));
+     a.setAttribute('data-original-pdf-url',item.source||source);
+     a.setAttribute('data-original-local-pdf',item.local);
    }
    a.setAttribute('target','_blank');
    a.setAttribute('rel','noopener noreferrer');
    if(/Open official MOHW PDF/i.test(tidy(a.textContent))){
-     const em=a.querySelector('em'); if(em) em.textContent='Open PDF →';
+     const em=a.querySelector('em');if(em)em.textContent='Open PDF →';
    }
    const preview=item?.preview;
-   if(!preview) return;
-   const card=a.closest('article.hstu-refine-card,.hstu-parity-card,.external-ref');
-   if(!card||card.closest('.manual-card')||card.querySelector('.hstu-pdf-preview-930,.hstu-pdf-preview-image-930')) return;
+   if(!preview)return;
+   if(!card||card.closest('.manual-card')||card.querySelector('.hstu-pdf-preview-930,.hstu-pdf-preview-image-930'))return;
    card.classList.add('hstu-pdf-card-930');
-   const title=tidy(card.querySelector('h3,b')?.textContent)||'document';
    if(card.matches('a.external-ref')){
      const img=document.createElement('img');
      img.className='hstu-pdf-preview-image-930';
-     img.src=preview; img.loading='lazy';
+     img.src=preview;img.loading='lazy';
      img.alt='First page of '+title;
      card.prepend(img);
    }else{
      const link=document.createElement('a');
      link.className='hstu-pdf-preview-930';
-     link.href=item.local||raw;
-     link.target='_blank'; link.rel='noopener noreferrer';
+     link.href=item.local?readerHref930(item.local,title):raw;
+     link.target='_blank';link.rel='noopener noreferrer';
      link.setAttribute('aria-label','Open '+title);
      const img=document.createElement('img');
-     img.src=preview; img.loading='lazy';
+     img.src=preview;img.loading='lazy';
      img.alt='First page of '+title;
      link.appendChild(img);
      card.prepend(link);
    }
    const action=card.querySelector('a:not(.hstu-pdf-preview-930)');
-   if(action && /View document|View report|Open material|Open guide|Open official MOHW PDF/i.test(tidy(action.textContent))){
+   if(action&&/View document|View report|Open material|Open guide|Open official MOHW PDF/i.test(tidy(action.textContent))){
      action.textContent='Open PDF →';
    }
  });
