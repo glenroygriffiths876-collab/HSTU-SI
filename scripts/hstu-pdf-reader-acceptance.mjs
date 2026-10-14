@@ -70,11 +70,29 @@ try{
   });
   await check(kind+': PDF.js loads and renders full first page',async()=>{
    requireTrue(popup,'No reader popup');
-   await popup.waitForFunction(()=>{
+   const readerErrors=[];
+   popup.on('pageerror',e=>readerErrors.push('page: '+e.message));
+   popup.on('console',m=>{if(m.type()==='error'||m.type()==='warning')readerErrors.push('console: '+m.text())});
+   const isRendered=await popup.waitForFunction(()=>{
       const c=document.querySelector('#pageCanvas');
       return!!c && !c.hidden && c.width>100 && c.height>100 &&
         document.querySelector('#counter')?.textContent.includes(' of ');
-   },null,{timeout:50000});
+   },null,{timeout:30000}).then(()=>true).catch(()=>false);
+   if(!isRendered){
+     const diag=await popup.evaluate(()=>({
+       scriptLoaded:typeof window.pdfjsLib,
+       pdfjsVersion:window.pdfjsLib?.version,
+       worker:window.pdfjsLib?.GlobalWorkerOptions.workerSrc,
+       status:document.querySelector('#statusText')?.textContent,
+       counter:document.querySelector('#counter')?.textContent,
+       cover:document.querySelector('#cover')?.src,
+       coverVisible:!document.querySelector('#cover')?.hidden,
+       canvasHidden:document.querySelector('#pageCanvas')?.hidden,
+       activePDF:document.documentElement.dataset.hstuPdfFile,
+       ready:document.documentElement.dataset.hstuPdfReady
+     }));
+     throw Error('Full PDF did not render: '+JSON.stringify({diag,readerErrors}));
+   }
    const detail=await popup.evaluate(()=>({
      page:document.querySelector('#counter')?.textContent,
      canvas:[document.querySelector('#pageCanvas')?.width,document.querySelector('#pageCanvas')?.height],
