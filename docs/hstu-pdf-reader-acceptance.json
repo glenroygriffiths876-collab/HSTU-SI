@@ -1,0 +1,87 @@
+{
+  "suite": "HSTU hosted PDF first-click reader",
+  "checkedAt": "2026-10-14T00:16:08.994Z",
+  "result": "FAIL",
+  "checks": [
+    {
+      "name": "Live reader + two local PDF.js assets deployed",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "phone: source reports visible",
+      "result": "PASS",
+      "detail": "33 localized report links; first one pdf-reader.html?file=documents%2Fpdf-library%2F8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf&title=SI%20Report%20(July%202026)"
+    },
+    {
+      "name": "phone: first tap opens branded nonblank preview reader",
+      "result": "PASS",
+      "detail": "Branded reader visible on first tap with preview or page"
+    },
+    {
+      "name": "phone: PDF.js loads and renders full first page",
+      "result": "FAIL",
+      "reason": "page.waitForFunction: Timeout 50000ms exceeded.\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:73:16\n    at check (/home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:25)\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:9"
+    },
+    {
+      "name": "phone: next page and original PDF work",
+      "result": "FAIL",
+      "reason": "Error: Report unexpectedly has only one page\n    at requireTrue (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:7:45)\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:91:4\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:87:3"
+    },
+    {
+      "name": "phone: original site and reader retain mobile-safe UI",
+      "result": "PASS",
+      "detail": "No site-wide overflow or JS errors"
+    },
+    {
+      "name": "desktop: source reports visible",
+      "result": "PASS",
+      "detail": "33 localized report links; first one pdf-reader.html?file=documents%2Fpdf-library%2F8a054d-089d438912ef4d23a90c6a211e3c9f05-99b13548.pdf&title=SI%20Report%20(July%202026)"
+    },
+    {
+      "name": "desktop: first tap opens branded nonblank preview reader",
+      "result": "PASS",
+      "detail": "Branded reader visible on first tap with preview or page"
+    },
+    {
+      "name": "desktop: PDF.js loads and renders full first page",
+      "result": "FAIL",
+      "reason": "page.waitForFunction: Timeout 50000ms exceeded.\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:73:16\n    at check (/home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:25)\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:9"
+    },
+    {
+      "name": "desktop: next page and original PDF work",
+      "result": "FAIL",
+      "reason": "Error: Report unexpectedly has only one page\n    at requireTrue (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:7:45)\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:91:4\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:87:3"
+    },
+    {
+      "name": "desktop: original site and reader retain mobile-safe UI",
+      "result": "PASS",
+      "detail": "No site-wide overflow or JS errors"
+    }
+  ],
+  "issues": [
+    {
+      "name": "phone: PDF.js loads and renders full first page",
+      "reason": "page.waitForFunction: Timeout 50000ms exceeded.\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:73:16\n    at check (/home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:25)\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:9"
+    },
+    {
+      "name": "phone: next page and original PDF work",
+      "reason": "Error: Report unexpectedly has only one page\n    at requireTrue (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:7:45)\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:91:4\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:87:3"
+    },
+    {
+      "name": "desktop: PDF.js loads and renders full first page",
+      "reason": "page.waitForFunction: Timeout 50000ms exceeded.\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:73:16\n    at check (/home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:25)\n    at /home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:71:9"
+    },
+    {
+      "name": "desktop: next page and original PDF work",
+      "reason": "Error: Report unexpectedly has only one page\n    at requireTrue (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:7:45)\n    at file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:91:4\n    at async check (file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:10:19)\n    at async file:///home/runner/work/HSTU-SI/HSTU-SI/scripts/hstu-pdf-reader-acceptance.mjs:87:3"
+    }
+  ],
+  "source": "Live GitHub Pages",
+  "checksPassed": 7,
+  "checksFailed": 4,
+  "run_id": "38489127550",
+  "run_url": "https://github.com/glenroygriffiths876-collab/HSTU-SI/actions/runs/38489127550",
+  "source_sha": "7a45c81641656745a9ab2ce7e0617346ddd447df",
+  "test_step_outcome": "failure"
+}
