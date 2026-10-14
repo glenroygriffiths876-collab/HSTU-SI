@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#145b39">
+<title>Document Reader | HSTU Resource Centre</title>
+<link rel="icon" href="./hstu-favicon-64.png">
+<style>
+:root{color-scheme:light;--ink:#1d3125;--green:#146a3a;--red:#ba2934;--gold:#edb937}
+*{box-sizing:border-box}
+body{margin:0;background:#f2f5ef;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:#fff;border-bottom:3px solid var(--gold);box-shadow:0 2px 12px #112e1c13;padding:12px max(16px,env(safe-area-inset-left));display:flex;align-items:center;gap:12px}
+header img{width:38px;height:38px;object-fit:contain;border-radius:8px}
+header strong{font-size:14px;line-height:1.3;color:#145b39}
+header small{display:block;color:#63756b;font-size:11px;margin-top:2px}
+header a{margin-left:auto;color:var(--green);font-size:13px;font-weight:750;text-decoration:none;white-space:nowrap}
+main{max-width:1050px;margin:auto;padding:clamp(12px,3vw,24px)}
+h1{font-size:clamp(18px,3vw,25px);line-height:1.35;margin:6px 0 12px;overflow-wrap:anywhere}
+.overline{font-size:12px;color:var(--red);text-transform:uppercase;letter-spacing:.09em;font-weight:800;margin:5px 0}
+.toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:9px;background:#fff;border:1px solid #dde6db;padding:10px;border-radius:16px;margin-bottom:12px;box-shadow:0 3px 16px #12361e0a}
+.toolbar button,.toolbar a{min-height:43px;border:1px solid #cbd9ce;border-radius:11px;background:#fff;color:var(--green);font-weight:750;font-size:14px;padding:9px 14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.toolbar button:disabled{opacity:.4;cursor:default}
+.toolbar #original{margin-left:auto;color:#fff;background:var(--green);border-color:var(--green)}
+.toolbar #download{color:#782d26;background:#fff8eb;border-color:#f3d69a}
+.page-counter{font-size:14px;font-weight:750;min-width:70px;text-align:center;font-variant-numeric:tabular-nums}
+.stage{position:relative;min-height:65vh;max-height:calc(100dvh - 190px);overflow:auto;overscroll-behavior:contain;border-radius:17px;background:#e7ece7;border:1px solid #cbd7cc;box-shadow:0 8px 24px #1e382019;text-align:center;padding:16px}
+.stage img,.stage canvas{display:block;margin:0 auto;box-shadow:0 4px 24px #1020162c;background:#fff}
+.stage img{width:auto;max-width:100%;max-height:calc(100dvh - 245px);object-fit:contain}
+.stage canvas{max-width:none}
+.status{display:flex;align-items:center;justify-content:center;gap:9px;color:#326747;background:#e8f6e9;border:1px solid #c6e6c9;border-radius:11px;padding:10px;margin-bottom:12px;font-weight:700;font-size:13px}
+.status.error{color:#8d2835;background:#fff0ef;border-color:#f3c4c2}
+.status .spin{width:15px;height:15px;border:2px solid #accfac;border-top-color:#177e40;border-radius:50%;animation:roll .85s linear infinite}
+@keyframes roll{to{transform:rotate(360deg)}}
+footer{text-align:center;font-size:12px;color:#69796d;margin:12px 0 16px}
+button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+@media(max-width:600px){
+ header{padding:9px 13px}
+ header strong{font-size:12px}
+ header img{width:31px;height:31px}
+ header a{font-size:12px}
+ main{padding:11px}
+ h1{font-size:17px}
+ .toolbar{gap:6px;padding:8px}
+ .toolbar button,.toolbar a{font-size:13px;padding:9px 10px;min-height:40px}
+ .toolbar #original{margin-left:0}
+ .stage{min-height:58vh;max-height:calc(100dvh - 235px);padding:8px}
+ .stage img{max-height:calc(100dvh - 260px)}
+}
+@media(prefers-reduced-motion:reduce){.status .spin{animation:none}}
+</style>
+<script src="./vendor/pdfjs/pdf.min.js" defer></script>
+</head>
+<body>
+<header>
+<img src="./hstu-favicon-64.png" alt="">
+<div><strong>HSTU Resource Centre</strong><small>Strategic Information Component · Document Reader</small></div>
+<a href="./#reports">← Resource Centre</a>
+</header>
+<main>
+<p class="overline">Research & programme documents</p>
+<h1 id="documentTitle">Opening your document</h1>
+<div class="toolbar" aria-label="Document navigation">
+<button id="prev" disabled aria-label="Previous page">← Previous</button>
+<span id="counter" class="page-counter" aria-live="polite">Page 1</span>
+<button id="next" disabled aria-label="Next page">Next →</button>
+<button id="smaller" disabled aria-label="Zoom out">−</button>
+<button id="larger" disabled aria-label="Zoom in">+</button>
+<a id="original" href="#" target="_blank" rel="noopener noreferrer">Original PDF ↗</a>
+<a id="download" href="#" download>Download</a>
+</div>
+<div id="status" class="status" role="status"><span class="spin" aria-hidden="true"></span><span id="statusText">Showing the first-page preview while the document opens…</span></div>
+<section class="stage" id="stage" aria-label="Document pages">
+<img id="cover" alt="First page preview" hidden>
+<canvas id="pageCanvas" aria-label="PDF page" hidden></canvas>
+</section>
+<footer>If the full reader is unavailable, use Original PDF or Download above.</footer>
+</main>
+<script>
+(()=>{
+'use strict';
+const el=id=>document.getElementById(id);
+const q=new URLSearchParams(location.search);
+const file=q.get('file')||'';
+const safe=/^documents\/pdf-library\/[a-z0-9][a-z0-9_.-]*\.pdf$/i.test(file)&&!file.includes('..');
+const status=(msg,error=false)=>{
+  el('statusText').textContent=msg;
+  el('status').classList.toggle('error',error);
+  const icon=el('status').querySelector('.spin');
+  if(icon)icon.hidden=error;
+};
+const pageState={doc:null,num:1,pages:0,zoom:1,render:null,version:0};
+function updateButtons(){
+ el('counter').textContent=pageState.doc?'Page '+pageState.num+' of '+pageState.pages:'Page 1';
+ el('prev').disabled=!pageState.doc||pageState.num<=1;
+ el('next').disabled=!pageState.doc||pageState.num>=pageState.pages;
+ el('smaller').disabled=!pageState.doc||pageState.zoom<=.66;
+ el('larger').disabled=!pageState.doc||pageState.zoom>=2.2;
+}
+function setError(msg){
+ status(msg,true);
+ el('cover').hidden=!el('cover').getAttribute('src');
+ el('pageCanvas').hidden=true;
+ updateButtons();
+}
+async function draw(){
+ const myVersion=++pageState.version;
+ if(pageState.render){try{pageState.render.cancel()}catch(_){}}
+ if(!pageState.doc)return;
+ try{
+  const page=await pageState.doc.getPage(pageState.num);
+  if(myVersion!==pageState.version)return;
+  const stage=el('stage');
+  const width=Math.max(260,stage.clientWidth-34);
+  const base=page.getViewport({scale:1});
+  const scale=width/base.width*pageState.zoom;
+  const viewport=page.getViewport({scale});
+  const dpr=Math.min(window.devicePixelRatio||1,1.6);
+  const canvas=el('pageCanvas');
+  const context=canvas.getContext('2d',{alpha:false});
+  canvas.width=Math.ceil(viewport.width*dpr);
+  canvas.height=Math.ceil(viewport.height*dpr);
+  canvas.style.width=Math.ceil(viewport.width)+'px';
+  canvas.style.height=Math.ceil(viewport.height)+'px';
+  const task=page.render({canvasContext:context,viewport,transform:dpr===1?null:[dpr,0,0,dpr,0,0]});
+  pageState.render=task;
+  await task.promise;
+  if(myVersion!==pageState.version)return;
+  canvas.hidden=false;
+  el('cover').hidden=true;
+  el('status').hidden=true;
+  updateButtons();
+  stage.scrollTo({top:0,left:0,behavior:'instant'});
+ }catch(e){
+  if(String(e?.name).includes('RenderingCancelled'))return;
+  setError('Page display was interrupted. You can open the original PDF above.');
+  console.warn('HSTU PDF page rendering:',e);
+ }
+}
+document.addEventListener('DOMContentLoaded',async()=>{
+ if(!safe){
+  el('documentTitle').textContent='Document link unavailable';
+  setError('This document address is not in the HSTU library.');
+  return;
+ }
+ const pdfURL=new URL(file,new URL('./',location.href));
+ const title=(q.get('title')||decodeURIComponent(file.split('/').pop().replace(/-[a-f0-9]{8}\.pdf$/,'').replace(/\.pdf$/,'').replace(/-/g,' '))).slice(0,180);
+ el('documentTitle').textContent=title;
+ document.title=title+' | HSTU Resource Centre';
+ el('original').href=pdfURL.href;
+ el('download').href=pdfURL.href;
+ const img='media/pdf-previews/'+file.split('/').pop().replace(/\.pdf$/i,'.webp');
+ el('cover').src=new URL(img,new URL('./',location.href)).href;
+ el('cover').hidden=false;
+ el('cover').onerror=()=>{el('cover').hidden=true};
+ try{
+  if(!window.pdfjsLib)throw Error('Reader library not available');
+  pdfjsLib.GlobalWorkerOptions.workerSrc='./vendor/pdfjs/pdf.worker.min.js';
+  pageState.doc=await pdfjsLib.getDocument({url:pdfURL.href,rangeChunkSize:65536}).promise;
+  pageState.pages=pageState.doc.numPages;
+  if(!pageState.pages)throw Error('PDF is empty');
+  await draw();
+ }catch(e){
+  console.warn('HSTU document reader:',e);
+  setError('The full reader could not finish loading. The first-page preview is shown below; open the original PDF or download it above.');
+ }
+});
+el('prev').addEventListener('click',()=>{if(pageState.num>1){pageState.num--;draw()}});
+el('next').addEventListener('click',()=>{if(pageState.num<pageState.pages){pageState.num++;draw()}});
+el('smaller').addEventListener('click',()=>{pageState.zoom=Math.max(.66,pageState.zoom/1.25);draw()});
+el('larger').addEventListener('click',()=>{pageState.zoom=Math.min(2.2,pageState.zoom*1.25);draw()});
+document.addEventListener('keydown',e=>{
+ if(['ArrowRight','PageDown'].includes(e.key)&&pageState.doc&&pageState.num<pageState.pages){e.preventDefault();pageState.num++;draw()}
+ if(['ArrowLeft','PageUp'].includes(e.key)&&pageState.doc&&pageState.num>1){e.preventDefault();pageState.num--;draw()}
+});
+})();
+</script>
+</body>
+</html>
