@@ -144,6 +144,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   return;
  }
  const pdfURL=new URL(file,new URL('./',location.href));
+ document.documentElement.dataset.hstuPdfFile=file;
  const title=(q.get('title')||decodeURIComponent(file.split('/').pop().replace(/-[a-f0-9]{8}\.pdf$/,'').replace(/\.pdf$/,'').replace(/-/g,' '))).slice(0,180);
  el('documentTitle').textContent=title;
  document.title=title+' | HSTU Resource Centre';
@@ -158,6 +159,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   pdfjsLib.GlobalWorkerOptions.workerSrc='./vendor/pdfjs/pdf.worker.min.js';
   pageState.doc=await pdfjsLib.getDocument({url:pdfURL.href,rangeChunkSize:65536}).promise;
   pageState.pages=pageState.doc.numPages;
+  document.documentElement.dataset.hstuPdfReady='1';
   if(!pageState.pages)throw Error('PDF is empty');
   await draw();
  }catch(e){
