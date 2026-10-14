@@ -1,0 +1,31 @@
+name: HSTU External PDF URL Review
+
+on:
+  push:
+    branches:
+      - 'fix/pdf-document-integrity-20261013'
+    paths:
+      - 'scripts/hstu-external-pdf-audit.mjs'
+      - 'pdf-library.json'
+      - '.github/workflows/hstu-external-pdf-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  external-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check remaining external sources without altering them
+        run: node scripts/hstu-external-pdf-audit.mjs
+      - name: Save source accessibility review
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-pdf-link-review
+          path: docs/hstu-external-pdf-audit.json
