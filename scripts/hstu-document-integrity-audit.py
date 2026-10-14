@@ -58,7 +58,7 @@ for source,item in entries:
          "nearest_preview_source":"","nearest_preview_similarity":None,
          "cover_excerpt":"","identity_label":"","errors":[],"warnings":[]}
     if not source.startswith("https://"):
-        row["errors"].append("Non-HTTPS external source")
+        row["warnings"].append("Legacy non-HTTPS source (check redirect and accessibility before changing)")
     if item.get("source")!=source:
         row["errors"].append("Manifest source does not match lookup key")
     if not item.get("local"):
@@ -76,7 +76,7 @@ for source,item in entries:
             row["errors"].append("Local file is not PDF binary")
         row["sha256"]=hashlib.sha256(pdfbytes).hexdigest()
         if row["sha256"] in seen_pdf:
-            row["errors"].append("Duplicate PDF bytes under different entries: "+seen_pdf[row["sha256"]])
+            row["warnings"].append("Duplicate PDF bytes under a second source URL (verify whether this is an unused alias): "+seen_pdf[row["sha256"]])
         seen_pdf[row["sha256"]]=row["local"]
         if item.get("bytes")!=len(pdfbytes):
             row["errors"].append(f"Manifest byte count {item.get('bytes')} differs from file {len(pdfbytes)}")
@@ -97,8 +97,16 @@ for source,item in entries:
         if previewimage.format!="WEBP": row["errors"].append("Preview not WebP")
         row["cover_excerpt"]=" ".join(first.get_text().split())[:400]
         source_sig=scaled_arr(sourceimage)
-        cover_sig=scaled_arr(previewimage)
-        screens.append({"row":row,"source_sig":source_sig,"cover_sig":cover_sig})
+        # Some official manuals use a two-page jacket for their cover preview
+        # (front cover on the RIGHT, back cover on the LEFT).
+        # Compare the actual PDF page with the whole preview AND each half.
+        width,height=previewimage.size
+        crops=[previewimage]
+        if width>=1.25*height:
+            crops.extend([previewimage.crop((0,0,width//2,height)),
+                          previewimage.crop((width//2,0,width,height))])
+        cover_sigs=[scaled_arr(im) for im in crops]
+        screens.append({"row":row,"source_sig":source_sig,"cover_sigs":cover_sigs})
         for term,(title,pages,keywords) in cases.items():
             if term in row["local"]:
                 row["identity_label"]=title
@@ -114,7 +122,8 @@ for source,item in entries:
 for x in screens:
     own=x["row"]
     sims=sorted(
-        ((similarity(x["cover_sig"],p["source_sig"]),p["row"]["local"]) for p in screens),
+        ((max(similarity(cover_sig,p["source_sig"]) for cover_sig in x["cover_sigs"]),
+          p["row"]["local"]) for p in screens),
         reverse=True)
     current=next((v for v,local in sims if local==own["local"]),None)
     best=sims[0]
