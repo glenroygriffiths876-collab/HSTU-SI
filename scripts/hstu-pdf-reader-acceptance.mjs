@@ -77,7 +77,7 @@ try{
       const c=document.querySelector('#pageCanvas');
       return!!c && !c.hidden && c.width>100 && c.height>100 &&
         document.querySelector('#counter')?.textContent.includes(' of ');
-   },null,{timeout:30000}).then(()=>true).catch(()=>false);
+   },null,{timeout:15000}).then(()=>true).catch(()=>false);
    if(!isRendered){
      const diag=await popup.evaluate(()=>({
        scriptLoaded:typeof window.pdfjsLib,
@@ -152,7 +152,7 @@ try{
        document.documentElement.dataset.hstuPdfReady==='1' &&
        document.querySelector('#pageCanvas')?.width>50 &&
        !document.querySelector('#pageCanvas')?.hidden,
-       null,{timeout:50000});
+       null,{timeout:15000});
      const details=await opened.evaluate(()=>{
       const p=document.documentElement.dataset.hstuPdfFile;
       const cover=document.querySelector('#cover')?.src||'';
