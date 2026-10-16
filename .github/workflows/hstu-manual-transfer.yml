@@ -48,6 +48,28 @@ jobs:
               failed.append(name)
               if os.path.exists(out): os.remove(out)
           if failed:print("Unavailable manuals (not committed): "+", ".join(failed))
+          # Official Government of Jamaica 2004 Staff Orders, not a Google Drive source.
+          import urllib.request
+          out="documents/pdf-library/manual-staff-orders.pdf"
+          sources=[
+            "https://www.moh.gov.jm/wp-content/uploads/2015/06/StaffOrders1.pdf",
+            "https://jis.gov.jm/media/Staff-Orders-for-Public-Service.pdf"
+          ]
+          for url in sources:
+            try:
+              req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0 HSTU Resource Centre"})
+              with urllib.request.urlopen(req,timeout=35) as resp:
+                with open(out,"wb") as f:f.write(resp.read())
+              if open(out,"rb").read(5)!=b"%PDF-":raise ValueError("Not a PDF")
+              reader=PdfReader(out)
+              pages=len(reader.pages)
+              start=" ".join((p.extract_text() or "") for p in reader.pages[:3]).lower()
+              if pages<10 or "staff orders" not in start:raise ValueError("Wrong Staff Orders document")
+              print(f"VERIFIED staff-orders: {pages} pages, {os.path.getsize(out)} bytes")
+              break
+            except Exception as e:
+              print(f"Staff Orders source unavailable: {url}: {e}")
+              if os.path.exists(out):os.remove(out)
           PY
       - name: Commit only validated PDF documents on repair branch
         shell: bash
