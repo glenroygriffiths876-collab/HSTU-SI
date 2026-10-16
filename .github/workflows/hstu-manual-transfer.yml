@@ -1,0 +1,61 @@
+name: HSTU manual transfer (repair branch only)
+on:
+  push:
+    branches: [fix/unified-manual-reader-20261016]
+    paths: [.github/workflows/hstu-manual-transfer.yml]
+permissions:
+  contents: write
+jobs:
+  download_verified_public_pdfs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check gdown pypdf
+      - name: Download eight source-matched public manuals
+        shell: bash
+        run: |
+          python - <<'PY'
+          import gdown,os
+          from pypdf import PdfReader
+          files={
+            "sti-manual-2020":"18R3GFXNIYtUDguGPGmVekRMY18sbjx5g",
+            "prep-implementation-2025":"1maP4824o5bv75_N7mKHVr7uRkSeJZbAT",
+            "ci-field-2025":"1SqBmSquvVqqE6fwPCouiCpjxHVS1hgNQ",
+            "linkage-retention":"1U6kRcpG984hZyz536bz6hzQL1b_cBw6R",
+            "pitc":"1EwlhYB-ZCTkJ_luhV9sOo0jeqrvbR9E6",
+            "dhis2-2026":"1WM0-K1qkvgO-5Z1n1rCg5eP8T-vGOLNx",
+            "tsis2-2026":"1yy7IGq4eiauZ6HoYvUO9fNNuLHJOU5BK",
+            "nsp-2023-2030":"14i6aH8agpCZSncBY3RWDKHuPkTu4LXui"
+          }
+          os.makedirs("documents/pdf-library",exist_ok=True)
+          failed=[]
+          for name,id in files.items():
+            out=f"documents/pdf-library/manual-{name}.pdf"
+            try:
+              result=gdown.download(id=id,output=out,quiet=True)
+              if not result or open(out,'rb').read(5)!=b'%PDF-':raise ValueError("No PDF returned")
+              pages=len(PdfReader(out).pages)
+              if pages<2:raise ValueError("Too few pages")
+              print(f"VERIFIED {name}: {pages} pages, {os.path.getsize(out)} bytes")
+            except Exception as e:
+              print(f"UNAVAILABLE {name}: {type(e).__name__}: {e}")
+              failed.append(name)
+              if os.path.exists(out): os.remove(out)
+          if failed:print("Unavailable manuals (not committed): "+", ".join(failed))
+          PY
+      - name: Commit only validated PDF documents on repair branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add documents/pdf-library/manual-*.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "Host validated remaining public HSTU manual PDFs"
+            git push origin HEAD:fix/unified-manual-reader-20261016
+          fi
