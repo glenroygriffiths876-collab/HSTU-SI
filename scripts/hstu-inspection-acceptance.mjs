@@ -62,10 +62,11 @@ try {
       const [h,s]=await Promise.all([
         get(BASE+'?inspection='+Date.now(),{cache:'no-store'}).then(x=>x.text()).catch(()=>''),
         get(BASE+'service-worker.js?inspection='+Date.now(),{cache:'no-store'}).then(x=>x.text()).catch(()=>'')]);
-      if(h.includes('function manualSourceUrl(m)') &&
-         h.includes("Request Drive access") &&
+      if(h.includes('const HSTU_LOCAL_MANUALS=') &&
+         h.includes('"staff-orders":"documents/pdf-library/manual-staff-orders.pdf"') &&
+         s.includes('hstu-resource-centre-v20261016-firsttap-documents-v1') &&
          s.includes('if(event.request.mode==="navigate" && !isAppEntry) return;')){
-        report.deployedVersion='PDF fix + restricted manual label confirmed';
+        report.deployedVersion='All 18 public manuals hosted locally, document-safe service worker confirmed';
         return 'Fixed HTML and service worker served by GitHub Pages';
       }
       await sleep(4000);
@@ -178,27 +179,25 @@ try {
     });
     await check(label+': 18 Capacity Building manual cards point to real sources',async()=>{
       await page.evaluate(()=>window.setView('capacity',{push:false}));
-      const items=await page.evaluate(()=>MANUALS.map(m=>({id:m.id,title:m.title,source:manualHref(m)})));
+      const items=await page.evaluate(()=>MANUALS.map(m=>({
+        id:m.id,title:m.title,source:manualHref(m),local:HSTU_LOCAL_MANUALS[m.id]
+      })));
       assert(items.length===18,'Only '+items.length+' manual records');
       const cardNodes=await page.locator('#manualGrid a[data-open-manual]').evaluateAll(nodes=>nodes.map(x=>({
-        id:x.dataset.openManual,href:x.href,original:x.dataset.originalPdfUrl||''
+        id:x.dataset.openManual,href:x.href
       })));
       assert(cardNodes.length===18,'Only '+cardNodes.length+' manual cards');
       for(const item of items){
-        assert(/^https:\/\//i.test(item.source),'Missing remote document: '+item.id);
+        const dest=new URL(item.source,BASE);
+        assert(item.local && dest.pathname.endsWith('/HSTU-SI/pdf-reader.html')
+          && dest.searchParams.get('file')===item.local
+          && dest.searchParams.get('title')===item.title,
+          'Wrong hosted manual document identity: '+item.id);
         const displayed=cardNodes.find(x=>x.id===item.id);
-        assert(!!displayed,'No manual card for '+item.id);
-        const reader=(()=>{
-          try{
-            const u=new URL(displayed.href);
-            const file=u.searchParams.get('file')||'';
-            return u.pathname.endsWith('/HSTU-SI/pdf-reader.html')
-              && /^documents\/pdf-library\/[a-z0-9_.-]+\.pdf$/i.test(file)
-              && displayed.original===item.source;
-          }catch{return false}
-        })();
-        assert(displayed.href===item.source || displayed.href.includes('/HSTU-SI/documents/pdf-library/') || reader,
-          'Wrong manual document identity '+item.id+' -> '+JSON.stringify(displayed));
+        assert(displayed && displayed.href===dest.href,
+          'Wrong manual card link: '+item.id+' -> '+JSON.stringify(displayed));
+        const pdf=await headFile(item.local,/application\/pdf/i);
+        assert(pdf.ok,'Hosted public manual PDF missing: '+item.id+' '+JSON.stringify(pdf));
       }
       return '18/18 correct source links, none point at nonexistent root PDFs';
     });
