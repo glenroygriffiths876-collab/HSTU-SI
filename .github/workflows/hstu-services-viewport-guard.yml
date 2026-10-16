@@ -1,0 +1,73 @@
+name: HSTU Find Services viewport regression
+on:
+  push:
+    branches: [main, fix/services-dropdown-clipping-20261016]
+    paths:
+      - index.html
+      - .github/workflows/hstu-services-viewport-guard.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  responsive-services-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          npm install --no-save playwright@1.57.0
+          npx playwright install --with-deps chromium
+      - name: Verify Find Services menu and treatment tabs on real browser viewports
+        shell: bash
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/hstu-services-http.log 2>&1 &
+          cat > ./.hstu-services-test.mjs <<'JS'
+          import { chromium } from 'playwright';
+          const base='http://127.0.0.1:8765/index.html#services';
+          const must=(ok,msg)=>{if(!ok)throw Error(msg)};
+          const browser=await chromium.launch({headless:true});
+          try{
+            for(const width of [1724,1440,1200,1024]){
+              const ctx=await browser.newContext({viewport:{width,height:920},serviceWorkers:'block'});
+              const page=await ctx.newPage();
+              const errors=[];
+              page.on('pageerror',e=>errors.push(e.message));
+              const response=await page.goto(base,{waitUntil:'domcontentloaded',timeout:50000});
+              must(response?.ok(),'Desktop '+width+' failed to load');
+              await page.waitForFunction(()=>document.documentElement.dataset.hstuRefinements930==='ready'&&document.querySelector('#view-services.active'),{timeout:25000});
+              const btn=page.locator('#mainNav > .hstu-nav-item:last-child > .nav-btn[data-view="services"]');
+              must(await btn.count()===1,'Find Services menu button missing at '+width);
+              await btn.hover();
+              const dropdown=page.locator('#mainNav > .hstu-nav-item:last-child > .hstu-nav-dropdown');
+              await dropdown.waitFor({state:'visible',timeout:10000});
+              const box=await dropdown.boundingBox();
+              must(box && box.x>=-1 && box.x+box.width<=width+1,'Dropdown cut off at '+width+': '+JSON.stringify(box));
+              must(await dropdown.locator('button').count()===2,'Dropdown options missing');
+              const active=page.locator('#view-services .hstu-service-modes button[data-service-mode="treatment"]');
+              const style=await active.evaluate(el=>{const c=getComputedStyle(el);return {bg:c.backgroundColor,img:c.backgroundImage,color:c.color}});
+              must(style.bg==='rgb(255, 255, 255)'&&style.img==='none','Treatment colour changed at '+width+': '+JSON.stringify(style));
+              await page.locator('#view-services button[data-service-mode="prep"]').click();
+              must(await page.locator('#view-services button[data-service-mode="prep"].active').count()===1,'PrEP switching failed');
+              await active.click();
+              must(await active.evaluate(el=>el.classList.contains('active')),'Treatment switching failed');
+              must(errors.length===0,'Unexpected browser errors: '+errors.join('; '));
+              console.log('PASS desktop '+width+': menu visible fully, original tab colours, service interactions');
+              await ctx.close();
+            }
+            const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+            const page=await ctx.newPage();
+            const res=await page.goto(base,{waitUntil:'domcontentloaded',timeout:50000});
+            must(res?.ok(),'Phone initial page load');
+            await page.waitForFunction(()=>document.documentElement.dataset.hstuRefinements930==='ready'&&document.querySelector('#view-services.active'),{timeout:25000});
+            const mode=page.locator('#view-services button[data-service-mode="treatment"]');
+            must(await mode.isVisible(),'Mobile service mode hidden');
+            const rect=await mode.boundingBox();
+            must(rect&&rect.x>=-2&&rect.x<390,'Mobile active tab is clipped '+JSON.stringify(rect));
+            console.log('PASS mobile 390: services selectable, no desktop positioning applied');
+            await ctx.close();
+          }finally{await browser.close()}
+          JS
+          node ./.hstu-services-test.mjs

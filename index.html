@@ -1097,6 +1097,25 @@ button[data-service-mode].active:hover,
 }
 @media(max-width:620px){.hstu-home-thematic-head{display:block}.hstu-theme-view-all{margin-top:12px}.hstu-theme-grid{grid-template-columns:1fr}.hstu-final-quick-grid{grid-template-columns:1fr 1fr}.hstu-final-quick-grid button{min-height:135px;padding:14px}.hstu-final-quick-grid b{font-size:15px}}
 </style>
+<style id="hstu-services-viewport-repair-20261016">
+/* Only the last desktop navigation dropdown: keep it inside the viewport. */
+@media (min-width:1001px) {
+  #mainNav > .hstu-nav-item:last-child > .hstu-nav-dropdown {
+    left:auto!important;
+    right:0!important;
+    max-width:min(320px,calc(100vw - 24px))!important;
+  }
+}
+/* Restore the original selected service-tab treatment, rather than the
+   global promotional green-to-red button gradient. */
+#view-services .hstu-service-modes button[data-service-mode].active {
+  background:#fff!important;
+  color:#17231b!important;
+  text-shadow:none!important;
+  border-color:transparent!important;
+  box-shadow:0 4px 12px rgba(12,31,19,.08)!important;
+}
+</style>
 </head>
 <body>
 <!-- HSTU_FIRST_ENTRY_BOOTSTRAP_START -->
