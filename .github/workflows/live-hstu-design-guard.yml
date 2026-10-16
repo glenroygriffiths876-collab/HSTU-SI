@@ -122,7 +122,8 @@ jobs:
             console.log('LIVE HSTU DESIGN REGRESSION GUARD PASS');
           }finally{await browser.close();}
           JS
-          node /tmp/hstu-live-design-guard.mjs
+          cp /tmp/hstu-live-design-guard.mjs ./.hstu-live-design-guard.mjs
+          node ./.hstu-live-design-guard.mjs
       - name: Save desktop and phone screenshots
         if: always()
         uses: actions/upload-artifact@v4
