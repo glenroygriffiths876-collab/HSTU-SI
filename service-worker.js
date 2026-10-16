@@ -1,4 +1,4 @@
-const CACHE_NAME="hstu-resource-centre-v20261011-gia-author-v4";
+const CACHE_NAME="hstu-resource-centre-v20261016-firsttap-documents-v1";
 const APP_SHELL=[
   "./index.html",
   "./health-snake.html",
@@ -80,24 +80,28 @@ self.addEventListener("fetch",event=>{
       const cache=await caches.open(CACHE_NAME);
       const cached=await cache.match("./index.html");
 
-      const refresh=(async()=>{
+      // Prefer the newest HTML on the first navigation after an update.
+      // Fall back to a proven cached shell only if the network is slow/offline.
+      // Non-home pages (particularly PDFs and their reader) are not rewritten.
+      const network=(async()=>{
         try{
           const preload=await event.preloadResponse;
           const response=preload || await fetch(event.request,{cache:"no-store"});
-          if(response&&response.ok) await cache.put("./index.html",response.clone());
-          return response;
-        }catch(_){
-          return null;
-        }
+          if(response&&response.ok){
+            await cache.put("./index.html",response.clone());
+            return response;
+          }
+        }catch(_){}
+        return null;
       })();
-
-      if(cached){
-        event.waitUntil(refresh);
-        return cached.clone();
-      }
-
-      const network=await refresh;
-      return network || Response.error();
+      if(!cached) return await network || Response.error();
+      const fresh=await Promise.race([
+        network,
+        new Promise(resolve=>setTimeout(()=>resolve(null),2500))
+      ]);
+      if(fresh) return fresh;
+      event.waitUntil(network.catch(()=>{}));
+      return cached.clone();
     })());
     return;
   }
