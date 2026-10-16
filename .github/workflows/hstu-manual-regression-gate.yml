@@ -1,0 +1,105 @@
+name: HSTU manuals and first-tap regression gate
+on:
+  push:
+    branches:
+      - main
+      - fix/unified-manual-reader-20261016
+    paths:
+      - index.html
+      - pdf-reader.html
+      - service-worker.js
+      - documents/pdf-library/manual-*.pdf
+      - .github/workflows/hstu-manual-regression-gate.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  document-and-browser-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify all 18 manual identities and local PDF integrity
+        run: |
+          python -m pip install -q pypdf
+          python - <<'PY'
+          import json,re,os
+          from pathlib import Path
+          from pypdf import PdfReader
+          html=Path('index.html').read_text()
+          items=json.loads(html.split('const MANUALS=',1)[1].split(';\nconst TRAINING=',1)[0])
+          found=re.search(r'const HSTU_LOCAL_MANUALS=(\{.*?\});\s*function manualHref',html,re.S)
+          assert found, 'Local manual map missing'
+          mapping=json.loads(found.group(1))
+          assert len(items)==18 and len(mapping)==18
+          assert set(mapping)=={m['id'] for m in items}, 'Some cards do not match their hosted PDF'
+          assert "m.id==='pitc-facilitator'?'Request Drive access" not in html
+          for manual in items:
+            p=Path(mapping[manual['id']])
+            assert p.exists(),f"MISSING {manual['id']} -> {p}"
+            assert p.open('rb').read(5)==b'%PDF-',f"INVALID PDF {p}"
+            pdf=PdfReader(str(p))
+            assert len(pdf.pages)>1,f"EMPTY PDF {p}"
+            print(f"PASS {manual['id']} -> {p}: {len(pdf.pages)} pages ({p.stat().st_size} bytes)")
+          assert 'Prefer the newest HTML on the first navigation' in Path('service-worker.js').read_text()
+          assert 'return cached.clone();' in Path('service-worker.js').read_text()
+          print('PASS: all 18 exact-source PDFs and manual links')
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install headless browser
+        run: |
+          npm install --no-save playwright@1.57.0
+          npx playwright install --with-deps chromium
+      - name: Exercise phone and desktop first-tap and PDF opening
+        shell: bash
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 > /tmp/hstu-qa-server.log 2>&1 &
+          cat > ./.hstu-manual-qa.mjs <<'JS'
+          import { chromium } from 'playwright';
+          const root='http://127.0.0.1:8765/';
+          const must=(x,msg)=>{if(!x)throw Error(msg)};
+          const browser=await chromium.launch({headless:true});
+          try{
+            for(const [name,opts] of [
+              ['phone',{viewport:{width:390,height:844},isMobile:true,hasTouch:true}],
+              ['desktop',{viewport:{width:1440,height:900}}]
+            ]){
+              const ctx=await browser.newContext({...opts,serviceWorkers:'allow'});
+              const page=await ctx.newPage();
+              const resp=await page.goto(root+'index.html#home',{waitUntil:'domcontentloaded',timeout:45000});
+              must(resp?.ok(),name+': home first load');
+              await page.waitForFunction(()=>document.documentElement.dataset.hstuRefinements930==='ready',{timeout:30000});
+              const found=await page.locator('a[data-open-manual]').evaluateAll(links=>
+                Object.fromEntries(links.map(a=>[a.dataset.openManual,a.getAttribute('href')])));
+              must(Object.keys(found).length===18,name+': 18 manual destinations missing');
+              for(const [id,href] of Object.entries(found)){
+                must(href.startsWith('pdf-reader.html?file='),name+': wrong link '+id+': '+href);
+                const target=new URL(href,root);
+                must(target.searchParams.get('file')?.startsWith('documents/pdf-library/'),name+': not a local PDF '+id);
+              }
+              must(!found['pitc-facilitator'].includes('drive.google'),name+': PITC is not public');
+              for(const id of (name==='phone'?['pitc-facilitator','sti-handbook-2026']:['staff-orders','hiv-clinical-2020'])){
+                const pdfPage=await ctx.newPage();
+                let res=await pdfPage.goto(new URL(found[id],root).href,{waitUntil:'domcontentloaded',timeout:60000});
+                must(res?.ok(),name+': PDF page '+id+' HTTP error');
+                await pdfPage.waitForFunction(()=>document.documentElement.dataset.hstuPdfReady==='1',{timeout:90000});
+                await pdfPage.waitForSelector('canvas#pageCanvas:not([hidden])',{timeout:90000});
+                const file=await pdfPage.locator('html').getAttribute('data-hstu-pdf-file');
+                must(file===new URL(found[id],root).searchParams.get('file'),name+': wrong rendered PDF '+id);
+                await pdfPage.close();
+                console.log(name+': '+id+' reader PASS');
+              }
+              const nav=page.locator('#home-purpose-hero button[data-purpose-view="research"]');
+              await nav.click();
+              must(await page.locator('#view-research.active').count()===1,name+': first-tap route failed');
+              await ctx.close();
+              console.log(name+': 18 links, manual reader and first click PASS');
+            }
+          }finally{await browser.close();}
+          JS
+          node ./.hstu-manual-qa.mjs
