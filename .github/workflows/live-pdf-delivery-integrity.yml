@@ -129,13 +129,18 @@ jobs:
                 null,{timeout:20000});
               await page.waitForTimeout(900);
               const manuals=await page.evaluate(()=>
-                MANUALS.map(m=>({id:m.id,expected:m.title,source:manualHref(m)}))
+                MANUALS.map(m=>({
+                  id:m.id,expected:m.title,source:manualHref(m),
+                  local:HSTU_LOCAL_MANUALS[m.id]
+                }))
               );
               must(manuals.length===18,label+': manual count changed');
               for(const m of manuals){
-                must(/^https:\/\//.test(m.source),label+': bad manual href '+JSON.stringify(m));
-                must(!/github\.io\/HSTU-SI\/(?:[^/]+)\.pdf/i.test(m.source),
-                  label+': missing root-level PDF remains: '+m.id);
+                const url=new URL(m.source,BASE);
+                must(m.local && url.pathname.endsWith('/HSTU-SI/pdf-reader.html')
+                  && url.searchParams.get('file')===m.local
+                  && url.searchParams.get('title')===m.expected,
+                  label+': incorrect local reader identity '+JSON.stringify(m));
               }
               const cards=page.locator('#manualGrid [data-open-manual]');
               must(await cards.count()===18,label+': not all manual cards present');
@@ -145,16 +150,7 @@ jobs:
               })));
               for(const c of cardItems){
                 const manual=manuals.find(m=>m.id===c.id);
-                const reader=(()=>{
-                  try{
-                    const u=new URL(c.href);
-                    return u.pathname.endsWith('/HSTU-SI/pdf-reader.html')
-                      && /^documents\/pdf-library\/[a-z0-9_.-]+\.pdf$/i.test(u.searchParams.get('file')||'')
-                      && c.original===manual?.source;
-                  }catch{return false}
-                })();
-                const localized=c.href.includes('/HSTU-SI/documents/pdf-library/');
-                must(manual&&(c.href===manual.source||localized||reader),
+                must(manual && c.href===new URL(manual.source,BASE).href,
                   label+': wrong PDF identity on '+c.id+': '+c.href);
                 must(c.target==='_blank',label+': manual should open in a separate tab '+c.id);
               }
