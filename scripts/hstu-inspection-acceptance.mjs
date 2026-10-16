@@ -196,7 +196,7 @@ try {
         const displayed=cardNodes.find(x=>x.id===item.id);
         assert(displayed && displayed.href===dest.href,
           'Wrong manual card link: '+item.id+' -> '+JSON.stringify(displayed));
-        const pdf=await headFile(item.local,/application\\/pdf/i);
+        const pdf=await headFile(item.local,/application\/pdf/i);
         assert(pdf.ok,'Hosted public manual PDF missing: '+item.id+' '+JSON.stringify(pdf));
       }
       return '18/18 correct source links, none point at nonexistent root PDFs';
