@@ -677,8 +677,8 @@ html.hstu-lightbox-open,html.hstu-lightbox-open body{overflow:hidden}
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="HSTU Resources" name="apple-mobile-web-app-title"/>
 <meta content="HSTU Resource Centre" name="application-name"/>
-<link href="https://glenroygriffiths876-collab.github.io/HSTU-SI/" rel="canonical"/>
-<meta content="https://glenroygriffiths876-collab.github.io/HSTU-SI/" property="og:url"/>
+<link href="https://hstu-repository.moh.gov.jm/" rel="canonical"/>
+<meta content="https://hstu-repository.moh.gov.jm/" property="og:url"/>
 <meta content="HSTU Resource Centre" property="og:title"/>
 <meta content="HIV, STI &amp; TB resources from HSTU." property="og:description"/>
 <meta content="summary" name="twitter:card"/>
@@ -1834,6 +1834,9 @@ document.addEventListener('DOMContentLoaded', function(){
 <button aria-label="Share HSTU Resource Centre" class="hstu-pwa-btn" id="hstuShareBtn" type="button">
 <svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 10.7 6.8-4.1M8.6 13.3l6.8 4.1"></path></svg><span>Share</span>
 </button>
+<a aria-label="View official MOHW repository QR code" class="hstu-pwa-btn" href="./hstu-official-qr.png" target="_blank" rel="noopener noreferrer">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20h1"/></svg><span>Official QR code</span>
+</a>
 </div>
 <div aria-hidden="true" class="hstu-install-screen" id="hstuInstallScreen">
 <div class="hstu-install-card">
@@ -1871,7 +1874,7 @@ document.addEventListener('DOMContentLoaded', function(){
  $("#hstuInstallBtn")?.addEventListener("click",doInstall);
  $("#hstuInstallScreenBtn")?.addEventListener("click",doInstall);
  $("#hstuShareBtn")?.addEventListener("click",async()=>{
-   const share={title:"HSTU Resource Centre",text:"HIV, STI & TB resources from HSTU.",url:"https://glenroygriffiths876-collab.github.io/HSTU-SI/"};
+   const share={title:"HSTU Resource Centre",text:"HIV, STI & TB resources from HSTU.",url:"https://hstu-repository.moh.gov.jm/"};
    if(navigator.share){try{await navigator.share(share);return}catch(e){if(e?.name==="AbortError")return}}
    try{await navigator.clipboard.writeText(share.url);toast("Resource Centre link copied.");}
    catch(e){toast("Copy the page address from your browser to share it.");}

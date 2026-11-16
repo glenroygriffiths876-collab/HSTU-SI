@@ -1,4 +1,4 @@
-const CACHE_NAME="hstu-resource-centre-v20261016-firsttap-documents-v1";
+const CACHE_NAME="hstu-resource-centre-v20261116-official-share-url-v1";
 const APP_SHELL=[
   "./index.html",
   "./health-snake.html",
